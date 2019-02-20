@@ -1,34 +1,35 @@
 <?php
-$rootDir = __DIR__ . '/../..';
-
 $params = array_merge(
-	require($rootDir . '/common/config/params.php'),
-	require($rootDir . '/common/config/params-local.php'),
-	require(__DIR__ . '/params.php'),
-	require(__DIR__ . '/params-local.php')
+    require __DIR__ . '/../../common/config/params.php',
+    require __DIR__ . '/../../common/config/params-local.php',
+    require __DIR__ . '/params.php',
+    require __DIR__ . '/params-local.php'
 );
 
-return array(
-	'id' => 'bootstrap-console',
-	'basePath' => dirname(__DIR__),
-	'preload' => array('log'),
-	'controllerPath' => dirname(__DIR__) . '/commands',
-	'controllerNamespace' => 'app\controllers',
-	'modules' => array(
-	),
-	'components' => array(
-		'cache' => array(
-			'class' => 'yii\caching\FileCache',
-		),
-		'log' => array(
-			'class' => 'yii\logging\Router',
-			'targets' => array(
-				array(
-					'class' => 'yii\logging\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-	),
-	'params' => $params,
-);
+return [
+    'id' => 'app-console',
+    'basePath' => dirname(__DIR__),
+    'bootstrap' => ['log'],
+    'controllerNamespace' => 'console\controllers',
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    'controllerMap' => [
+        'fixture' => [
+            'class' => 'yii\console\controllers\FixtureController',
+            'namespace' => 'common\fixtures',
+          ],
+    ],
+    'components' => [
+        'log' => [
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
+    ],
+    'params' => $params,
+];

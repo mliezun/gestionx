@@ -1,89 +1,60 @@
-Yii 2 Advanced Application Template
-===================================
+<p align="center">
+    <a href="https://github.com/yiisoft" target="_blank">
+        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
+    </a>
+    <h1 align="center">Yii 2 Advanced Project Template</h1>
+    <br>
+</p>
 
-**NOTE** Yii 2 and the relevant applications and extensions are still under heavy
-development. We may make significant changes without prior notices. Please do not
-use them for production. Please consider using [Yii v1.1](https://github.com/yiisoft/yii)
-if you have a project to be deployed for production soon.
+Yii 2 Advanced Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
+developing complex Web applications with multiple tiers.
 
+The template includes three tiers: front end, back end, and console, each of which
+is a separate Yii application.
 
-Thank you for using Yii 2 Advanced Application Template - an application template
-that works out-of-box and can be easily customized to fit for your needs.
+The template is designed to work in a team development environment. It supports
+deploying the application in different environments.
 
-Yii 2 Advanced Application Template is best suitable for large projects requiring frontend and backstage separation,
-deployment in different environments, configuration nesting etc.
+Documentation is at [docs/guide/README.md](docs/guide/README.md).
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
+[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
+[![Build Status](https://travis-ci.org/yiisoft/yii2-app-advanced.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-advanced)
 
 DIRECTORY STRUCTURE
 -------------------
 
 ```
 common
-	config/             contains shared configurations
-	env/                contains environment-based overrides
-	models/             contains model classes used in both backstage and frontend
+    config/              contains shared configurations
+    mail/                contains view files for e-mails
+    models/              contains model classes used in both backend and frontend
+    tests/               contains tests for common classes    
 console
-	config/             contains console configurations
-	controllers/        contains console controllers (commands)
-	env/                contains environment-based overrides
-	migrations/         contains database migrations
-	models/             contains console-specific model classes
-	runtime/            contains files generated during runtime
-backstage
-	assets/             contains application assets such as JavaScript and CSS
-	config/             contains backstage configurations
-	controllers/        contains Web controller classes
-	env/                contains environment-based overrides
-	models/             contains backstage-specific model classes
-	runtime/            contains files generated during runtime
-	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
+    config/              contains console configurations
+    controllers/         contains console controllers (commands)
+    migrations/          contains database migrations
+    models/              contains console-specific model classes
+    runtime/             contains files generated during runtime
+backend
+    assets/              contains application assets such as JavaScript and CSS
+    config/              contains backend configurations
+    controllers/         contains Web controller classes
+    models/              contains backend-specific model classes
+    runtime/             contains files generated during runtime
+    tests/               contains tests for backend application    
+    views/               contains view files for the Web application
+    web/                 contains the entry script and Web resources
 frontend
-	assets/             contains application assets such as JavaScript and CSS
-	config/             contains frontend configurations
-	controllers/        contains Web controller classes
-	env/                contains environment-based overrides
-	models/             contains frontend-specific model classes
-	runtime/            contains files generated during runtime
-	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
-vendor/                 contains dependent 3rd-party packages
+    assets/              contains application assets such as JavaScript and CSS
+    config/              contains frontend configurations
+    controllers/         contains Web controller classes
+    models/              contains frontend-specific model classes
+    runtime/             contains files generated during runtime
+    tests/               contains tests for frontend application
+    views/               contains view files for the Web application
+    web/                 contains the entry script and Web resources
+    widgets/             contains frontend widgets
+vendor/                  contains dependent 3rd-party packages
+environments/            contains environment-based overrides
 ```
-
-
-
-REQUIREMENTS
-------------
-
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
-
-
-INSTALLATION
-------------
-
-### Install via Composer
-
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
-
-~~~
-curl -s http://getcomposer.org/installer | php
-~~~
-
-You can then install the Bootstrap Application using the following command:
-
-~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
-~~~
-
-Now you should be able to access:
-
-- the frontend using the URL `http://localhost/yii-advanced/frontend/www/`
-- the backstage using the URL `http://localhost/yii-advanced/backstage/www/`
-
-assuming `yii-advanced` is directly under the document root of your Web server.
-
-
-### Install from an Archive File
-
-This is not currently available. We will provide it when Yii 2 is formally released.

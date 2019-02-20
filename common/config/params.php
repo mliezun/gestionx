@@ -1,9 +1,6 @@
 <?php
-
-return array(
-	'adminEmail' => 'admin@example.com',
-
-	'component.cache' => array(
-		'class' => 'yii\caching\FileCache',
-	),
-);
+return [
+    'adminEmail' => 'admin@example.com',
+    'supportEmail' => 'support@example.com',
+    'user.passwordResetTokenExpire' => 3600,
+];
