@@ -11,7 +11,6 @@ use yii\base\Model;
 class Empresa extends Model
 {
     public $Parametro;
-    public $IdEstudio;
     public $Descripcion;
     public $Rango;
     public $Valor;

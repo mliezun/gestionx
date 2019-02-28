@@ -3,10 +3,22 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use backend\assets\AdmAsset;
+use backend\assets\AppAsset;
 use yii\helpers\Html;
+use common\widgets\Alert;
 
-AdmAsset::register($this);
+
+AppAsset::register($this);
+
+$defaultCrumb = [ 'label' => 'Inicio', 'link' => '/' ];
+
+if (isset($this->params['breadcrumbs'])) {
+    array_unshift($this->params['breadcrumbs'], $defaultCrumb);
+} else {
+    $this->params['breadcrumbs'] = [
+        $defaultCrumb
+    ];
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -22,7 +34,6 @@ AdmAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<body>
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -32,7 +43,7 @@ AdmAsset::register($this);
         <!-- ============================================================== -->
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="index.html"><?= Yii::$app->name ?></a>
+                <a class="navbar-brand" href="/"><?= Yii::$app->name ?></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -160,10 +171,43 @@ AdmAsset::register($this);
         <!-- wrapper  -->
         <!-- ============================================================== -->
         <div class="dashboard-wrapper">
-            <div class="dashboard-ecommerce">
-                <div class="container-fluid dashboard-content ">
-                    <?= $content ?>
+            <div class="container-fluid dashboard-content ">
+                <!-- ============================================================== -->
+                <!-- pageheader  -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2 class="pageheader-title"><?= $this->title ?></h2>
+                            <div class="container">
+                                <?= Alert::widget() ?>
+                            </div>
+                            <div class="page-breadcrumb">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                    <?php foreach ($this->params['breadcrumbs'] as $i => $crumb): ?>
+                                        <?php if ($i === 0 || $i < count($this->params['breadcrumbs'])-1): ?>
+                                        <li class="breadcrumb-item">
+                                            <a href="<?= $crumb['link'] ?>" class="breadcrumb-link">
+                                                <?= $crumb['label'] ?>
+                                            </a>
+                                        </li>
+                                        <?php else: ?>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <?= $crumb ?>
+                                        </li>
+                                        <?php endif ?>
+                                    <?php endforeach ?>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <!-- ============================================================== -->
+                <!-- end pageheader  -->
+                <!-- ============================================================== -->
+                <?= $content ?>
             </div>
         </div>
         <!-- ============================================================== -->
@@ -173,9 +217,6 @@ AdmAsset::register($this);
     <!-- ============================================================== -->
     <!-- end main wrapper  -->
     <!-- ============================================================== -->
-</body>
- 
-
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -19,5 +19,7 @@ class CommonAsset extends AssetBundle
     public $depends = [
         'common\assets\BowerAsset',
         'yii\widgets\MaskedInputAsset',
+        'yii\web\YiiAsset',
+        'yii\bootstrap4\BootstrapAsset',
     ];
 }

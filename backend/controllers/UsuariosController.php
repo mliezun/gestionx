@@ -25,6 +25,8 @@ class UsuariosController extends Controller
         $usuario = new Usuarios();
         $usuario->setScenario(Usuarios::_LOGIN);
 
+        $this->layout = 'login';
+
         if ($usuario->load(Yii::$app->request->post()) && $usuario->validate()) {
             $login = $usuario->Login('A', $usuario->Password, Yii::$app->security->generateRandomString(300));
 
@@ -49,7 +51,7 @@ class UsuariosController extends Controller
         }
         Yii::$app->session->set('Parametros', ArrayHelper::map($empresa->DameDatos(), 'Parametro', 'Valor'));
 
-        return $this->renderPartial('login', [
+        return $this->render('login', [
             'model' => $usuario,
         ]);
     }
