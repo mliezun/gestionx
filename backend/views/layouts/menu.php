@@ -4,7 +4,7 @@
     </li>
     <li class="nav-item ">
         <a class="nav-link" href="/">
-            <i class="fa fa-fw fa-user-circle"></i>Inicio
+            <i class="fas fa-home"></i>Inicio
         </a>
     </li>
     <li class="nav-item ">
