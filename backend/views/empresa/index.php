@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         <div class="btn-group" role="group" aria-label="...">
                                             
-                                            <?php if (PermisosHelper::tienePermiso('ModificaParametro')) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('ModificarParametro')) : ?>
                                                 <button type="button" class="btn btn-outline-light"
                                                         data-modal="<?= Url::to(['/empresa/editar', 'id' => $model['Parametro']]) ?>" 
                                                         data-hint="Editar">

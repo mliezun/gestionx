@@ -4,12 +4,12 @@
     </li>
     <li class="nav-item ">
         <a class="nav-link" href="/">
-            <i class="fa fa-fw fa-user-circle"></i>Inicio <span class="badge badge-success">6</span>
+            <i class="fa fa-fw fa-user-circle"></i>Inicio
         </a>
     </li>
     <li class="nav-item ">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
-            <i class="fa fa-fw fa-user-circle"></i>Sistema <span class="badge badge-success">6</span>
+            <i class="fas fa-cogs"></i>Sistema
         </a>
         <div id="submenu-1" class="collapse submenu" style="">
             <ul class="nav flex-column">

@@ -6,14 +6,17 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
-$this->title = 'Iniciar sesión - GestionX';
+$empresa = Yii::$app->session->get('Parametros')['EMPRESA'];
+$logo = Yii::$app->session->get('Parametros')['LOGO'];
+
+$this->title = 'Iniciar sesión - ' . $empresa;
 ?>
 <?php $form = ActiveForm::begin([
     'id' => 'login-form',
     'options' => ['class' => 'form-signin'],
 ]); ?>
 
-    <img class="mb-4" src="/img/brand/GestionX.svg" alt="" width="72" height="72">
+    <img class="mb-4" src="<?= $logo ?>" alt="" width="72" height="72">
 
     <h1 class="h3 mb-3 font-weight-normal">Iniciar sesión</h1>
 

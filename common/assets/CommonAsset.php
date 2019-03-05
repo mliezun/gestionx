@@ -13,8 +13,6 @@ class CommonAsset extends AssetBundle
     public $css = [
     ];
     public $js = [
-        'js/main.js',
-        'js/VueDirectives.js',
     ];
     public $depends = [
         'common\assets\BowerAsset',

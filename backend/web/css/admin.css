@@ -1244,7 +1244,7 @@ Top Header
     color: #f3903f;
 }
 .navbar-brand:hover{
-    color: #ed683c;
+    opacity: 0.7;
 }
 .navbar-right-top {}
 

@@ -6,6 +6,7 @@
 use backend\assets\AppAsset;
 use yii\helpers\Html;
 use common\widgets\Alert;
+use common\models\Empresa;
 
 
 AppAsset::register($this);
@@ -19,6 +20,9 @@ if (isset($this->params['breadcrumbs'])) {
         $defaultCrumb
     ];
 }
+
+$empresa = Yii::$app->session->get('Parametros')['EMPRESA'];
+$logo = Yii::$app->session->get('Parametros')['LOGO'];
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -43,9 +47,12 @@ if (isset($this->params['breadcrumbs'])) {
         <!-- ============================================================== -->
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="/"><?= Yii::$app->name ?></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <a class="navbar-brand" href="/">
+                    <img src="<?= $logo ?>" width="24" height="24" style="margin-bottom: 6px;">
+                    <?= $empresa ?>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false">
+                    <span class="navbar-toggler-icon"><i class="fas fa-cog"></i></span>
                 </button>
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
@@ -158,6 +165,16 @@ if (isset($this->params['breadcrumbs'])) {
         <div class="nav-left-sidebar sidebar-dark">
             <div class="menu-list">
                 <nav class="navbar navbar-expand-lg navbar-light">
+                    <a  
+                        class="navbar-toggler"
+                        style="background: none;"
+                        data-toggle="collapse" 
+                        data-target="#navbarNav" 
+                        aria-controls="navbarNav" 
+                        aria-expanded="false" 
+                    >
+                        <i class="fas fa-caret-down"></i>
+                    </a>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <?= $this->render('menu') ?>
                     </div>
