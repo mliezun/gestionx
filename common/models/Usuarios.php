@@ -405,6 +405,22 @@ class Usuarios extends Model implements IdentityInterface
 
         return $result;
     }
+
+    public function Logout()
+    {
+        $sql = 'CALL xsp_logout( :token, :IP, :userAgent, :app )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':token' => Yii::$app->user->identity->Token
+        ]);
+        
+        return $query->queryScalar();
+    }
     
     public function ExisteUsuario()
     {

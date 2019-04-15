@@ -58,6 +58,7 @@ class UsuariosController extends Controller
     
     public function actionLogout()
     {
+        Yii::$app->user->indentity->Logout();
         Yii::$app->user->logout();
         return $this->goHome();
     }
