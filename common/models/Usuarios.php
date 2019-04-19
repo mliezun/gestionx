@@ -408,14 +408,11 @@ class Usuarios extends Model implements IdentityInterface
 
     public function Logout()
     {
-        $sql = 'CALL xsp_logout( :token, :IP, :userAgent, :app )';
+        $sql = 'CALL xsp_logout( :token )';
         
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
-            ':IP' => Yii::$app->request->userIP,
-            ':userAgent' => Yii::$app->request->userAgent,
-            ':app' => Yii::$app->id,
             ':token' => Yii::$app->user->identity->Token
         ]);
         
