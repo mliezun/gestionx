@@ -25,6 +25,8 @@ $empresa = Yii::$app->session->get('Parametros')['EMPRESA'];
 $logo = Yii::$app->session->get('Parametros')['LOGO'];
 
 $usuario = Yii::$app->user->identity;
+
+$this->registerJs('Main.init()');
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

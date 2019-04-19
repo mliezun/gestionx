@@ -92,14 +92,12 @@ $config = [
                 'matchCallback' => function () {
                     $usuario = Yii::$app->user->identity;
                     $token = Yii::$app->session->get('Token');
-                    Yii::info('match callback');
                     return $usuario->DebeCambiarPass == 'N' && $usuario->Estado == 'A' && $usuario->Token == $token;
                 },
             ],
         ],
         // Función que se ejecuta cuando el request es denegado.
         'denyCallback' => function ($rule, $action) {
-            Yii::info('deny callback');
             if (!Yii::$app->user->isGuest) {
                 if (Yii::$app->user->identity->DebeCambiarPass == 'S') {
                     //Redirect

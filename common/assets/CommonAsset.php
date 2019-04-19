@@ -10,14 +10,15 @@ use yii\web\AssetBundle;
 class CommonAsset extends AssetBundle
 {
     public $sourcePath = '@common';
-    public $css = [
-    ];
     public $js = [
+        'js/Main.js'
     ];
     public $depends = [
-        'common\assets\BowerAsset',
+        'common\assets\PaceAsset',
         'yii\widgets\MaskedInputAsset',
         'yii\web\YiiAsset',
         'yii\bootstrap4\BootstrapAsset',
+        'yii\bootstrap4\BootstrapPluginAsset',
+        'common\assets\BowerAsset',
     ];
 }
