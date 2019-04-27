@@ -259,6 +259,10 @@ var Main = {
                   }
               });
   },
+  modalClose: function () {
+      $('.modal').remove();
+      $('.modal-backdrop').remove();
+  },
   // Hacer request con ajax en los elementos con data-ajax=url. Evita recarga y muestra mensaje de éxito si hay data-success
   ajax: function (elemento) {
       var url = $(elemento).data('ajax');

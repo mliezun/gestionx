@@ -41,9 +41,9 @@ class Empresa extends Model
         return [
             ['Valor', 'trim'],
             // Editar
-            [['IdEstudio','Parametro', 'Valor'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['Parametro', 'Valor'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
-            [['IdEstudio', 'Valor', 'Parametro', 'Descripcion'], 'safe'],
+            [['Valor', 'Parametro', 'Descripcion'], 'safe'],
         ];
     }
 
@@ -102,5 +102,28 @@ class Empresa extends Model
         ]);
 
         $this->attributes = $query->queryOne();
+    }
+
+    /**
+     * 
+     */
+    public function CambiarParametro($Parametro, $Valor, $Motivo, $Autoriza)
+    {
+        $sql = "CALL xsp_cambiar_parametro ( :token, :parametro, :valor, :motivo, :autoriza, :IP, :userAgent, :app ) ";
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':parametro' => $Parametro,
+            ':valor' => $Valor,
+            ':motivo' => $Motivo,
+            ':autoriza' => $Autoriza
+        ]);
+
+        return $query->queryScalar();
     }
 }
