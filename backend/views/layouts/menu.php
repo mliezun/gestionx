@@ -1,10 +1,43 @@
 <?php
 
-use common\components\PermisosHelper;
+use backend\models\Menu;
 
 ?>
 
 <ul class="navbar-nav flex-column">
+    <li class="nav-divider">
+        Menu
+    </li>
+    <?php foreach(Menu::elements as $ix => $el): ?>
+        <?php if (Menu::renderiza($el)): ?>
+            <?php if (array_key_exists('submenu', $el)): ?>
+            <li class="nav-item ">
+                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-<?= $ix ?>" aria-controls="submenu-<?= $ix ?>">
+                    <i class="fas fa-cogs"></i><?= $el['name'] ?>
+                </a>
+                <div id="submenu-<?= $ix ?>" class="collapse submenu" style="">
+                <?php foreach($el['submenu'] as $subel): ?>
+                    <?php if (Menu::renderiza($subel)): ?>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= $subel['href'] ?>"><?= $subel['name'] ?></a>
+                        </li>
+                    </ul>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                </div>
+            </li>
+            <?php else: ?>
+            <li class="nav-item ">
+                <a class="nav-link" href="<?= $el['href'] ?>">
+                    <i class="<?= $el['icon'] ?>"></i><?= $el['name'] ?>
+                </a>
+            </li>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
+<!--ul class="navbar-nav flex-column">
     <li class="nav-divider">
         Menu
     </li>
@@ -13,21 +46,21 @@ use common\components\PermisosHelper;
             <i class="fas fa-home"></i>Inicio
         </a>
     </li>
-    <?php if (PermisosHelper::tienePermiso('BuscarUsuarios')): ?>
+    <?php // if (PermisosHelper::tienePermiso('BuscarUsuarios')): ?>
     <li class="nav-item ">
         <a class="nav-link" href="/usuarios">
             <i class="fas fa-users"></i>Usuarios
         </a>
     </li>
-    <?php endif; ?>
-    <?php if (PermisosHelper::tienePermiso('BuscarParametro')): ?>
+    <?php // endif; ?>
+    <?php // if (PermisosHelper::tienePermiso('BuscarParametro')): ?>
     <li class="nav-item ">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
             <i class="fas fa-cogs"></i>Sistema
         </a>
         <div id="submenu-1" class="collapse submenu" style="">
             <ul class="nav flex-column">
-                <!--li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
                     <div id="submenu-1-2" class="collapse submenu" style="">
                         <ul class="nav flex-column">
@@ -45,11 +78,11 @@ use common\components\PermisosHelper;
                             </li>
                         </ul>
                     </div>
-                </li-->
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/empresa">Parámetros</a>
                 </li>
-                <!--li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="dashboard-sales.html">Sales</a>
                 </li>
                 <li class="nav-item">
@@ -67,12 +100,12 @@ use common\components\PermisosHelper;
                             </li>
                         </ul>
                     </div>
-                </li-->
+                </li>
             </ul>
         </div>
     </li>
-    <?php endif; ?>
-    <!--li class="nav-item">
+    <?php // endif; ?>
+    <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2"><i class="fa fa-fw fa-rocket"></i>UI Elements</a>
         <div id="submenu-2" class="collapse submenu" style="">
             <ul class="nav flex-column">
@@ -294,5 +327,5 @@ use common\components\PermisosHelper;
                 </li>
             </ul>
         </div>
-    </li-->
-</ul>
+    </li>
+</ul-->
