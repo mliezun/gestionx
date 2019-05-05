@@ -1,3 +1,9 @@
+<?php
+
+use common\components\PermisosHelper;
+
+?>
+
 <ul class="navbar-nav flex-column">
     <li class="nav-divider">
         Menu
@@ -7,6 +13,14 @@
             <i class="fas fa-home"></i>Inicio
         </a>
     </li>
+    <?php if (PermisosHelper::tienePermiso('BuscarUsuarios')): ?>
+    <li class="nav-item ">
+        <a class="nav-link" href="/usuarios">
+            <i class="fas fa-users"></i>Usuarios
+        </a>
+    </li>
+    <?php endif; ?>
+    <?php if (PermisosHelper::tienePermiso('BuscarParametro')): ?>
     <li class="nav-item ">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
             <i class="fas fa-cogs"></i>Sistema
@@ -57,6 +71,7 @@
             </ul>
         </div>
     </li>
+    <?php endif; ?>
     <!--li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2"><i class="fa fa-fw fa-rocket"></i>UI Elements</a>
         <div id="submenu-2" class="collapse submenu" style="">

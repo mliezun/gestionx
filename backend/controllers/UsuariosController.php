@@ -2,15 +2,49 @@
 
 namespace backend\controllers;
 
-use yii\web\Controller;
 use common\models\Usuarios;
+use common\models\GestorUsuarios;
+use common\models\GestorRoles;
 use common\models\Empresa;
-use Yii;
-use yii\helpers\ArrayHelper;
+use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use Yii;
+use yii\web\Controller;
+use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 class UsuariosController extends Controller
-{       
+{
+    public function actionIndex()
+    {
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
+
+        $gestor = new GestorUsuarios();
+
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $estado = $busqueda->Combo != 0 ? $busqueda->Combo : 'A';
+            $usuarios = $gestor->Buscar($busqueda->Cadena, $estado, $busqueda->Combo2);
+        } else {
+            $usuarios = $gestor->Buscar();
+        }
+
+        $paginado->totalCount = count($usuarios);
+        $usuarios = array_slice($usuarios, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        $gestorRoles = new GestorRoles();
+
+        $roles = $gestorRoles->Buscar();
+
+        return $this->render('index', [
+            'models' => $usuarios,
+            'busqueda' => $busqueda,
+            'roles' => $roles
+        ]);
+    }
+
     public function actionLogin()
     {
         // Si ya estoy logueado redirecciona al home

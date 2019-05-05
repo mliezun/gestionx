@@ -13,6 +13,9 @@ class CommonAsset extends AssetBundle
     public $js = [
         'js/Main.js'
     ];
+    public $css = [
+        'css/app.css'
+    ];
     public $depends = [
         'common\assets\PaceAsset',
         'yii\widgets\MaskedInputAsset',

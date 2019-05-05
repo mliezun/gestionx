@@ -29,7 +29,8 @@ class Usuarios extends Model implements IdentityInterface
     const ESTADOS = [
         'A' => 'Activo',
         'B' => 'Baja',
-        'S' => 'Suspendido'
+        'S' => 'Suspendido',
+        'T' => 'Todos'
     ];
     
     public function attributeLabels()
