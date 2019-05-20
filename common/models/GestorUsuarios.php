@@ -28,4 +28,34 @@ class GestorUsuarios
 
         return $query->queryAll();
     }
+
+    /**
+     * Permite modificar un Usuario existente. No se puede cambiar el nombre de usuario, ni la contraseña.
+	 * Los nombres y apellidos son obligatorios. El correo electrónico no debe existir ya. El rol debe 
+	 * existir. Si se cambia el rol, y se resetea token. 
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_modifica_usuario
+     */
+    public function Modificar($usuario)
+    {
+        $sql = "call xsp_modifica_usuario( :token, :idusuario, :idrol, :nombres, :apellidos, :email, " 
+        . " :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idusuario' => $usuario->IdUsuario,
+            ':idrol' => $usuario->IdRol,
+            ':nombres' => $usuario->Nombres,
+            ':apellidos' => $usuario->Apellidos,
+            ':email' => $usuario->Email,
+            ':observaciones' => $usuario->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
 }

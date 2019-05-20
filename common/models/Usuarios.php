@@ -47,7 +47,7 @@ class Usuarios extends Model implements IdentityInterface
             [['Usuario', 'Password'], 'required', 'on' => self::_LOGIN],
             [['IdRol', 'Nombres', 'Apellidos', 'Usuario', 'Email'],
                 'required', 'on' => self::_ALTA],
-            [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Usuario', 'Email', 'Password'],
+            [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Email'],
                 'required', 'on' => self::_MODIFICAR],
             [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Usuario',
                 'Token', 'Email', 'DebeCambiarPass', 'Estado', 'Observaciones'], 'safe']

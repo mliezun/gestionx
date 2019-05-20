@@ -97,6 +97,35 @@ class UsuariosController extends Controller
         return $this->goHome();
     }
 
+    public function actionEditar($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarUsuario');
+        
+        $usuario = new Usuarios();
+
+        $usuario->setScenario(Usuarios::_MODIFICAR);
+
+        if ($usuario->load(Yii::$app->request->post()) && $usuario->validate()) {
+            $gestor = new GestorUsuarios();
+            $resultado = $gestor->Modificar($usuario);
+
+            Yii::$app->response->format = 'json';
+            if ($resultado == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $usuario->IdUsuario = $id;
+            
+            $usuario->Dame();
+
+            return $this->renderAjax('alta', [
+                        'titulo' => 'Editar usuario',
+                        'model' => $usuario
+            ]);
+        }
+    }
     /*
     
     public function actionCambiarPassword()
