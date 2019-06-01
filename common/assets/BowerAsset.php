@@ -25,4 +25,10 @@ class BowerAsset extends AssetBundle
         'flag-icon-css/css/flag-icon.min.css',
         'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
     ];
+    public function init()
+    {
+        parent::init();
+
+        $this->js[] = YII_ENV_PROD ?  'vue/dist/vue.min.js' :  'vue/dist/vue.js';
+    }
 }
