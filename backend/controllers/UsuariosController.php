@@ -7,6 +7,7 @@ use common\models\GestorUsuarios;
 use common\models\GestorRoles;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
+use common\models\forms\CambiarPasswordForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;
@@ -97,8 +98,6 @@ class UsuariosController extends Controller
         return $this->goHome();
     }
 
-    /*
-    
     public function actionCambiarPassword()
     {
         $form = new CambiarPasswordForm();
@@ -127,7 +126,41 @@ class UsuariosController extends Controller
         }
     }
 
-    */
+    private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    public function actionRestablecerPass($id)
+    {
+        if (!PermisosHelper::tienePermiso('RestablecerPassword')) {
+            PermisosHelper::tirarExcepcion();
+        }
+
+        Yii::$app->response->format = 'json';
+
+        $usuario = new Usuarios();
+
+        $usuario->IdUsuario = $id;
+
+        $pass = $this->generateRandomString();
+
+        Yii::info($pass);
+
+        $resultado = $usuario->RestablecerPassword($pass);
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        }
+
+        return ['error' => $resultado];
+    }
 }
 
 ?>
