@@ -302,6 +302,31 @@ class Usuarios extends Model implements IdentityInterface
     }
 
     /**
+     * Permite setear DebeCambiarPass en S y setear un nuevo Password, para un usuario indicado.
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_restablecer_password
+     * 
+     * @param Password Contraseña nueva para el usuario
+     */
+    public function RestablecerPassword($Password = '')
+    {
+        $sql = "CALL xsp_restablecer_password( :token, :idusuario, :passwordNuevo, :IP, :userAgent, :aplicacion)";
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValues([
+            ':idusuario' => $this->IdUsuario,
+            ':token' => Yii::$app->user->identity->Token,
+            ':passwordNuevo' => password_hash($Password, PASSWORD_DEFAULT),
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':aplicacion' => Yii::$app->id,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
      * Permite devolver en un resultset la lista de variables de permiso que el
      * usuario tiene habilitados. Se valida con el token de sesi�n.
      * xsp_dame_permisos_usuario

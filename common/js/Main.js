@@ -10,19 +10,6 @@ var Main = {
           title: function () {
               return $(this).data('hint');
           }
-      },
-      confirm: {
-          'title': function () {
-              return $(this).data('mensaje');
-          },
-          'btnOkLabel': 'Aceptar',
-          'btnCancelLabel': 'Cancelar',
-          rootSelector: function() {
-              return Main.selectores.confirm;
-          },
-          'singleton': true,
-          'placement': 'left',
-          'container': 'body'
       }
   },
   selectores: {
@@ -62,7 +49,7 @@ var Main = {
       _this.initAjax();
       _this.initEventos();
       _this.initInputMasks();
-      // VueDirectives.init();
+      VueDirectives.init();
   },
   initEventos: function () {
       var _this = Main;
@@ -100,9 +87,6 @@ var Main = {
       $('.tooltip').remove();
 
       $(_this.selectores.tooltip).tooltip(_this.opciones.tooltip);
-
-      // Mensaje pidiendo confirmación en las acciones con data-mensaje
-      $(_this.selectores.confirm).confirmation(_this.opciones.confirm);
 
       // Configuración por defecto de Select2
       if ($.fn.select2)

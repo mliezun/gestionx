@@ -65,14 +65,45 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                                            
+                            
                                             <?php if (PermisosHelper::tienePermiso('ModificarUsuario')) : ?>
-                                                <button type="button" class="btn btn-outline-light"
-                                                        data-modal="<?= Url::to(['/usuarios/editar', 'id' => $model['IdUsuario']]) ?>" 
-                                                        data-hint="Editar">
-                                                    <i class="fa fa-pencil-alt"></i>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdUsuario']]) ?>"
+                                                        title="Modificar">
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
-                                            <?php endif; ?>   
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('RestablecerPassword')): ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-ajax="<?= Url::to(['usuarios/restablecer-pass', 'id' => $model['IdUsuario']]) ?>"
+                                                        title="Restablecer Password">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
+                                                <?php if (PermisosHelper::tienePermiso('ActivarUsuario')): ?>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdUsuario']]) ?>"
+                                                            title="Activar">
+                                                        <i class="fa fa-check-circle" style="color: green"></i>
+                                                    </button>
+                                                <?php endif; ?>
+                                            <?php else : ?>
+                                                <?php if (PermisosHelper::tienePermiso('DarBajaUsuario')) : ?>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdUsuario']]) ?>"
+                                                            title="Dar baja">
+                                                        <i class="fa fa-minus-circle" style="color: red"></i>
+                                                    </button>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('BorrarUsuario')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdUsuario']]) ?>"
+                                                        title="Borrar">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             
                                         </div>
                                     </td> 
