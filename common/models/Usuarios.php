@@ -409,7 +409,7 @@ class Usuarios extends Model implements IdentityInterface
             $esValido = 'N';
         }
 
-        $sql = "CALL xsp_login( :usuario, :esValido, :token, :IP, :userAgent, :app )";
+        $sql = "CALL xsp_login( :host, :usuario, :esValido, :token, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
 
@@ -417,6 +417,7 @@ class Usuarios extends Model implements IdentityInterface
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => $App,
+            ':host' => Yii::$app->request->headers->get('host'),
             ':usuario' => $this->Usuario,
             ':esValido' => $esValido,
             ':token' => $Token
