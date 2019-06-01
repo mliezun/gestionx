@@ -21,6 +21,7 @@ class Usuarios extends Model implements IdentityInterface
     public $DebeCambiarPass;
     public $Estado;
     public $Observaciones;
+    public $IdEmpresa;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -50,7 +51,7 @@ class Usuarios extends Model implements IdentityInterface
             [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Email'],
                 'required', 'on' => self::_MODIFICAR],
             [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Usuario',
-                'Token', 'Email', 'DebeCambiarPass', 'Estado', 'Observaciones'], 'safe']
+                'Token', 'Email', 'DebeCambiarPass', 'Estado', 'Observaciones','IdEmpresa'], 'safe']
         ];
     }
 
