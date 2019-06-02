@@ -21,6 +21,7 @@ class Usuarios extends Model implements IdentityInterface
     public $DebeCambiarPass;
     public $Estado;
     public $Observaciones;
+    public $IdEmpresa;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
