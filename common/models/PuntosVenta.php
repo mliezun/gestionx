@@ -4,10 +4,11 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 
-class Roles extends Model
+class PuntosVenta extends Model
 {
-    public $IdRol;
-    public $Rol;
+    public $IdPuntoVenta;
+    public $PuntoVenta;
+    public $Datos;
     public $Estado;
     public $Observaciones;
     public $IdEmpresa;
@@ -24,26 +25,26 @@ class Roles extends Model
     public function rules()
     {
         return [
-            [['Rol'],
+            [['PuntoVenta','Datos'],
                 'required', 'on' => self::_ALTA],
-            [['IdRol', 'Rol'],
+            [['IdPuntoVenta', 'PuntoVenta','Datos'],
                 'required', 'on' => self::_MODIFICAR],
-            [['IdRol', 'Rol', 'Estado', 'Observaciones','IdEmpresa'], 'safe']
+            [['IdPuntoVenta', 'PuntoVenta', 'Datos', 'Estado', 'Observaciones','IdEmpresa'], 'safe']
         ];
     }
 
     /**
-     * Permite instanciar un rol desde la base de datos.
-     * xsp_dame_rol
+     * Permite instanciar un punto venta desde la base de datos.
+     * xsp_dame_PuntoVenta
      */
     public function Dame()
     {
-        $sql = 'CALL xsp_dame_rol( :idRol )';
+        $sql = 'CALL xsp_dame_puntoventa( :idPuntoVenta )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
-            ':idRol' => $this->IdRol
+            ':idPuntoVenta' => $this->IdPuntoVenta
         ]);
         
         $this->attributes = $query->queryOne();

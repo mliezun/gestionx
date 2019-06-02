@@ -4,16 +4,16 @@ namespace common\models;
 
 use Yii;
 
-class GestorRoles
+class GestorPuntosVenta
 {
     /**
-     * Permite dar de alta un Rol controlando que el nombre del rol no exista ya dentro de la misma empresa.
+     * Permite dar de alta un Punto Venta controlando que el nombre del Punto Venta no exista ya dentro de la misma empresa.
      * Devuelve OK + Id o el mensaje de error en Mensaje.
-     * xsp_alta_rol
+     * xsp_alta_puntoventa
      */
-    public function Alta($rol)
+    public function Alta($puntoventa)
     {
-        $sql = "call xsp_alta_rol( :token, :host, :rol, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_alta_puntoventa( :token, :host, :puntoventa, :datos, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -23,8 +23,9 @@ class GestorRoles
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':host' => Yii::$app->request->headers->get('host'),
-            ':rol' => $rol->Rol,
-            ':observaciones' => $rol->Observaciones,
+            ':puntoventa' => $puntoventa->PuntoVenta,
+            ':datos' => $puntoventa->Datos,
+            ':observaciones' => $puntoventa->Observaciones,
         ]);
 
         return $query->queryScalar();

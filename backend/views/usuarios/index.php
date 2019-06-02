@@ -31,6 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php ActiveForm::end(); ?>
         </div>
 
+        <?php if (PermisosHelper::tienePermiso('AltaUsuario')) : ?>
+            <div class="alta--button">
+                <button type="button" class="btn btn-primary"
+                        data-modal="<?= Url::to(['/usuarios/alta']) ?>" 
+                        data-hint="Nuevo Usuario">
+                    Nuevo Usuario
+                </button>
+            </div>
+        <?php endif; ?>   
+
         <div id="errores"> </div>
         
         <?php if (count($models) > 0): ?>

@@ -20,6 +20,11 @@ class Menu
             'permiso' => 'BuscarUsuarios'
         ],
         [
+            'name' => 'Roles',
+            'icon' => 'fas fa-user-tag', 
+            'href' => '/roles'
+        ],
+        [
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [

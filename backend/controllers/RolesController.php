@@ -24,8 +24,8 @@ class RolesController extends Controller
         $gestor = new GestorRoles();
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Combo != 0 ? $busqueda->Combo : 'A';
-            $roles = $gestor->Buscar($busqueda->Cadena, $estado, $busqueda->Combo2);
+            $estado = $busqueda->Combo ? $busqueda->Combo : 'A';
+            $roles = $gestor->Buscar($busqueda->Cadena, $estado);
         } else {
             $roles = $gestor->Buscar();
         }
@@ -95,31 +95,59 @@ class RolesController extends Controller
         }
     }
 
-    public function actionBorrar($id){
-        PermisosHelper::verificarPermiso('BorraRol');
+    public function actionBorrar($id)
+    {
+        PermisosHelper::verificarPermiso('BorrarRol');
+
+        Yii::$app->response->format = 'json';
         
         $rol = new Roles();
+        $rol->IdRol = $id;
 
-        $rol->setScenario(Roles::_BORRAR);
+        $gestor = new GestorRoles();
 
-        if ($rol->load(Yii::$app->request->delete()) && $rol->validate()) {
-            $gestor = new GestorRoles();
-            $resultado = $gestor->Borrar($rol);
+        $resultado = $gestor->Borrar($rol);
 
-            Yii::$app->response->format = 'json';
-            if ($resultado == 'OK') {
-                return ['error' => null];
-            } else {
-                return ['error' => $resultado];
-            }
+        if ($resultado == 'OK') {
+            return ['error' => null];
         } else {
-            $rol->IdRol = $id;
-            
-            $rol->Dame();
+            return ['error' => $resultado];
+        }
+    }
 
-            return $this->renderAjax('index', [
-                        'model' => $rol
-            ]);
+    public function actionActivar($id)
+    {
+        PermisosHelper::verificarPermiso('ActivarRol');
+
+        Yii::$app->response->format = 'json';
+        
+        $rol = new Roles();
+        $rol->IdRol = $id;
+
+        $resultado = $rol->Activa();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
+    public function actionDarBaja($id)
+    {
+        PermisosHelper::verificarPermiso('DarBajaRol');
+
+        Yii::$app->response->format = 'json';
+        
+        $rol = new Roles();
+        $rol->IdRol = $id;
+
+        $resultado = $rol->DarBaja();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
         }
     }
 }
