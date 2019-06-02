@@ -22,7 +22,20 @@ class Menu
         [
             'name' => 'Roles',
             'icon' => 'fas fa-user-tag', 
-            'href' => '/roles'
+            'href' => '/roles',
+            'permiso' => 'BuscarRoles'
+        ],
+        [
+            'name' => 'Proveedores',
+            'icon' => 'fas fa-store',
+            'href' => '/proveedores',
+            'permiso' => 'BuscarProveedores'
+        ],
+        [
+            'name' => 'Articulos',
+            'icon' => 'fas fa-tag',
+            'href' => '/articulos',
+            'permiso' => 'BuscarArticulos'
         ],
         [
             'name' => 'Sistema',
