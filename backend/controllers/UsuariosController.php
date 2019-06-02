@@ -26,7 +26,7 @@ class UsuariosController extends Controller
         $gestor = new GestorUsuarios();
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Combo != 0 ? $busqueda->Combo : 'A';
+            $estado = $busqueda->Combo ? $busqueda->Combo : 'A';
             $usuarios = $gestor->Buscar($busqueda->Cadena, $estado, $busqueda->Combo2);
         } else {
             $usuarios = $gestor->Buscar();
@@ -169,9 +169,7 @@ class UsuariosController extends Controller
 
     public function actionRestablecerPass($id)
     {
-        if (!PermisosHelper::tienePermiso('RestablecerPassword')) {
-            PermisosHelper::tirarExcepcion();
-        }
+        PermisosHelper::verificarPermiso('RestablecerPassword');
 
         Yii::$app->response->format = 'json';
 
