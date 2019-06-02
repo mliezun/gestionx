@@ -20,6 +20,12 @@ class Menu
             'permiso' => 'BuscarUsuarios'
         ],
         [
+            'name' => 'Roles',
+            'icon' => 'fas fa-user-tag', 
+            'href' => '/roles',
+            'permiso' => 'BuscarRoles'
+        ],
+        [
             'name' => 'Proveedores',
             'icon' => 'fas fa-store',
             'href' => '/proveedores',

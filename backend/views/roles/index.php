@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Usuarios;
+use common\models\Roles;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
 use yii\web\View;
@@ -11,7 +11,7 @@ use yii\helpers\Url;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-$this->title = 'Usuarios';
+$this->title = 'Roles';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -22,24 +22,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(Usuarios::ESTADOS, ['prompt' => 'Estado']) ?>
-
-            <?= $form->field($busqueda, 'Combo2')->dropDownList(ArrayHelper::map($roles, 'IdRol', 'Rol'), ['prompt' => 'Rol']) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(Roles::ESTADOS, ['prompt' => 'Estado']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
             <?php ActiveForm::end(); ?>
         </div>
 
-        <?php if (PermisosHelper::tienePermiso('AltaUsuario')) : ?>
+ 
+        <?php if (PermisosHelper::tienePermiso('AltaRol')) : ?>
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/usuarios/alta']) ?>" 
-                        data-hint="Nuevo Usuario">
-                    Nuevo Usuario
+                        data-modal="<?= Url::to(['/roles/alta']) ?>" 
+                        data-hint="Nuevo Rol">
+                    Nuevo Rol
                 </button>
             </div>
         <?php endif; ?>   
+        
+
 
         <div id="errores"> </div>
         
@@ -50,12 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table class="table">
                         <thead class="bg-light">
                             <tr class="border-0">
-                                <th>Usuario</th>
                                 <th>Rol</th>
-                                <th>Nombres</th>
-                                <th>Apellidos</th>
-                                <th>Email</th>
-                                <th>Fecha Alta</th>
                                 <th>Estado</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
@@ -64,52 +60,40 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['Usuario']) ?></td>
                                     <td><?= Html::encode($model['Rol']) ?></td>
-                                    <td><?= Html::encode($model['Nombres']) ?></td>
-                                    <td><?= Html::encode($model['Apellidos']) ?></td>
-                                    <td><?= Html::encode($model['Email']) ?></td>
-                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
-                                    <td><?= Html::encode(Usuarios::ESTADOS[$model['Estado']]) ?></td>
+                                    <td><?= Html::encode(Roles::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                            
-                                            <?php if (PermisosHelper::tienePermiso('ModificarUsuario')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdUsuario']]) ?>"
-                                                        title="Modificar">
-                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                            
+                                            <?php if (PermisosHelper::tienePermiso('ModificarRol')) : ?>
+                                                <button type="button" class="btn btn-outline-light"
+                                                        data-modal="<?= Url::to(['/roles/editar', 'id' => $model['IdRol']]) ?>" 
+                                                        data-hint="Editar">
+                                                    <i class="fa fa-pencil-alt"></i>
                                                 </button>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('RestablecerPassword')): ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['usuarios/restablecer-pass', 'id' => $model['IdUsuario']]) ?>"
-                                                        title="Restablecer Password">
-                                                    <i class="fas fa-key"></i>
-                                                </button>
-                                            <?php endif; ?>
+                                            <?php endif; ?>  
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
-                                                <?php if (PermisosHelper::tienePermiso('ActivarUsuario')): ?>
+                                                <?php if (PermisosHelper::tienePermiso('ActivarRol')): ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdUsuario']]) ?>"
+                                                            data-ajax="<?= Url::to(['roles/activar', 'id' => $model['IdRol']]) ?>"
                                                             title="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
                                                 <?php endif; ?>
                                             <?php else : ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaUsuario')) : ?>
+                                                <?php if (PermisosHelper::tienePermiso('DarBajaRol')) : ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdUsuario']]) ?>"
+                                                            data-ajax="<?= Url::to(['roles/dar-baja', 'id' => $model['IdRol']]) ?>"
                                                             title="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarUsuario')) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('BorrarRol')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdUsuario']]) ?>"
+                                                        data-ajax="<?= Url::to(['roles/borrar', 'id' => $model['IdRol']]) ?>"
                                                         title="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -125,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <?php else: ?>
-            <p><strong>No hay usuarios que coincidan con el criterio de búsqueda utilizado.</strong></p>
+            <p><strong>No hay roles que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>
     </div>
 </div>
