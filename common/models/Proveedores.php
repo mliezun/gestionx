@@ -11,6 +11,11 @@ class Proveedores extends Model
     public $Proveedor;
     public $Estado;
 
+    const ESTADOS = [
+        'A' => 'Activo',
+        'B' => 'Baja'
+    ];
+
     const SCENARIO_ALTA = 'alta';
     const SCENARIO_EDITAR = 'editar';
 

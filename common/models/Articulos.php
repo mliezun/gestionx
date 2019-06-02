@@ -19,6 +19,14 @@ class Articulos extends Model
     public $FechaActualizado;
     public $Estado;
 
+    // Derivados
+    public $Proveedor;
+
+    const ESTADOS = [
+        'A' => 'Activo',
+        'B' => 'Baja'
+    ];
+
     const SCENARIO_ALTA = 'alta';
     const SCENARIO_EDITAR = 'editar';
 
