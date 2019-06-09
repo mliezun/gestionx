@@ -32,39 +32,13 @@ class GestorPuntosVenta
     }
 
     /**
-     * Permite modificar un Rol existente controlando que el nombre del rol no exista ya.
-     * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_modifica_rol
-     */
-    public function Modificar($rol)
-    {
-        $sql = "call xsp_modifica_rol( :token, :host, :idrol, :rol, :observaciones , :IP, :userAgent, :app)";
-
-        $query = Yii::$app->db->createCommand($sql);
-        
-        $query->bindValues([
-            ':token' => Yii::$app->user->identity->Token,
-            ':IP' => Yii::$app->request->userIP,
-            ':userAgent' => Yii::$app->request->userAgent,
-            ':app' => Yii::$app->id,
-            ':host' => Yii::$app->request->headers->get('host'),
-            ':idrol' => $rol->IdRol,
-            ':rol' => $rol->Rol,
-            ':observaciones' => $rol->Observaciones,
-        ]);
-
-        return $query->queryScalar();
-    }
-
-    /**
-     * Permite buscar los roles dada una cadena de búsqueda y estado (T: todos los estados)
+     * Permite buscar los puntos venta dada una cadena de búsqueda y estado (T: todos los estados).
      * Para listar todos, cadena vacía.
-     * xsp_buscar_roles
-     * 
+     * xsp_buscar_puntosventa
      */
     public function Buscar($Cadena = '', $Estado = 'A')
     {
-        $sql = "call xsp_buscar_roles( :host, :cadena, :estado )";
+        $sql = "call xsp_buscar_puntosventa( :host, :cadena, :estado )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -78,13 +52,13 @@ class GestorPuntosVenta
     }
 
     /**
-     * Permite borrar un Rol existente y sus permisos asociados controlando que no existan usuarios asociados.
+     * Permite modificar un PuntoVenta existente controlando que el nombre del puntoventa no exista ya.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_borra_rol
+     * xsp_modifica_puntoventa
      */
-    public function Borrar($rol)
+    public function Modificar($puntoventa)
     {
-        $sql = "call xsp_borra_rol( :token, :idrol, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_puntoventa( :token, :host, :idpuntoventa, :puntoventa, :datos, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -93,8 +67,35 @@ class GestorPuntosVenta
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idrol' => $rol->IdRol,
-            ':observaciones' => $rol->Observaciones,
+            ':host' => Yii::$app->request->headers->get('host'),
+            ':idpuntoventa' => $puntoventa->IdPuntoVenta,
+            ':puntoventa' => $puntoventa->PuntoVenta,
+            ':datos' => $puntoventa->Datos,
+            ':observaciones' => $puntoventa->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite borrar un PuntoVenta existente controlando que no existan ventas, rectificaciones pv,
+     * ingresos o existencias cosolidadas asociadas.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_borra_puntoventa
+     */
+    public function Borrar($puntoventa)
+    {
+        $sql = "call xsp_borra_puntoventa( :token, :idpuntoventa, :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpuntoventa' => $puntoventa->IdPuntoVenta,
+            ':observaciones' => $puntoventa->Observaciones,
         ]);
 
         return $query->queryScalar();

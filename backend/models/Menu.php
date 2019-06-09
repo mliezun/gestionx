@@ -22,7 +22,14 @@ class Menu
         [
             'name' => 'Roles',
             'icon' => 'fas fa-user-tag', 
-            'href' => '/roles'
+            'href' => '/roles',
+            'permiso' => 'BuscarRoles'
+        ],
+        [
+            'name' => 'Puntos de Venta',
+            'icon' => 'far fa-building',
+            'href' => '/puntos-venta',
+            'permiso' => 'BuscarPuntosVenta'
         ],
         [
             'name' => 'Sistema',

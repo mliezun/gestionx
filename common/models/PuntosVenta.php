@@ -35,7 +35,7 @@ class PuntosVenta extends Model
 
     /**
      * Permite instanciar un punto venta desde la base de datos.
-     * xsp_dame_PuntoVenta
+     * xsp_dame_puntoventa
      */
     public function Dame()
     {
@@ -51,13 +51,13 @@ class PuntosVenta extends Model
     }
 
     /**
-     * Permite cambiar el estado del Rol a Activo siempre y cuando no esté activo ya.
+     * Permite cambiar el estado del PuntoVenta a Activo siempre y cuando no esté activo ya.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_activar_rol
+     * xsp_activar_puntoventa
      */
     public function Activa()
     {
-        $sql = "call xsp_activar_rol( :token, :idrol, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_activar_puntoventa( :token, :idpuntoventa, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -66,7 +66,7 @@ class PuntosVenta extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idrol' => $this->IdRol,
+            ':idpuntoventa' => $this->IdPuntoVenta,
             ':observaciones' => $this->Observaciones,
         ]);
 
@@ -74,14 +74,13 @@ class PuntosVenta extends Model
     }
 
     /**
-     * Permite cambiar el estado del Rol a Baja siempre y cuando no esté dado de baja y no existan
-     * usuarios activos asociados.
+     * Permite cambiar el estado del PuntoVenta a Baja siempre y cuando no esté dado de baja ya.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_darbaja_rol
+     * xsp_darbaja_puntoventa
      */
     public function DarBaja()
     {
-        $sql = "call xsp_darbaja_rol( :token, :idrol, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_darbaja_puntoventa( :token, :idpuntoventa, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -90,7 +89,7 @@ class PuntosVenta extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idrol' => $this->IdRol,
+            ':idpuntoventa' => $this->IdPuntoVenta,
             ':observaciones' => $this->Observaciones,
         ]);
 
