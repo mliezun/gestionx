@@ -30,6 +30,13 @@ class Articulos extends Model
     const SCENARIO_ALTA = 'alta';
     const SCENARIO_EDITAR = 'editar';
 
+    public function attributeLabels()
+    {
+        return [
+            'IdProveedor' => 'Proveedor'
+        ];
+    }
+
     /**
      * Reglas para validar los formularios.
      *
@@ -43,10 +50,10 @@ class Articulos extends Model
             ['Descripcion', 'trim'],
             // Alta
             [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IVA', 'FechaAlta', 'FechaActualizado'], 'required', 'on' => self::SCENARIO_ALTA],
+            'IVA'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
             [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IVA', 'FechaAlta', 'FechaActualizado'], 'required', 'on' => self::SCENARIO_EDITAR],
+            'IVA'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [['IdArticulo', 'IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
             'IVA', 'FechaAlta', 'FechaActualizado', 'Estado'], 'safe'],

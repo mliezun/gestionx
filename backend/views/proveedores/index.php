@@ -18,13 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-sm-12">
         <div class="buscar--form">
-            <?php $form = ActiveForm::begin(['layout' => 'inline',]); ?>
+            <?php $form = ActiveForm::begin(['layout' => 'inline', 'method' => 'GET']); ?>
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
-            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja')); ?>
+            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             
                                             <?php if (PermisosHelper::tienePermiso('ModificarProveedor')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-modal="<?= Url::to(['proveedores/editar', 'id' => $model['IdProveedor']]) ?>"
                                                         title="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarProveedor')): ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdProveedor']]) ?>"
+                                                            data-ajax="<?= Url::to(['proveedores/activar', 'id' => $model['IdProveedor']]) ?>"
                                                             title="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaProveedor')) : ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdProveedor']]) ?>"
+                                                            data-ajax="<?= Url::to(['proveedores/dar-baja', 'id' => $model['IdProveedor']]) ?>"
                                                             title="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarProveedor')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-ajax="<?= Url::to(['proveedores/borrar', 'id' => $model['IdProveedor']]) ?>"
                                                         title="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
