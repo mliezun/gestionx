@@ -3,70 +3,77 @@
 namespace backend\controllers;
 
 use common\models\GestorProveedores;
+use common\models\Proveedores;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
-use yii\web\Controller;
-use yii\data\Pagination;
-use yii\helpers\ArrayHelper;
 
-class ProveedoresController extends Controller
+class ProveedoresController extends BaseController
 {
     public function actionIndex()
     {
         PermisosHelper::verificarPermiso('BuscarProveedores');
+        return parent::index(new GestorProveedores, ['Cadena', 'Check']);
+    }
 
-        $paginado = new Pagination();
-        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+    public function actionAlta()
+    {
+        PermisosHelper::verificarPermiso('AltaProveedor');
 
-        $busqueda = new BuscarForm();
+        $prov = new Proveedores();
+        $prov->setScenario(Proveedores::SCENARIO_ALTA);
 
         $gestor = new GestorProveedores();
 
-        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $provs = $gestor->Buscar($busqueda->Cadena, $busqueda->Check);
-        } else {
-            $provs = $gestor->Buscar();
-        }
-
-        $paginado->totalCount = count($provs);
-        $provs = array_slice($provs, $paginado->page * $paginado->pageSize, $paginado->pageSize);
-
-        return $this->render('index', [
-            'models' => $provs,
-            'busqueda' => $busqueda
-        ]);
+        return parent::alta($prov, [$gestor, 'Alta'], function () use ($prov) {
+            $prov->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+        });
     }
 
     public function actionEditar($id)
     {
-        PermisosHelper::verificarPermiso('ModificarUsuario');
+        PermisosHelper::verificarPermiso('ModificarProveedor');
         
-        $usuario = new Usuarios();
+        $prov = new Proveedores();
+        $prov->setScenario(Proveedores::SCENARIO_EDITAR);
 
-        $usuario->setScenario(Usuarios::_MODIFICAR);
+        $gestor = new GestorProveedores();
 
-        if ($usuario->load(Yii::$app->request->post()) && $usuario->validate()) {
-            $gestor = new GestorUsuarios();
-            $resultado = $gestor->Modificar($usuario);
+        return parent::alta($prov, array($gestor, 'Modificar'), function () use ($prov, $id) {
+            $prov->IdProveedor = $id;
+            $prov->Dame();
+        });
+    }
 
-            Yii::$app->response->format = 'json';
-            if ($resultado == 'OK') {
-                return ['error' => null];
-            } else {
-                return ['error' => $resultado];
-            }
-        } else {
-            $usuario->IdUsuario = $id;
-            
-            $usuario->Dame();
+    public function actionActivar($id)
+    {
+        PermisosHelper::verificarPermiso('ActivarProveedor');
 
-            return $this->renderAjax('alta', [
-                        'titulo' => 'Editar usuario',
-                        'model' => $usuario
-            ]);
-        }
+        $prov = new Proveedores();
+        $prov->IdProveedor = $id;
+
+        return parent::cambiarEstado($prov, 'Activar');
+    }
+
+    public function actionDarBaja($id)
+    {
+        PermisosHelper::verificarPermiso('DarBajaProveedor');
+
+        $prov = new Proveedores();
+        $prov->IdProveedor = $id;
+
+        return parent::cambiarEstado($prov, 'DarBaja');
+    }
+
+    public function actionBorrar($id)
+    {
+        PermisosHelper::verificarPermiso('BorrarProveedor');
+
+        $prov = new Proveedores();
+        $prov->IdProveedor = $id;
+
+        return parent::aplicarOperacionGestor($prov, array(new GestorProveedores, 'Borrar'));
     }
 }
 

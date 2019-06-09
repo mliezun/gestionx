@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use common\models\GestorArticulos;
+use common\models\Articulos;
 use common\models\GestorProveedores;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
-use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class ArticulosController extends Controller
+class ArticulosController extends BaseController
 {
     public function actionIndex()
     {
@@ -42,6 +42,67 @@ class ArticulosController extends Controller
             'busqueda' => $busqueda,
             'proveedores' => $proveedores
         ]);
+    }
+
+    public function actionAlta()
+    {
+        PermisosHelper::verificarPermiso('AltaArticulo');
+
+        $art = new Articulos();
+        $art->setScenario(Articulos::SCENARIO_ALTA);
+
+        Yii::info(Yii::$app->request->post());
+
+        $gestor = new GestorArticulos();
+
+        return parent::alta($art, [$gestor, 'Alta'], function () use ($art) {
+            $art->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+        });
+    }
+
+    public function actionEditar($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarArticulo');
+        
+        $art = new Articulos();
+        $art->setScenario(Articulos::SCENARIO_EDITAR);
+
+        $gestor = new GestorArticulos();
+
+        return parent::alta($art, array($gestor, 'Modificar'), function () use ($art, $id) {
+            $art->IdArticulo = $id;
+            $art->Dame();
+        });
+    }
+
+    public function actionActivar($id)
+    {
+        PermisosHelper::verificarPermiso('ActivarArticulo');
+
+        $art = new Articulos();
+        $art->IdArticulo = $id;
+
+        return parent::cambiarEstado($art, 'Activar');
+    }
+
+    public function actionDarBaja($id)
+    {
+        PermisosHelper::verificarPermiso('DarBajaArticulo');
+
+        $art = new Articulos();
+        $art->IdArticulo = $id;
+
+        return parent::cambiarEstado($art, 'DarBaja');
+    }
+
+    public function actionBorrar($id)
+    {
+        PermisosHelper::verificarPermiso('BorrarArticulo');
+
+        $art = new Articulos();
+        $art->IdArticulo = $id;
+
+        return parent::aplicarOperacionGestor($art, array(new GestorArticulos, 'Borrar'));
     }
 }
 

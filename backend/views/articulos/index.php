@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
-            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja')); ?>
+            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -73,8 +73,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
                                     <td><?= Html::encode($model['IVA']) ?></td>
-                                    <td><?= Html::encode($model['FechaAlta']) ?></td>
-                                    <td><?= Html::encode($model['FechaActualizado']) ?></td>
+                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
+                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaActualizado'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
 
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             
                                             <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-modal="<?= Url::to(['articulos/editar', 'id' => $model['IdArticulo']]) ?>"
                                                         title="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdArticulo']]) ?>"
+                                                            data-ajax="<?= Url::to(['articulos/activar', 'id' => $model['IdArticulo']]) ?>"
                                                             title="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdArticulo']]) ?>"
+                                                            data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"
                                                             title="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
@@ -106,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarArticulo')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-ajax="<?= Url::to(['articulos/borrar', 'id' => $model['IdArticulo']]) ?>"
                                                         title="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
