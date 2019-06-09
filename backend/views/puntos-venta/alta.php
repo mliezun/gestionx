@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Roles;
+use common\models\PuntosVenta;
 use kartik\select2\Select2;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -9,13 +9,13 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-/* @var $model Roles */
+/* @var $model PuntosVenta */
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title"><?= $titulo ?>: <?= $model['Rol'] ?></h5>
+            <h5 class="modal-title"><?= $titulo ?>: <?= $model['PuntoVenta'] ?></h5>
             <button type="button" class="close" onclick="Main.modalClose()">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -26,10 +26,12 @@ use yii\web\View;
         <div class="modal-body">
             <div id="errores-modal"> </div>
 
-            <?= Html::activeHiddenInput($model, 'IdRol') ?>
+            <?= Html::activeHiddenInput($model, 'IdPuntoVenta') ?>
             
-            <?= $form->field($model, 'Rol') ?>
+            <?= $form->field($model, 'PuntoVenta') ?>
             
+            <?= $form->field($model, 'Datos') ?>
+
             <?= $form->field($model, 'Observaciones') ?>
         </div>
         <div class="modal-footer">

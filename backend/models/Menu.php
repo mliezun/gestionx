@@ -26,6 +26,12 @@ class Menu
             'permiso' => 'BuscarRoles'
         ],
         [
+            'name' => 'Puntos de Venta',
+            'icon' => 'far fa-building',
+            'href' => '/puntos-venta',
+            'permiso' => 'BuscarPuntosVenta'
+        ],
+        [
             'name' => 'Proveedores',
             'icon' => 'fas fa-store',
             'href' => '/proveedores',
