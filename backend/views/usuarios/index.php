@@ -79,14 +79,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('ModificarUsuario')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdUsuario']]) ?>"
-                                                        title="Modificar">
+                                                        data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('RestablecerPassword')): ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['usuarios/restablecer-pass', 'id' => $model['IdUsuario']]) ?>"
-                                                        title="Restablecer Password">
+                                                        data-hint="Restablecer Password">
                                                     <i class="fas fa-key"></i>
                                                 </button>
                                             <?php endif; ?>
@@ -94,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('ActivarUsuario')): ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdUsuario']]) ?>"
-                                                            title="Activar">
+                                                            data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaUsuario')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdUsuario']]) ?>"
-                                                            title="Dar baja">
+                                                            data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('BorrarUsuario')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdUsuario']]) ?>"
-                                                        title="Borrar">
+                                                        data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>

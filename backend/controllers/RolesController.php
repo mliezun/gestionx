@@ -6,6 +6,7 @@ use common\models\Usuarios;
 use common\models\Roles;
 use common\models\GestorRoles;
 use common\models\forms\BuscarForm;
+use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;
@@ -148,6 +149,83 @@ class RolesController extends Controller
             return ['error' => null];
         } else {
             return ['error' => $resultado];
+        }
+    }
+
+    public function actionClonar($id)
+    {
+        PermisosHelper::verificarPermiso('ClonarRol');
+
+        $rol = new Roles();
+        $rol->setScenario(Roles::SCENARIO_CLONAR);
+
+        //Agrego todo el post al objeto rol, aunque el Id corresponde al rol clonado
+        //y el nombre al nuevo y por eso queda feo, es más práctico para poder validar.
+        if ($rol->load(Yii::$app->request->post()) && $rol->validate()) {
+            $resultado = $rol->Clonar($rol->Rol);
+
+            Yii::$app->response->format = 'json';
+
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $rol->IdRol = $id;
+
+            return $this->renderAjax('clonar', [
+                        'titulo' => 'Clonar rol',
+                        'model' => $rol,
+            ]);
+        }
+    }
+
+    public function actionPermisos($id)
+    {
+        PermisosHelper::verificarPermiso('ListarPermisosRol');
+
+        $rol = new Roles();
+        if (intval($id)) {
+            $rol->IdRol = $id;
+        } else {
+            throw new HttpException('422', 'El rol indicado no es válido.');
+        }
+
+        $rol->Dame();
+
+        $permisos = $rol->ListarPermisos();
+
+        $auditoria = new AuditoriaForm();
+
+        if (Yii::$app->request->getIsPost() && $auditoria->load(Yii::$app->request->post()) && $auditoria->validate()) {
+            PermisosHelper::verificarPermiso('AsignarPermisosRol');
+
+            $permisosHabilitados = Yii::$app->request->post('Permisos');
+
+            $listapermisos = '';
+
+            if (count($permisosHabilitados) > 0) {
+                foreach (array_keys($permisosHabilitados) as $idPermiso) {
+                    $listapermisos .= $idPermiso . ',';
+                }
+                $listapermisos = substr($listapermisos, 0, -1);
+            }
+
+            $resultado = $rol->AsignarPermisos($listapermisos, $auditoria->Motivo, $auditoria->Autoriza);
+
+            if ($resultado == 'OK') {
+                Yii::$app->session->setFlash('success', 'Permisos modificados correctamente');
+            } else {
+                Yii::$app->session->setFlash('danger', $resultado);
+            }
+            return $this->refresh();
+        } else {
+            return $this->render('permisos', [
+                        'model' => $rol,
+                        'permisos' => $permisos,
+                        'auditoria' => $auditoria,
+            ]);
         }
     }
 }

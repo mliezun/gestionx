@@ -48,7 +48,7 @@ $this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
                                 <td>
                                     <button type="button" class="btn btn-default"
                                             @click="borrarLinea(i)"
-                                            title="Borrar">
+                                            data-hint="Borrar">
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </td>
@@ -66,12 +66,12 @@ $this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
                                 <td>
                                     <button type="button" class="btn btn-default"
                                             @click="agregar"
-                                            title="Agregar">
+                                            data-hint="Agregar">
                                         <i class="fa fa-check"></i>
                                     </button>
                                     <button type="button" class="btn btn-default"
                                             @click="limpiar"
-                                            title="Limpiar">
+                                            data-hint="Limpiar">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>

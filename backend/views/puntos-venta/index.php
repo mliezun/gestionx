@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('ActivarPuntoVenta')): ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['puntos-venta/activar', 'id' => $model['IdPuntoVenta']]) ?>"
-                                                            title="Activar">
+                                                            data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaPuntoVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['puntos-venta/dar-baja', 'id' => $model['IdPuntoVenta']]) ?>"
-                                                            title="Dar baja">
+                                                            data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('BorrarPuntoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['puntos-venta/borrar', 'id' => $model['IdPuntoVenta']]) ?>"
-                                                        title="Borrar">
+                                                        data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>

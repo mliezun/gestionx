@@ -126,4 +126,18 @@ class Empresa extends Model
 
         return $query->queryScalar();
     }
+
+    /**
+     * Lista todos los usuarios activos que pertenecen al rol que tiene el permiso
+     * Autorizacion. Los ordena por nombre de usuario.
+     * xsp_listar_usuarios_autoriza_auditoria
+     */
+    public function ListarUsuariosAutorizaAuditoria()
+    {
+        $sql = "CALL xsp_listar_usuarios_autoriza_auditoria () ";
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        return $query->queryAll();
+    }
 }
