@@ -5,9 +5,14 @@
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use common\models\Empresa;
 
-$empresa = Yii::$app->session->get('Parametros')['EMPRESA'];
-$logo = Yii::$app->session->get('Parametros')['LOGO'];
+$gestor = new Empresa();
+$parametros = ArrayHelper::map($gestor->DameDatos(), 'Parametro', 'Valor');
+
+$empresa = $parametros['EMPRESA'];
+$logo = $parametros['LOGO'];
 
 $this->title = 'Iniciar sesión - ' . $empresa;
 ?>
