@@ -44,6 +44,12 @@ class Menu
             'permiso' => 'BuscarArticulos'
         ],
         [
+            'name' => 'Remitos',
+            'icon' => 'fas fa-file-invoice',
+            'href' => '/remitos',
+            'permiso' => 'BuscarRemitos'
+        ],
+        [
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [
