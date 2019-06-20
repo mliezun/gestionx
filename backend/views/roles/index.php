@@ -68,17 +68,31 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="btn-group" role="group" aria-label="...">
                                             
                                             <?php if (PermisosHelper::tienePermiso('ModificarRol')) : ?>
-                                                <button type="button" class="btn btn-outline-light"
+                                                <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['/roles/editar', 'id' => $model['IdRol']]) ?>" 
                                                         data-hint="Editar">
-                                                    <i class="fa fa-pencil-alt"></i>
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
-                                            <?php endif; ?>  
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ListarPermisosRol')): ?>
+                                                <a  class="btn btn-default"
+                                                    href="<?= Url::to(['/roles/permisos', 'id' => $model['IdRol']]) ?>" 
+                                                    data-hint="Permisos">
+                                                    <i class="fa fa-key"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ClonarRol')): ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['/roles/clonar', 'id' => $model['IdRol']]) ?>" 
+                                                        data-hint="Clonar">
+                                                    <i class="fa fa-copy"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarRol')): ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['roles/activar', 'id' => $model['IdRol']]) ?>"
-                                                            title="Activar">
+                                                            data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -86,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaRol')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['roles/dar-baja', 'id' => $model['IdRol']]) ?>"
-                                                            title="Dar baja">
+                                                            data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -94,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('BorrarRol')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['roles/borrar', 'id' => $model['IdRol']]) ?>"
-                                                        title="Borrar">
+                                                        data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>

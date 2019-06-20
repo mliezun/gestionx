@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['articulos/editar', 'id' => $model['IdArticulo']]) ?>"
-                                                        title="Modificar">
+                                                        data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['articulos/activar', 'id' => $model['IdArticulo']]) ?>"
-                                                            title="Activar">
+                                                            data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"
-                                                            title="Dar baja">
+                                                            data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if (PermisosHelper::tienePermiso('BorrarArticulo')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['articulos/borrar', 'id' => $model['IdArticulo']]) ?>"
-                                                        title="Borrar">
+                                                        data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>
