@@ -5,6 +5,8 @@ namespace backend\controllers;
 use common\models\Usuarios;
 use common\models\PuntosVenta;
 use common\models\GestorPuntosVenta;
+use common\models\Remitos;
+use common\models\GestorRemitos;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
@@ -148,6 +150,28 @@ class PuntosVentaController extends Controller
             return ['error' => null];
         } else {
             return ['error' => $resultado];
+        }
+    }
+
+    public function actionAltaRemito($id)
+    {
+        PermisosHelper::verificarPermiso('AltaRemito');
+
+        $remito = new Remitos();
+
+        $remito->setScenario(Remitos::_ALTA);
+
+        if($remito->load(Yii::$app->request->post())){
+            $gestor = new GestorRemitos();
+            $remito->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+            $resultado = $gestor->Alta($remito);
+
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
         }
     }
 }

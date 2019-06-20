@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Remitos;
+use common\models\PuntosVenta;
 use common\models\Proveedores;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
@@ -12,7 +13,7 @@ use yii\helpers\Url;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-$this->title = 'Remitos';
+$this->title = 'Punto de Venta: '.$puntoventa->PuntoVenta.' - Remitos';
 $this->params['breadcrumbs'][] = $this->title;
 
 $proveedor = new Proveedores();
@@ -37,7 +38,7 @@ $proveedor = new Proveedores();
         <?php if (PermisosHelper::tienePermiso('AltaRemito')) : ?>
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/remitos/alta']) ?>"
+                        data-modal="<?= Url::to(['/remitos/alta','id' => $puntoventa['IdPuntoVenta']]) ?>"
                         data-hint="Nuevo Remito">
                     Nuevo Remito
                 </button>
@@ -79,10 +80,17 @@ $proveedor = new Proveedores();
 
                                         <div class="btn-group" role="group" aria-label="...">
                                             <?php if ($model['Estado'] == 'E') :?>
+                                                <?php if (PermisosHelper::tienePermiso('AltaLineaExistencia')) : ?>
+                                                    <a class="btn btn-default"
+                                                            href="<?= Url::to(['/ingresos/lineas', 'id' => $model['IdIngreso']]) ?>" 
+                                                            data-hint="Lineas">
+                                                        <i class="fas fa-clipboard-list"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
-                                                            title="Modificar">
+                                                            data-hint="Modificar">
                                                         <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -92,7 +100,7 @@ $proveedor = new Proveedores();
                                                     <?php if (PermisosHelper::tienePermiso('ActivarRemito')): ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['remitos/activar', 'id' => $model['IdRemito']]) ?>"
-                                                                title="Activar">
+                                                                data-hint="Activar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
@@ -100,7 +108,7 @@ $proveedor = new Proveedores();
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['remitos/dar-baja', 'id' => $model['IdRemito']]) ?>"
-                                                            title="Dar baja">
+                                                            data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -108,7 +116,7 @@ $proveedor = new Proveedores();
                                             <?php if (PermisosHelper::tienePermiso('BorrarRemito')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['remitos/borrar', 'id' => $model['IdRemito']]) ?>"
-                                                        title="Borrar">
+                                                        data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>
