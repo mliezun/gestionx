@@ -14,6 +14,16 @@ use yii\helpers\ArrayHelper;
 
 class ArticulosController extends BaseController
 {
+
+    public function actionListar($Cadena = '')
+    {
+        Yii::$app->response->format = 'json';
+
+        $gestor = new GestorArticulos();
+
+        return $gestor->Buscar(0, $Cadena);
+    }
+
     public function actionIndex()
     {
         PermisosHelper::verificarPermiso('BuscarArticulos');

@@ -1,3 +1,5 @@
+[v-cloak] {display: none}
+
 .buscar--form input {
     margin-right: 10px;
 }
@@ -15,4 +17,16 @@
 }
 .modulo--button {
     margin: 10px;
+}
+.modulo--card {
+    width: 120px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.lineas--total {
+    font-size: 30px;
+    text-align: right;
+    padding-right: 30px;
 }
