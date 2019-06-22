@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\models\Remitos;
+use common\models\PuntosVenta;
 use common\models\GestorRemitos;
 use common\models\GestorProveedores;
 use common\models\forms\BuscarForm;
@@ -14,7 +15,7 @@ use yii\helpers\ArrayHelper;
 
 class RemitosController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex($id)
     {
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
@@ -26,9 +27,9 @@ class RemitosController extends Controller
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
             $proveedor = $busqueda->Combo ? $busqueda->Combo : null;
-            $remitos = $gestor->Buscar($busqueda->Cadena, $estado, $proveedor);
+            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor);
         } else {
-            $remitos = $gestor->Buscar();
+            $remitos = $gestor->Buscar(0);
         }
 
         $paginado->totalCount = count($remitos);
@@ -37,14 +38,19 @@ class RemitosController extends Controller
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
 
+        $puntoventa = new PuntosVenta();
+        $puntoventa->IdPuntoVenta = $id;
+        $puntoventa->Dame();
+
         return $this->render('index', [
             'models' => $remitos,
             'busqueda' => $busqueda,
-            'proveedores' => $proveedores
+            'proveedores' => $proveedores,
+            'puntoventa' => $puntoventa
         ]);
     }
 
-    public function actionAlta()
+    public function actionAlta($id)
     {
         PermisosHelper::verificarPermiso('AltaRemito');
 
@@ -55,7 +61,7 @@ class RemitosController extends Controller
         if($remito->load(Yii::$app->request->post())){
             $gestor = new GestorRemitos();
             $remito->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
-            $resultado = $gestor->Alta($remito);
+            $resultado = $gestor->Alta($remito,$id);
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {

@@ -11,9 +11,9 @@ class GestorRemitos
      * Devuelve OK + Id o el mensaje de error en Mensaje.
      * xsp_alta_remito
      */
-    public function Alta($remito)
+    public function Alta($remito, $PuntoVenta)
     {
-        $sql = "call xsp_alta_remito( :token, :idempresa, :idproveedor, :nroremito, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_alta_remito( :token, :idempresa, :idproveedor, :idpuntoventa, :nroremito, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -24,6 +24,7 @@ class GestorRemitos
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idproveedor' => $remito->IdProveedor,
+            ':idpuntoventa' => $PuntoVenta,
             ':nroremito' => $remito->NroRemito,
             ':observaciones' => $remito->Observaciones,
         ]);
@@ -62,9 +63,9 @@ class GestorRemitos
      * Para listar todos, cadena vacía.
      * xsp_buscar_remito
      */
-    public function Buscar($Cadena = '', $Estado = 'E', $Proveedor = null)
+    public function Buscar($PuntoVenta = 0, $Cadena = '', $Estado = 'E', $Proveedor = 0)
     {
-        $sql = "call xsp_buscar_remitos( :idempresa, :cadena, :estado , :proveedor)";
+        $sql = "call xsp_buscar_remitos( :idempresa, :cadena, :estado , :proveedor, :puntoventa)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -73,6 +74,7 @@ class GestorRemitos
             ':cadena' => $Cadena,
             ':estado' => $Estado,
             ':proveedor' => $Proveedor,
+            ':puntoventa' => $PuntoVenta,
         ]);
 
         return $query->queryAll();

@@ -68,9 +68,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                                            
+                                            <?php if ($model['Estado'] == 'A') : ?>
+                                                <?php if (PermisosHelper::tienePermiso('AltaRemito')) : ?>
+                                                    <a class="btn btn-default"
+                                                            href="<?= Url::to(['/remitos', 'id' => $model['IdPuntoVenta']]) ?>" 
+                                                            data-hint="Remitos">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            <?php endif; ?>  
                                             <?php if (PermisosHelper::tienePermiso('ModificarPuntoVenta')) : ?>
-                                                <button type="button" class="btn btn-outline-light"
+                                                <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['/puntos-venta/editar', 'id' => $model['IdPuntoVenta']]) ?>" 
                                                         data-hint="Editar">
                                                     <i class="fa fa-pencil-alt"></i>
