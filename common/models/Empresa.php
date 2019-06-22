@@ -134,9 +134,13 @@ class Empresa extends Model
      */
     public function ListarUsuariosAutorizaAuditoria()
     {
-        $sql = "CALL xsp_listar_usuarios_autoriza_auditoria () ";
+        $sql = "CALL xsp_listar_usuarios_autoriza_auditoria ( :idempresa ) ";
 
         $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+        ]);
 
         return $query->queryAll();
     }
