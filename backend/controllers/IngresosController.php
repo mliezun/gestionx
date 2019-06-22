@@ -15,6 +15,8 @@ class IngresosController extends BaseController
 
         $ingreso->IdIngreso = $id;
 
+        $ingreso->Dame();
+
         $lineas = $ingreso->DameLineas();
 
         return $this->render('lineas', [

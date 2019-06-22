@@ -14,7 +14,12 @@ IngresosAsset::register($this);
 
 /* @var $this View */
 /* @var $form ActiveForm */
-$this->title = 'Ingreso';
+
+$this->title = 'Lineas ' . (isset($model->IdRemito) ? "Remito" : "");
+$this->params['breadcrumbs'][] = [
+    'label' => 'Remitos',
+    'link' => Url::to(['/remitos', 'id' => $model->IdPuntoVenta])
+];
 $this->params['breadcrumbs'][] = $this->title;
 
 $modelJson = json_encode($model);

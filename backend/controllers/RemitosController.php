@@ -25,8 +25,8 @@ class RemitosController extends Controller
         $gestor = new GestorRemitos();
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
-            $proveedor = $busqueda->Combo ? $busqueda->Combo : null;
+            $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'T';
+            $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
             $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor);
         } else {
             $remitos = $gestor->Buscar(0);
