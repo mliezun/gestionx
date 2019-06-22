@@ -38,6 +38,23 @@ class Ingresos extends Model
     }
 
     /**
+     * Permite instanciar un ingreso desde la base de datos.
+     * xsp_dame_ingreso
+     */
+    public function Dame()
+    {
+        $sql = "call xsp_dame_ingreso( :idIngreso )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idIngreso' => $this->IdIngreso
+        ]);
+
+        $this->attributes = $query->queryOne();
+    }
+
+    /**
      * Permite quitar existencias, controlando que existan la cantidad de existencias
      * consolidadas suficientes para realizar esa acción.
      * Devuelve OK o el mensaje de error en Mensaje.
