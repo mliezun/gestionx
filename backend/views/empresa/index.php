@@ -40,10 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="btn-group" role="group" aria-label="...">
                                             
                                             <?php if (PermisosHelper::tienePermiso('ModificarParametro')) : ?>
-                                                <button type="button" class="btn btn-outline-light"
+                                                <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['/empresa/editar', 'id' => $model['Parametro']]) ?>" 
+                                                        style="color: dodgerblue"
                                                         data-hint="Editar">
-                                                    <i class="fa fa-pencil-alt"></i>
+                                                    <i class="fa fa-edit"></i>
                                                 </button>
                                             <?php endif; ?>   
                                             
