@@ -29,7 +29,8 @@
         "bower-asset/vue": "*",
         "phpnt/yii2-slimscroll": "*",
         "mailgun/mailgun-php": "*",
-        "sizeg/yii2-jwt": "^1.1"
+        "sizeg/yii2-jwt": "^1.1",
+        "php-http/guzzle6-adapter": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
