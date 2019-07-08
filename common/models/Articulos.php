@@ -14,13 +14,13 @@ class Articulos extends Model
     public $Descripcion;
     public $PrecioCosto;
     public $PrecioVenta;
-    public $IVA;
     public $FechaAlta;
     public $FechaActualizado;
     public $Estado;
 
     // Derivados
     public $Proveedor;
+    public $Gravamenes;
 
     const ESTADOS = [
         'A' => 'Activo',
@@ -49,14 +49,14 @@ class Articulos extends Model
             ['Codigo', 'trim'],
             ['Descripcion', 'trim'],
             // Alta
-            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IVA'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 
+            'PrecioVenta','Gravamenes'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
-            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IVA'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 
+            'PrecioVenta','Gravamenes'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [['IdArticulo', 'IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IVA', 'FechaAlta', 'FechaActualizado', 'Estado'], 'safe'],
+            'FechaAlta', 'FechaActualizado', 'Estado', 'Gravamenes'], 'safe'],
         ];
     }
 
@@ -128,4 +128,16 @@ class Articulos extends Model
         return $query->queryScalar();
     }
 
+    public function ListarGravamenes()
+    {
+        $sql = 'CALL xsp_listar_gravamenes( :id )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdArticulo
+        ]);
+        
+        return $query->queryScalar();
+    }
 }
