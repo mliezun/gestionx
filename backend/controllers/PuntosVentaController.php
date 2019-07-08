@@ -186,7 +186,8 @@ class PuntosVentaController extends Controller
         $pv->Dame();
 
         return $this->render('operaciones', [
-            'model' => $pv
+            'model' => $pv,
+            'tabs' => new TabsPuntosVenta($id)
         ]);
     }
 }

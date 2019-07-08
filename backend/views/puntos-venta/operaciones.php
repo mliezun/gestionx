@@ -18,31 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-sm-12">
         <div class="tab-regular">
             <ul class="nav nav-tabs " id="tabs" role="tablist">
-                <?php if (PermisosHelper::tienePermiso('AltaVenta')): ?>
-                    <li class="nav-item">
-                        <a  id="ventas-tab"
-                            href="#ventas"
-                            class="nav-link active show"
-                            data-toggle="tab"
-                            role="tab"
-                            aria-controls="ventas"
-                            aria-selected="false"
-                        >
-                            Ventas
-                        </a>
-                    </li>
-                <?php endif; ?>
+                <?= $tabs->Lista() ?>
             </ul>
             <div class="tab-content" id="tabContent">
-                <?php if (PermisosHelper::tienePermiso('AltaVenta')): ?>
-                    <div    id="ventas"
-                            class="tab-pane fade active show"
-                            role="tabpanel"
-                            aria-labelledby="ventas-tab"
-                    >
-                        <?= $this->render('tabs/ventas.php') ?>
-                    </div>
-                <?php endif; ?>
+                <?= $tabs->Contenido() ?>
             </div>
         </div>
     </div>
