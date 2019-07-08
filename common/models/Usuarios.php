@@ -343,39 +343,6 @@ class Usuarios extends Model implements IdentityInterface
 
         return $query->queryColumn();
     }
-    
-    /**
-     * Permite validar el c�digo de verificaci�n enviado al usuario en el frontend.
-     * Actualiza el Token del usuario y devuelve el password hash.
-     * xsp_validar_codigo
-     *
-     * @param Codigo    C�digo de verificaci�n
-     */
-    public function ValidarCodigo($Codigo = null)
-    {
-        $hash = $this->DamePassword();
-        
-        if (password_verify($Codigo, $hash)) {
-            $EsValido = 'S';
-        } else {
-            $EsValido = 'N';
-        }
-        
-        $sql = 'CALL xsp_validar_codigo( :usuario, :esValido,'
-                . ' :IP, :userAgent, :app )';
-        
-        $query = Yii::$app->db->createCommand($sql);
-        
-        $query->bindValues([
-            ':IP' => Yii::$app->request->userIP,
-            ':userAgent' => Yii::$app->request->userAgent,
-            ':app' => Yii::$app->id,
-            ':usuario' => $this->Usuario,
-            ':esValido' => $EsValido,
-        ]);
-        
-        return $query->queryScalar();
-    }
 
     /**
      * Permite realizar el login de un usuario indicando la aplicaci�n a la que desea

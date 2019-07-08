@@ -69,6 +69,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         <div class="btn-group" role="group" aria-label="...">
                                             <?php if ($model['Estado'] == 'A') : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['/puntos-venta/operaciones', 'id' => $model['IdPuntoVenta']]) ?>" 
+                                                        data-hint="Operaciones">
+                                                    <i class="fas fa-eye" style="color: orange"></i>
+                                                </a>
                                                 <?php if (PermisosHelper::tienePermiso('AltaRemito')) : ?>
                                                     <a class="btn btn-default"
                                                             href="<?= Url::to(['/remitos', 'id' => $model['IdPuntoVenta']]) ?>" 
@@ -81,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['/puntos-venta/editar', 'id' => $model['IdPuntoVenta']]) ?>" 
                                                         data-hint="Editar">
-                                                    <i class="fa fa-pencil-alt"></i>
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>  
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>

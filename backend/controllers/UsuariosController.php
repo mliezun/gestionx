@@ -9,6 +9,7 @@ use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\models\forms\CambiarPasswordForm;
 use common\components\PermisosHelper;
+use common\components\EmailHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -177,9 +178,18 @@ class UsuariosController extends Controller
 
         $usuario->IdUsuario = $id;
 
+        $usuario->Dame();
+
         $pass = $this->generateRandomString();
 
-        Yii::info($pass);
+        $parametros = Yii::$app->session->get('Parametros');
+        $from = "{$parametros['EMPRESA']} <{$parametros['CORREONOTIFICACIONES']}>";
+
+        EmailHelper::enviarEmail($from, $usuario->Email,
+        'Restablecimiento de contraseña ' . $parametros['EMPRESA'],
+        'restablecer-pass', [
+            'password' => $pass
+        ]);
 
         $resultado = $usuario->RestablecerPassword($pass);
 

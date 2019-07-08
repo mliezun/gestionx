@@ -4,8 +4,6 @@ namespace backend\controllers;
 
 use common\models\GestorProveedores;
 use common\models\Proveedores;
-use common\models\Empresa;
-use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
 

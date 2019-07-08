@@ -18,6 +18,8 @@ class PuntosVentaController extends Controller
 {
     public function actionIndex()
     {
+        PermisosHelper::verificarPermiso('BuscarPuntosVenta');
+
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
@@ -173,6 +175,19 @@ class PuntosVentaController extends Controller
                 return ['error' => $resultado];
             }
         }
+    }
+
+    public function actionOperaciones($id)
+    {
+        $pv = new PuntosVenta();
+        
+        $pv->IdPuntoVenta = $id;
+
+        $pv->Dame();
+
+        return $this->render('operaciones', [
+            'model' => $pv
+        ]);
     }
 }
 
