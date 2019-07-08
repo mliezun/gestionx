@@ -22,6 +22,10 @@ class Usuarios extends Model implements IdentityInterface
     public $Estado;
     public $Observaciones;
     public $IdEmpresa;
+
+    // Derivados
+    public $IdUsuarioPuntoVenta;
+    public $IdPuntoVenta;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -38,7 +42,8 @@ class Usuarios extends Model implements IdentityInterface
     {
         return [
             'IdRol' => 'Rol',
-            'IdEmpresa' => 'Empresa'
+            'IdEmpresa' => 'Empresa',
+            'IdUsuario' => 'Usuario'
         ];
     }
  
@@ -51,8 +56,7 @@ class Usuarios extends Model implements IdentityInterface
                 'required', 'on' => self::_ALTA],
             [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Email'],
                 'required', 'on' => self::_MODIFICAR],
-            [['IdUsuario', 'IdRol', 'Nombres', 'Apellidos', 'Usuario',
-                'Token', 'Email', 'DebeCambiarPass', 'Estado', 'Observaciones', 'IdEmpresa'], 'safe']
+            [$this->attributes(), 'safe']
         ];
     }
 

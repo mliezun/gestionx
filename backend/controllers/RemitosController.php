@@ -13,7 +13,7 @@ use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class RemitosController extends Controller
+class RemitosController extends BaseController
 {
     public function actionAlta($id)
     {

@@ -7,6 +7,7 @@ use common\models\PuntosVenta;
 use common\models\GestorPuntosVenta;
 use common\models\Remitos;
 use common\models\GestorRemitos;
+use common\models\GestorUsuarios;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
@@ -14,7 +15,7 @@ use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class PuntosVentaController extends Controller
+class PuntosVentaController extends BaseController
 {
     public function actionIndex()
     {
@@ -177,6 +178,49 @@ class PuntosVentaController extends Controller
         }
     }
 
+    public function actionAsignarUsuario($id)
+    {
+        PermisosHelper::verificarPermiso('AsignarUsuarioPuntoVenta');
+
+        $usuario = new Usuarios();
+
+        $pv = new PuntosVenta();
+        $pv->IdPuntoVenta = $id;
+
+        if ($usuario->load(Yii::$app->request->post()) && isset($usuario->IdUsuario)) {
+            $resultado = $pv->AsignarUsuario($usuario->IdUsuario);
+
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        }
+
+        return $this->renderAjax('tabs/modals/asignar-usuario', [
+            'model' => $usuario,
+            'usuarios' => $pv->DameUsuariosAsignar()
+        ]);
+    }
+
+    public function actionDesasignarUsuario($id)
+    {
+        PermisosHelper::verificarPermiso('DesasignarUsuarioPuntoVenta');
+
+        Yii::$app->response->format = 'json';
+        
+        $puntoventa = new PuntosVenta();
+
+        $resultado = $puntoventa->DesasignarUsuario($id);
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
     public function actionOperaciones($id)
     {
         $pv = new PuntosVenta();
@@ -189,6 +233,15 @@ class PuntosVentaController extends Controller
             'model' => $pv,
             'tabs' => new TabsPuntosVenta($id)
         ]);
+    }
+
+    public function actionTabContent($id)
+    {
+        $nombre = Yii::$app->request->get('Nombre');
+
+        $tabs = new TabsPuntosVenta($id);
+
+        return $tabs->{$nombre}();
     }
 }
 

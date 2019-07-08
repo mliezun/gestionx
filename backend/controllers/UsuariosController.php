@@ -11,11 +11,10 @@ use common\models\forms\CambiarPasswordForm;
 use common\components\PermisosHelper;
 use common\components\EmailHelper;
 use Yii;
-use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class UsuariosController extends Controller
+class UsuariosController extends BaseController
 {
     public function actionIndex()
     {
@@ -122,9 +121,54 @@ class UsuariosController extends Controller
             
             $usuario->Dame();
 
+            $gestorRoles = new GestorRoles();
+
+            $roles = $gestorRoles->Buscar();
+
             return $this->renderAjax('alta', [
-                        'titulo' => 'Editar usuario',
-                        'model' => $usuario
+                        'model' => $usuario,
+                        'roles' => $roles
+            ]);
+        }
+    }
+
+    public function actionAlta()
+    {
+        PermisosHelper::verificarPermiso('AltaUsuario');
+        
+        $usuario = new Usuarios();
+
+        $usuario->setScenario(Usuarios::_ALTA);
+
+        if ($usuario->load(Yii::$app->request->post()) && $usuario->validate()) {
+            $usuario->Password = $this->generateRandomString();
+
+            $gestor = new GestorUsuarios();
+            $resultado = $gestor->Alta($usuario);
+
+            $parametros = Yii::$app->session->get('Parametros');
+            $from = "{$parametros['EMPRESA']} <{$parametros['CORREONOTIFICACIONES']}>";
+
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                EmailHelper::enviarEmail($from, $usuario->Email,
+                'Alta usuario ' . $parametros['EMPRESA'],
+                'alta-usuario', [
+                    'usuario' => $usuario->Usuario,
+                    'password' => $usuario->Password
+                ]);
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $gestorRoles = new GestorRoles();
+
+            $roles = $gestorRoles->Buscar();
+
+            return $this->renderAjax('alta', [
+                        'model' => $usuario,
+                        'roles' => $roles
             ]);
         }
     }

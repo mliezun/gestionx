@@ -10,9 +10,10 @@ use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use common\models\GestorProveedores;
 use common\models\GestorRemitos;
+use common\models\GestorRoles;
 use Yii;
 
-class TabsPuntosVenta extends Controller
+class TabsPuntosVenta extends BaseController
 {
     private $IdPuntoVenta;
 
@@ -28,12 +29,19 @@ class TabsPuntosVenta extends Controller
                 }
             ],
             [
-                'Permiso' => 'AltaRemito',
+                'Permiso' => 'BuscarRemitos',
                 'Nombre' => 'Remitos',
                 'Render' => function () {
                     return $this->Remitos();
                 }
-            ]
+            ],
+            [
+                'Permiso' => 'BuscarUsuariosPuntoVenta',
+                'Nombre' => 'Usuarios',
+                'Render' => function () {
+                    return $this->Usuarios();
+                }
+            ],
         ];
     }
 
@@ -54,13 +62,6 @@ class TabsPuntosVenta extends Controller
         ]);
     }
 
-    public function Contenido()
-    {
-        return $this->renderPartial('tab-content', [
-            'tabs' => $this->tabs()
-        ]);
-    }
-
     public function Remitos()
     {
         $paginado = new Pagination();
@@ -71,7 +72,7 @@ class TabsPuntosVenta extends Controller
         $gestor = new GestorRemitos();
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'T';
+            $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
             $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
             $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor);
         } else {
@@ -92,6 +93,38 @@ class TabsPuntosVenta extends Controller
             'models' => $remitos,
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
+            'puntoventa' => $puntoventa
+        ]);
+    }
+
+    public function Usuarios()
+    {
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
+
+
+        $pv = new PuntosVenta();
+
+        $pv->IdPuntoVenta = $this->IdPuntoVenta;
+
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $usuarios = $pv->BuscarUsuarios($busqueda->Cadena);
+        } else {
+            $usuarios = $pv->BuscarUsuarios();
+        }
+
+        $paginado->totalCount = count($usuarios);
+        $usuarios = array_slice($usuarios, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        $puntoventa = new PuntosVenta();
+        $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
+        $puntoventa->Dame();
+        
+        return $this->renderPartial('usuarios', [
+            'models' => $usuarios,
+            'busqueda' => $busqueda,
             'puntoventa' => $puntoventa
         ]);
     }

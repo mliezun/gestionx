@@ -13,7 +13,7 @@ use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class RolesController extends Controller
+class RolesController extends BaseController
 {
     public function actionIndex()
     {
