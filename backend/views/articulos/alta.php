@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Articulos;
+use common\models\GestorTiposGravamenes;
 use common\models\GestorProveedores;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
@@ -8,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\View;
 
 $proveedores = (new GestorProveedores())->Buscar();
+$gravamenes = (new GestorTiposGravamenes())->Buscar();
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -44,7 +46,7 @@ $proveedores = (new GestorProveedores())->Buscar();
 
             <?= $form->field($model, 'PrecioVenta') ?>
 
-            <?= $form->field($model, 'IVA') ?>
+            <?= $form->field($model, 'Gravamenes')->checkboxList(ArrayHelper::map($gravamenes, 'IdTipoGravamen', 'TipoGravamen'), ['prompt' => 'TipoGravamen']) ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

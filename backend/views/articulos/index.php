@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Articulos;
+use common\models\GestorArticulos;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
 use yii\web\View;
@@ -40,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 </button>
             </div>
         <?php endif; ?>
-
         <div id="errores"> </div>
         
         <?php if (count($models) > 0): ?>
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Descripcion</th>
                                 <th>Precio de venta</th>
                                 <th>Precio de compra</th>
-                                <th>IVA</th>
+                                <th>Gravamenes</th>
                                 <th>Fecha de alta</th>
                                 <th>Fecha de actualización</th>
                                 <th>Estado</th>
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($models as $model): ?>
+                            <?php foreach ($models as $k=>$model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['Articulo']) ?></td>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <td><?= Html::encode($model['IVA']) ?></td>
+                                    <td><?= Html::encode($model['Gravamenes']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaActualizado'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
