@@ -62,7 +62,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['PuntoVenta']) ?></td>
-                                    <td><?= Html::encode($model['Datos']) ?></td>
+                                    <td>
+                                        <ul>
+                                        <?php foreach (json_decode($model['Datos']) as $nombre => $valor): ?>
+                                            <li><?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?></li>
+                                        <?php endforeach; ?>
+                                        </ul>
+                                    </td>
                                     <td><?= Html::encode(PuntosVenta::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>

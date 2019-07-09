@@ -30,7 +30,9 @@ use yii\web\View;
             
             <?= $form->field($model, 'PuntoVenta') ?>
             
-            <?= $form->field($model, 'Datos') ?>
+            <?= $form->field($model, 'Telefono') ?>
+
+            <?= $form->field($model, 'Direccion') ?>
 
             <?= $form->field($model, 'Observaciones') ?>
         </div>

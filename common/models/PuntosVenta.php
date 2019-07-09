@@ -8,10 +8,14 @@ class PuntosVenta extends Model
 {
     public $IdPuntoVenta;
     public $PuntoVenta;
-    public $Datos;
+    // public $Datos;
     public $Estado;
     public $Observaciones;
     public $IdEmpresa;
+
+    // Derivados
+    public $Direccion;
+    public $Telefono;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -25,11 +29,11 @@ class PuntosVenta extends Model
     public function rules()
     {
         return [
-            [['PuntoVenta','Datos'],
+            [['PuntoVenta','Direccion','Telefono'],
                 'required', 'on' => self::_ALTA],
-            [['IdPuntoVenta', 'PuntoVenta','Datos'],
+            [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono'],
                 'required', 'on' => self::_MODIFICAR],
-            [['IdPuntoVenta', 'PuntoVenta', 'Datos', 'Estado', 'Observaciones','IdEmpresa'], 'safe']
+            [$this->attributes(), 'safe']
         ];
     }
 
