@@ -88,3 +88,9 @@ $this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', $modelJso
         </div>
     </div>
 </div>
+<style>
+.vs__dropdown-menu {
+    z-index: 9999 !important;
+    position: relative;
+}
+</style>
