@@ -4,7 +4,7 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 
-class PuntosVenta extends Model
+class TiposGravamenes extends Model
 {
     public $IdTipoGravamen;
     public $TipoGravamen;
@@ -32,8 +32,8 @@ class PuntosVenta extends Model
     }
 
     /**
-     * Permite instanciar un punto venta desde la base de datos.
-     * xsp_dame_puntoventa
+     * Permite instanciar un tipo de gravamen desde la base de datos.
+     * xsp_dame_tipogravamen
      */
     public function Dame()
     {
@@ -50,9 +50,9 @@ class PuntosVenta extends Model
 
 
     /**
-     * Permite cambiar el estado del PuntoVenta a Baja siempre y cuando no esté dado de baja ya.
+     * Permite cambiar el estado del Tipo de Gravamen a Baja siempre y cuando no esté dado de baja ya.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_darbaja_puntoventa
+     * xsp_darbaja_tipogravamen
      */
     public function DarBaja()
     {
