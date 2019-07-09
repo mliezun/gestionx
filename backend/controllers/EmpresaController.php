@@ -8,9 +8,8 @@ use common\models\forms\AuditoriaForm;
 use common\models\forms\BuscarForm;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 
-class EmpresaController extends Controller
+class EmpresaController extends BaseController
 {
     public function actionIndex()
     {

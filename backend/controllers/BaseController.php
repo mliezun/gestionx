@@ -8,9 +8,33 @@ use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
+use yii\web\ForbiddenHttpException;
 
 class BaseController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if (!Yii::$app->user->isGuest && isset(Yii::$app->user->identity->IdPuntoVenta)) {
+            $actionsPV = [
+                'puntos-venta',
+                'ingresos',
+                'remitos',
+                'ventas',
+                'usuarios/logout',
+                'usuarios/cambiar-password'
+            ];
+            foreach ($actionsPV as $actionPV) {
+                if (substr($action->uniqueId, 0, strlen($actionPV)) === $actionPV) {
+                    return true;
+                }
+            }
+            $this->redirect(array('puntos-venta/operaciones/' . Yii::$app->user->identity->IdPuntoVenta));
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Genera la vista de listado de elementos de un modelo específico.
      * 

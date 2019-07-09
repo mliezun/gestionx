@@ -13,8 +13,6 @@ use yii\helpers\Url;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-$this->title = 'Punto de Venta: '.$puntoventa->PuntoVenta.' - Remitos';
-$this->params['breadcrumbs'][] = $this->title;
 
 $proveedor = new Proveedores();
 ?>

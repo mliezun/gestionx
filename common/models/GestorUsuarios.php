@@ -58,4 +58,34 @@ class GestorUsuarios
 
         return $query->queryScalar();
     }
+
+    /**
+     * Permite dar de alta un Usuario controlando que el nombre del usuario no exista ya, siendo nombres y apellidos obligatorios.
+     * Se guarda el password hash de la contraseña. El correo electrónico no debe existir ya. El rol debe existir. 
+     * Devuelve OK + Id o el mensaje de error en Mensaje.
+     * xsp_alta_usuario
+     */
+    public function Alta($usuario)
+    {
+        $sql = "call xsp_alta_usuario( :token, :idrol, :nombres, :apellidos, :usuario, :password, :email, " 
+        . " :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idrol' => $usuario->IdRol,
+            ':nombres' => $usuario->Nombres,
+            ':apellidos' => $usuario->Apellidos,
+            ':usuario' => $usuario->Usuario,
+            ':password' => password_hash($usuario->Password, PASSWORD_BCRYPT),
+            ':email' => $usuario->Email,
+            ':observaciones' => $usuario->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
 }

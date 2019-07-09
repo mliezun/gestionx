@@ -13,43 +13,8 @@ use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class RemitosController extends Controller
+class RemitosController extends BaseController
 {
-    public function actionIndex($id)
-    {
-        $paginado = new Pagination();
-        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
-
-        $busqueda = new BuscarForm();
-
-        $gestor = new GestorRemitos();
-
-        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'T';
-            $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
-            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor);
-        } else {
-            $remitos = $gestor->Buscar(0);
-        }
-
-        $paginado->totalCount = count($remitos);
-        $remitos = array_slice($remitos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
-
-        $gestorProv = new GestorProveedores();
-        $proveedores = $gestorProv->Buscar();
-
-        $puntoventa = new PuntosVenta();
-        $puntoventa->IdPuntoVenta = $id;
-        $puntoventa->Dame();
-
-        return $this->render('index', [
-            'models' => $remitos,
-            'busqueda' => $busqueda,
-            'proveedores' => $proveedores,
-            'puntoventa' => $puntoventa
-        ]);
-    }
-
     public function actionAlta($id)
     {
         PermisosHelper::verificarPermiso('AltaRemito');
