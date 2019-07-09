@@ -44,6 +44,12 @@ class Menu
             'permiso' => 'BuscarArticulos'
         ],
         [
+            'name' => 'Clientes',
+            'icon' => 'far fa-id-badge',
+            'href' => '/clientes',
+            'permiso' => 'BuscarClientes'
+        ],
+        [
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [
