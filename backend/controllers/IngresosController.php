@@ -3,8 +3,11 @@
 namespace backend\controllers;
 
 use common\models\Ingresos;
+use common\models\PuntosVenta;
+use common\models\Remitos;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
+use yii\helpers\Url;
 use Yii;
 
 class IngresosController extends BaseController
@@ -19,9 +22,29 @@ class IngresosController extends BaseController
 
         $lineas = $ingreso->DameLineas();
 
+        if (isset($ingreso->IdRemito)) {
+            $pv = new PuntosVenta();
+            $pv->IdPuntoVenta = $ingreso->IdPuntoVenta;
+            $pv->Dame();
+            $anterior = [
+                'label' => "Punto de Venta: " . $pv->PuntoVenta,
+                'link' => Url::to(['/puntos-venta/operaciones', 'id' => $ingreso->IdPuntoVenta])
+            ];
+            $remito = new Remitos();
+            $remito->IdRemito = $ingreso->IdRemito;
+            $remito->Dame();
+            $titulo = 'Remito ' . $remito->NroRemito;
+            $urlAltaLinea = '/ingresos/agregar-linea/' . $id;
+            $urlQuitarLinea = '/ingresos/quitar-linea/' . $id;
+        }
+
         return $this->render('lineas', [
             'model' => $ingreso,
-            'lineas' => $lineas
+            'lineas' => $lineas,
+            'anterior' => $anterior,
+            'titulo' => $titulo,
+            'urlAltaLinea' => $urlAltaLinea,
+            'urlQuitarLinea' => $urlQuitarLinea
         ]);
     }
 
