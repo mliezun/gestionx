@@ -15,17 +15,14 @@ IngresosAsset::register($this);
 /* @var $this View */
 /* @var $form ActiveForm */
 
-$this->title = 'Lineas ' . (isset($model->IdRemito) ? "Remito" : "");
-$this->params['breadcrumbs'][] = [
-    'label' => 'Remitos',
-    'link' => Url::to(['/remitos', 'id' => $model->IdPuntoVenta])
-];
+$this->title = $titulo;
+$this->params['breadcrumbs'][] = $anterior;
 $this->params['breadcrumbs'][] = $this->title;
 
 $modelJson = json_encode($model);
 $lineasJson = json_encode($lineas);
 
-$this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
+$this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', $modelJson, $lineasJson);");
 ?>
 
 <div class="row">
@@ -46,7 +43,7 @@ $this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(l, i) in lineasIngreso">
+                            <tr v-for="(l, i) in lineas">
                                 <td>{{ l.Articulo }}</td>
                                 <td>{{ l.Cantidad }}</td>
                                 <td>$ {{ l.Precio }}</td>
@@ -60,7 +57,7 @@ $this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
                             </tr>
                             <tr>
                                 <td>
-                                    <v-select v-model="articulo" @input="goNext('articulo')" ref="articulo" @search="fetchOptions" :options="options" :reduce="art => art.IdArticulo" label="Articulo"/>
+                                    <v-select v-model="articulo" ref="articulo" @search="fetchOptions" :options="options" :reduce="art => art.IdArticulo" label="Articulo"/>
                                 </td>
                                 <td>
                                     <input v-model="cantidad" @keypress.enter="goNext('cantidad')" ref="cantidad" type="number" class="form-control" placeholer="Cantidad">
@@ -91,3 +88,9 @@ $this->registerJs("AltaLineas.init($modelJson, $lineasJson);");
         </div>
     </div>
 </div>
+<style>
+.vs__dropdown-menu {
+    z-index: 9999 !important;
+    position: relative;
+}
+</style>

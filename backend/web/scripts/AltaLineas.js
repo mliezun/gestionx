@@ -1,13 +1,13 @@
 "use strict";
 var AltaLineas = {
-    init: function (model, lineas) {
+    init: function (urlAltaLinea, urlQuitarLinea, model, lineas) {
         Vue.component('v-select', VueSelect.VueSelect);
         new Vue({
             el: '#lineas',
             data: function () {
                 return {
                     ingreso: model,
-                    lineasIngreso: lineas,
+                    lineas: lineas,
                     options: [],
                     cantidad: '',
                     precio: '',
@@ -17,10 +17,15 @@ var AltaLineas = {
             computed: {
                 total: function () {
                     var sum = 0;
-                    this.lineasIngreso.forEach(l => {
+                    this.lineas.forEach(l => {
                         sum += parseFloat(l.Cantidad) * parseFloat(l.Precio);
                     })
                     return sum.toFixed(2);
+                }
+            },
+            watch: {
+                articulo: function () {
+                    this.goNext('articulo')
                 }
             },
             methods: {
@@ -35,16 +40,12 @@ var AltaLineas = {
                     loading(true);
                     $.get('/articulos/listar?Cadena=' + search)
                         .done(function (data) {
-                            setTimeout(function () {
-                                loading(false);
-                            }, 1000);
+                            loading(false);
                             _this.options = data;
                         })
                         .catch(function (err) {
                             console.log(err);
-                            setTimeout(function () {
-                                loading(false);
-                            }, 1000);
+                            loading(false);
                         })
                 },
                 limpiar: function () {
@@ -55,7 +56,7 @@ var AltaLineas = {
                 },
                 acumularLineas: function () {
                     var mapLineas = {};
-                    this.lineasIngreso.forEach(l => {
+                    this.lineas.forEach(l => {
                         if (!mapLineas[l.IdArticulo]) {
                             mapLineas[l.IdArticulo] = []
                         }
@@ -68,11 +69,11 @@ var AltaLineas = {
                             return l1;
                         }));
                     });
-                    this.lineasIngreso = listadoFinal;
+                    this.lineas = listadoFinal;
                 },
                 agregar: function () {
                     var _this = this;
-                    $.post('/ingresos/agregar-linea/' + this.ingreso.IdIngreso, {
+                    $.post(urlAltaLinea, {
                         LineasForm: {
                             IdArticulo: this.articulo,
                             Cantidad: this.cantidad,
@@ -83,7 +84,7 @@ var AltaLineas = {
                             if (data.error) {
                                 _this.mostrarMensaje('danger', data.error, 'ban');
                             } else {
-                                _this.lineasIngreso.push({
+                                _this.lineas.push({
                                     Articulo: _this.options.find(a => String(a.IdArticulo) === String(_this.articulo)).Articulo,
                                     IdArticulo: _this.articulo,
                                     Cantidad: parseFloat(_this.cantidad).toFixed(2),
@@ -100,14 +101,14 @@ var AltaLineas = {
                 },
                 borrarLinea: function (i) {
                     var _this = this;
-                    $.post('/ingresos/quitar-linea/' + this.ingreso.IdIngreso, {
-                        IdArticulo: this.lineasIngreso[i].IdArticulo,
+                    $.post(urlQuitarLinea, {
+                        IdArticulo: this.lineas[i].IdArticulo,
                     })
                         .done(function (data) {
                             if (data.error) {
                                 _this.mostrarMensaje('danger', data.error, 'ban');
                             } else {
-                                _this.lineasIngreso.splice(i, 1);
+                                _this.lineas.splice(i, 1);
                             }
                         })
                         .catch(function (err) {

@@ -24,7 +24,10 @@ class GestorPuntosVenta
             ':app' => Yii::$app->id,
             ':host' => Yii::$app->request->headers->get('host'),
             ':puntoventa' => $puntoventa->PuntoVenta,
-            ':datos' => $puntoventa->Datos,
+            ':datos' => json_encode([
+                'Telefono' => $puntoventa->Telefono,
+                'Direccion' => $puntoventa->Direccion
+            ]),
             ':observaciones' => $puntoventa->Observaciones,
         ]);
 
@@ -70,7 +73,10 @@ class GestorPuntosVenta
             ':host' => Yii::$app->request->headers->get('host'),
             ':idpuntoventa' => $puntoventa->IdPuntoVenta,
             ':puntoventa' => $puntoventa->PuntoVenta,
-            ':datos' => $puntoventa->Datos,
+            ':datos' => json_encode([
+                'Telefono' => $puntoventa->Telefono,
+                'Direccion' => $puntoventa->Direccion
+            ]),
             ':observaciones' => $puntoventa->Observaciones,
         ]);
 
