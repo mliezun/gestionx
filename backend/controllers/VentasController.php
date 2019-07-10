@@ -24,8 +24,9 @@ class VentasController extends BaseController
         $venta->setScenario(Ventas::_ALTA);
 
         if($venta->load(Yii::$app->request->post()) && $venta->validate()){
+            $venta->IdPuntoVenta = $id;
             $gestor = new GestorVentas();
-            $resultado = $gestor->Alta($venta,$id);
+            $resultado = $gestor->Alta($venta);
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
@@ -33,7 +34,7 @@ class VentasController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',
                 'model' => $venta
@@ -105,6 +106,83 @@ class VentasController extends BaseController
         } else {
             return ['error' => $resultado];
         }
+    }
+
+    public function actionLineas($id)
+    {
+        $venta = new Ventas();
+
+        $venta->IdVenta = $id;
+
+        $venta->Dame();
+
+        $lineas = $venta->DameLineas();
+
+        $pv = new PuntosVenta();
+        $pv->IdPuntoVenta = $venta->IdPuntoVenta;
+        $pv->Dame();
+        $anterior = [
+            'label' => "Punto de Venta: " . $pv->PuntoVenta,
+            'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
+        ];
+        $titulo = 'Venta ' . $id;
+        $urlAltaLinea = '/ventas/agregar-linea/' . $id;
+        $urlQuitarLinea = '/ventas/quitar-linea/' . $id;
+
+        return $this->render('@app/views/lineas/index', [
+            'model' => $ingreso,
+            'lineas' => $lineas,
+            'anterior' => $anterior,
+            'titulo' => $titulo,
+            'urlAltaLinea' => $urlAltaLinea,
+            'urlQuitarLinea' => $urlQuitarLinea,
+            'tipoPrecio' => 'PrecioVenta'
+        ]);
+    }
+
+    public function actionAgregarLinea($id)
+    {
+        PermisosHelper::verificarPermiso('AltaLineaVenta');
+        Yii::$app->response->format = 'json';
+
+        $venta = new Ventas();
+
+        $venta->IdVenta = $id;
+
+        $linea = new LineasForm();
+
+        if ($linea->load(Yii::$app->request->post()) && $linea->validate(null, false)) {
+            $resultado = $venta->AgregarLinea($linea);
+        } else {
+            $resultado = implode(' ', $linea->getErrorSummary(false));
+            if (trim($resultado) == '') {
+                $resultado = "Los valores indicados no son correctos.";
+            }
+        }
+
+        if (substr($resultado, 0, 2) != 'OK') {
+            return ['error' => $resultado];
+        }
+
+        return ['error' => null];
+    }
+
+    public function actionQuitarLinea($id)
+    {
+        PermisosHelper::verificarPermiso('BorrarLineaVenta');
+        Yii::$app->response->format = 'json';
+
+        $venta = new Ventas();
+
+        $venta->IdVenta = $id;
+
+        $resultado = $venta->QuitarLinea(Yii::$app->request->post('IdArticulo'));
+
+        if (substr($resultado, 0, 2) != 'OK') {
+            return ['error' => $resultado];
+        }
+
+        return ['error' => null];
     }
 }
 

@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $modelJson = json_encode($model);
 $lineasJson = json_encode($lineas);
 
-$this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', $modelJson, $lineasJson);");
+$this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', '$tipoPrecio', $modelJson, $lineasJson);");
 ?>
 
 <div class="row">

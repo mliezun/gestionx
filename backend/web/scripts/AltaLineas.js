@@ -1,6 +1,6 @@
 "use strict";
 var AltaLineas = {
-    init: function (urlAltaLinea, urlQuitarLinea, model, lineas) {
+    init: function (urlAltaLinea, urlQuitarLinea, tipoPrecio, model, lineas) {
         Vue.component('v-select', VueSelect.VueSelect);
         new Vue({
             el: '#lineas',
@@ -25,7 +25,13 @@ var AltaLineas = {
             },
             watch: {
                 articulo: function () {
-                    this.goNext('articulo')
+                    for (var i = 0; i < this.options.length; i++) {
+                        if (String(this.options[i].IdArticulo) === String(this.articulo)) {
+                            this.precio = this.options[i][tipoPrecio];
+                            break;
+                        }
+                    }
+                    this.goNext('articulo');
                 }
             },
             methods: {

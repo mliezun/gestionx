@@ -11,7 +11,7 @@ class GestorVentas
 	 * Devuelve OK + Id o el mensaje de error en Mensaje.
      * xsp_alta_venta
      */
-    public function Alta(Ventas $venta, $IdPuntoVenta)
+    public function Alta(Ventas $venta)
     {
         $sql = "call xsp_alta_venta( :token, :idempresa, :idpuntoventa, :idcliente,
         :idusuario, :monto, :tipo, :observaciones , :IP, :userAgent, :app)";
@@ -26,7 +26,7 @@ class GestorVentas
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idusuario' => Yii::$app->user->identity->IdUsuario,
             ':idcliente' => $venta->IdCliente,
-            ':idpuntoventa' => $IdPuntoVenta,
+            ':idpuntoventa' => $venta->IdPuntoVenta,
             ':monto' => $venta->Monto,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,

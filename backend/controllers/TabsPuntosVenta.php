@@ -11,6 +11,9 @@ use common\components\PermisosHelper;
 use common\models\GestorProveedores;
 use common\models\GestorRemitos;
 use common\models\GestorRoles;
+use common\models\GestorClientes;
+use common\models\Ventas;
+use common\models\GestorVentas;
 use Yii;
 
 class TabsPuntosVenta extends BaseController
@@ -22,7 +25,7 @@ class TabsPuntosVenta extends BaseController
     {
         return [
             [
-                'Permiso' => 'AltaVenta',
+                'Permiso' => 'BuscarVentas',
                 'Nombre' => 'Ventas',
                 'Render' => function () {
                     return $this->Ventas();
@@ -131,6 +134,45 @@ class TabsPuntosVenta extends BaseController
 
     public function Ventas()
     {
-        return '';
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
+
+        $gestor = new GestorVentas();
+
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $FechaDesde = $busqueda->FechaInicio;
+            $FechaFin = $busqueda->FechaFin;
+            $Cliente = $busqueda->Combo ? $busqueda->Combo : 0;
+            $Estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
+            $Tipo = $busqueda->Combo3 ? $busqueda->Combo3 : 'T';
+            $ventas = $gestor->Buscar($this->IdPuntoVenta, $FechaDesde, $FechaFin, $Cliente, $Estado, $Tipo);
+        } else {
+            $ventas = $gestor->Buscar($this->IdPuntoVenta);
+        }
+
+        $paginado->totalCount = count($ventas);
+        $ventas = array_slice($ventas, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        $puntoventa = new PuntosVenta();
+        $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
+        $puntoventa->Dame();
+
+        $gclientes = new GestorClientes();
+        $clientes = $gclientes->Buscar();
+
+        $clientes_out = array();
+
+        foreach ($clientes as $cliente) {
+            $clientes_out[$cliente['IdCliente']] = $cliente['Apellidos'] . ', ' . $cliente['Nombres'];
+        }
+        
+        return $this->renderPartial('ventas', [
+            'models' => $ventas,
+            'busqueda' => $busqueda,
+            'puntoventa' => $puntoventa,
+            'clientes' => $clientes_out
+        ]);
     }
 }

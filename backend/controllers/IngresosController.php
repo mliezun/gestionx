@@ -38,13 +38,14 @@ class IngresosController extends BaseController
             $urlQuitarLinea = '/ingresos/quitar-linea/' . $id;
         }
 
-        return $this->render('lineas', [
+        return $this->render('@app/views/lineas/index', [
             'model' => $ingreso,
             'lineas' => $lineas,
             'anterior' => $anterior,
             'titulo' => $titulo,
             'urlAltaLinea' => $urlAltaLinea,
-            'urlQuitarLinea' => $urlQuitarLinea
+            'urlQuitarLinea' => $urlQuitarLinea,
+            'tipoPrecio' => 'PrecioCosto'
         ]);
     }
 
