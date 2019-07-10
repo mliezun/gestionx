@@ -43,6 +43,17 @@ class Clientes extends Model
         ];
     }
 
+    public static function Nombre($cliente)
+    {
+        $nombre = '';
+        if ($cliente['Tipo'] == 'F') {
+            $nombre = $cliente['Apellidos'] . ', ' . $cliente['Nombres'];
+        } else {
+            $nombre = $cliente['RazonSocial'];
+        }
+        return $nombre;
+    }
+
     /**
      * Permite instanciar un cliente desde la base de datos.
      * xsp_dame_cliente

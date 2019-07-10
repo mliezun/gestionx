@@ -21,7 +21,8 @@ class BaseController extends Controller
                 'remitos',
                 'ventas',
                 'usuarios/logout',
-                'usuarios/cambiar-password'
+                'usuarios/cambiar-password',
+                'articulos/listar'
             ];
             foreach ($actionsPV as $actionPV) {
                 if (substr($action->uniqueId, 0, strlen($actionPV)) === $actionPV) {

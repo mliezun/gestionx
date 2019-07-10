@@ -109,4 +109,19 @@ class GestorClientes
 
         return $query->queryScalar();
     }
+
+    /**
+     * Permite obtener un array del clientes donde la clave es IdCliente y el valor el Nombre
+     * del cliente.
+     */
+    public function Listar()
+    {
+        $clientes = array();
+
+        foreach($this->Buscar() as $cliente) {
+            $clientes[$cliente['IdCliente']] = Clientes::Nombre($cliente);
+        }
+
+        return $clientes;
+    }
 }
