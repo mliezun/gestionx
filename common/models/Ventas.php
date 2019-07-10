@@ -4,14 +4,14 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 
-class Clientes extends Model
+class Ventas extends Model
 {
-    public $IdCliente;
+    public $IdVenta;
+    public $IdPuntoVenta;
     public $IdEmpresa;
-    public $Nombres;
-    public $Apellidos;
-    public $RazonSocial;
-    public $Datos;
+    public $IdCliente;
+    public $IdUsuario;
+    public $Monto;
     public $FechaAlta;
     public $Tipo;
     public $Estado;
@@ -22,39 +22,41 @@ class Clientes extends Model
     
     const ESTADOS = [
         'A' => 'Activo',
+        'E' => 'Edicion',
         'B' => 'Baja',
         'T' => 'Todos'
     ];
 
     const TIPOS = [
-        'F' => 'Fisica',
-        'J' => 'Juridica',
+        'P' => 'Presupuesto',
+        'V' => 'Venta',
+        'B' => 'Prestamo',
         'T' => 'Todos'
     ];
  
     public function rules()
     {
         return [
-            [['IdEmpresa','Datos','Tipo'],
+            [['IdPuntoVenta','IdEmpresa','IdCliente','IdUsuario','Monto','Tipo'],
                 'required', 'on' => self::_ALTA],
-            [['IdCliente','IdEmpresa','Datos','Tipo'],
+            [['IdVenta','IdPuntoVenta','IdEmpresa','IdCliente','IdUsuario','Monto','Tipo'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];
     }
 
     /**
-     * Permite instanciar un cliente desde la base de datos.
-     * xsp_dame_cliente
+     * Permite instanciar una venta desde la base de datos.
+     * xsp_dame_venta
      */
     public function Dame()
     {
-        $sql = 'CALL xsp_dame_cliente( :idcliente )';
+        $sql = 'CALL xsp_dame_venta( :idventa )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
-            ':idcliente' => $this->IdCliente
+            ':idventa' => $this->IdVenta
         ]);
         
         $this->attributes = $query->queryOne();
@@ -62,13 +64,13 @@ class Clientes extends Model
 
 
     /**
-     * Permite dar de baja a un Cliente siempre y cuando no esté dado de baja ya.
-     * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_darbaja_cliente
+     * Permite cambiar el estado de la Venta siempre y cuando no esté dado de baja ya.
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_darbaja_venta
      */
     public function DarBaja()
     {
-        $sql = "call xsp_darbaja_cliente( :token, :idcliente, :IP, :userAgent, :app)";
+        $sql = "call xsp_darbaja_venta( :token, :idventa, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -77,20 +79,20 @@ class Clientes extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idcliente' => $this->IdCliente
+            ':idventa' => $this->IdVenta
         ]);
 
         return $query->queryScalar();
     }
 
     /**
-     * Permite cambiar el estado del Cliente a Activo siempre y cuando no esté activo ya.
-     * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_activar_cliente
+     * Permite cambiar el estado de la Venta a Activo siempre y cuando el estado actual sea Edicion.
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_activar_venta
      */
     public function Activar()
     {
-        $sql = "call xsp_activar_cliente( :token, :idcliente, :IP, :userAgent, :app)";
+        $sql = "call xsp_activar_venta( :token, :idventa, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -99,7 +101,7 @@ class Clientes extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idcliente' => $this->IdCliente
+            ':idventa' => $this->IdVenta
         ]);
 
         return $query->queryScalar();
