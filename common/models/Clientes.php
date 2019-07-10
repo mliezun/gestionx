@@ -35,7 +35,7 @@ class Clientes extends Model
     public function rules()
     {
         return [
-            [['IdEmpresa','Datos','Tipo'],
+            [['Datos','Tipo'],
                 'required', 'on' => self::_ALTA],
             [['IdCliente','IdEmpresa','Datos','Tipo'],
                 'required', 'on' => self::_MODIFICAR],
