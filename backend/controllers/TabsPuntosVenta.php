@@ -160,19 +160,13 @@ class TabsPuntosVenta extends BaseController
         $puntoventa->Dame();
 
         $gclientes = new GestorClientes();
-        $clientes = $gclientes->Buscar();
-
-        $clientes_out = array();
-
-        foreach ($clientes as $cliente) {
-            $clientes_out[$cliente['IdCliente']] = $cliente['Apellidos'] . ', ' . $cliente['Nombres'];
-        }
+        $clientes = $gclientes->Listar();
         
         return $this->renderPartial('ventas', [
             'models' => $ventas,
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa,
-            'clientes' => $clientes_out
+            'clientes' => $clientes
         ]);
     }
 }

@@ -7,13 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 
-$clientes = (new GestorClientes())->Buscar();
-
-$clientes_out = array();
-
-foreach ($clientes as $cliente) {
-    $clientes_out[$cliente['IdCliente']] = $cliente['Apellidos'] . ', ' . $cliente['Nombres'];
-}
+$clientes = (new GestorClientes())->Listar();
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -36,7 +30,7 @@ foreach ($clientes as $cliente) {
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
             
-            <?= $form->field($model, 'IdCliente')->dropDownList($clientes_out, ['prompt' => 'Cliente']) ?>
+            <?= $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']) ?>
 
             <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
 

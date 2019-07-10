@@ -7,11 +7,13 @@ use common\models\PuntosVenta;
 use common\models\GestorVentas;
 use common\models\GestorClientes;
 use common\models\forms\BuscarForm;
+use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 class VentasController extends BaseController
 {
@@ -79,7 +81,7 @@ class VentasController extends BaseController
         Yii::$app->response->format = 'json';
         
         $venta = new Ventas();
-        $venta->IdVentas = $id;
+        $venta->IdVenta = $id;
 
         $resultado = $venta->Activar();
 
@@ -130,7 +132,7 @@ class VentasController extends BaseController
         $urlQuitarLinea = '/ventas/quitar-linea/' . $id;
 
         return $this->render('@app/views/lineas/index', [
-            'model' => $ingreso,
+            'model' => $venta,
             'lineas' => $lineas,
             'anterior' => $anterior,
             'titulo' => $titulo,

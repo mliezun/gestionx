@@ -89,7 +89,7 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-modal="<?= Url::to(['Ventas/editar', 'id' => $model['IdVenta']]) ?>"
+                                                            data-modal="<?= Url::to(['ventas/editar', 'id' => $model['IdVenta']]) ?>"
                                                             data-hint="Modificar">
                                                         <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                     </button>
@@ -99,7 +99,7 @@ $proveedor = new Proveedores();
                                                 <?php if ($model['Estado'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
-                                                                data-ajax="<?= Url::to(['Ventas/activar', 'id' => $model['IdVenta']]) ?>"
+                                                                data-ajax="<?= Url::to(['ventas/activar', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Activar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
@@ -107,7 +107,7 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['Ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
+                                                            data-ajax="<?= Url::to(['ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
@@ -115,7 +115,7 @@ $proveedor = new Proveedores();
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['Ventas/borrar', 'id' => $model['IdVenta']]) ?>"
+                                                        data-ajax="<?= Url::to(['ventas/borrar', 'id' => $model['IdVenta']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>

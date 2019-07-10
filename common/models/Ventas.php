@@ -3,6 +3,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\forms\LineasForm;
 
 class Ventas extends Model
 {

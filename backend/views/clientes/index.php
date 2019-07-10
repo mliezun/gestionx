@@ -50,9 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table class="table">
                         <thead class="bg-light">
                             <tr class="border-0">
-                                <th>Nombres</th>
-                                <th>Apellidos</th>
-                                <th>Razon Social</th>
+                                <th>Nombre</th>
                                 <th>Datos</th>
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
@@ -64,9 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['Nombres']) ?></td>
-                                    <td><?= Html::encode($model['Apellidos']) ?></td>
-                                    <td><?= Html::encode($model['RazonSocial']) ?></td>
+                                    <td><?= Html::encode(Clientes::Nombre($model)) ?></td>
                                     <td><?= Html::encode($model['Datos']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Clientes::TIPOS[$model['Tipo']]) ?></td>

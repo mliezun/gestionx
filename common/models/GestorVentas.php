@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 
 class GestorVentas
@@ -103,8 +104,8 @@ class GestorVentas
         $query->bindValues([
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idcliente' => $Cliente,
-            ':fechadesde' => $FechaDesde,
-            ':fechahasta' => $FechaHasta,
+            ':fechadesde' => FechaHelper::formatearDateMysql($FechaDesde),
+            ':fechahasta' => FechaHelper::formatearDateMysql($FechaHasta),
             ':estado' => $Estado,
             ':tipo' => $Tipo,
             ':idpuntoventa' => $PuntoVenta,
