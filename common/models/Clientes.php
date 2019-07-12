@@ -11,14 +11,22 @@ class Clientes extends Model
     public $Nombres;
     public $Apellidos;
     public $RazonSocial;
-    public $Datos;
+    // public $Datos;
     public $FechaAlta;
     public $Tipo;
     public $Estado;
     public $Observaciones;
+
+    // DatosJSON
+    public $CUIT;
+    public $Telefono;
+    public $Direccion;
+    public $Documento;
     
-    const _ALTA = 'alta';
-    const _MODIFICAR = 'modificar';
+    const _ALTA_FISICA = 'altaf';
+    const _ALTA_JURIDICA = 'altaj';
+    const _MODIFICAR_FISICA = 'modificarf';
+    const _MODIFICAR_JURIDICA = 'modificarj';
     
     const ESTADOS = [
         'A' => 'Activo',
@@ -35,10 +43,14 @@ class Clientes extends Model
     public function rules()
     {
         return [
-            [['Datos','Tipo'],
-                'required', 'on' => self::_ALTA],
-            [['IdCliente','IdEmpresa','Datos','Tipo'],
-                'required', 'on' => self::_MODIFICAR],
+            [['Nombres', 'Apellidos', 'Documento', 'Tipo'],
+                'required', 'on' => self::_ALTA_FISICA],
+            [['RazonSocial', 'CUIT','Tipo'],
+                'required', 'on' => self::_ALTA_JURIDICA],
+            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento'],
+                'required', 'on' => self::_MODIFICAR_FISICA],
+            [['IdCliente','IdEmpresa','RazonSocial', 'CUIT'],
+                'required', 'on' => self::_MODIFICAR_JURIDICA],
             [$this->attributes(), 'safe']
         ];
     }

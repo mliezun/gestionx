@@ -34,9 +34,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if (PermisosHelper::tienePermiso('AltaCliente')) : ?>
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/clientes/alta']) ?>"
-                        data-hint="Nuevo Cliente">
-                    Nuevo Cliente
+                        data-modal="<?= Url::to(['/clientes/alta?Tipo=F']) ?>"
+                        data-hint="Nuevo Cliente (Física)">
+                    Nuevo Cliente (Física)
+                </button>
+                <button type="button" class="btn btn-secondary"
+                        data-modal="<?= Url::to(['/clientes/alta?Tipo=J']) ?>"
+                        data-hint="Nuevo Cliente (Jurídica)">
+                    Nuevo Cliente (Jurídica)
                 </button>
             </div>
         <?php endif; ?>
@@ -63,7 +68,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode(Clientes::Nombre($model)) ?></td>
-                                    <td><?= Html::encode($model['Datos']) ?></td>
+                                    <td>
+                                        <ul>
+                                        <?php foreach(json_decode($model['Datos']) as $dato => $valor): ?>
+                                            <?php if (isset($valor)): ?>
+                                                <li><?= Html::encode($dato) ?>: <?= Html::encode($valor) ?></li>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                        </ul>
+                                    </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Clientes::TIPOS[$model['Tipo']]) ?></td>
                                     <td><?= Html::encode(Clientes::ESTADOS[$model['Estado']]) ?></td>

@@ -30,16 +30,24 @@ $array=ArrayHelper::remove($tipos,'T');
             <?= Html::activeHiddenInput($model, 'IdCliente') ?>
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
-            
-            <?= $form->field($model, 'Nombres') ?>
 
-            <?= $form->field($model, 'Apellidos') ?>
+            <?php if ($model->Tipo == 'F'): ?>
+                <?= $form->field($model, 'Nombres') ?>
 
-            <?= $form->field($model, 'RazonSocial') ?>
+                <?= $form->field($model, 'Apellidos') ?>
 
-            <?= $form->field($model, 'Datos') ?>
+                <?= $form->field($model, 'Documento') ?>
+            <?php else: ?>
+                <?= $form->field($model, 'RazonSocial') ?>
 
-            <?= $form->field($model, 'Tipo')->dropDownList($tipos, ['prompt' => 'Tipo']) ?>
+                <?= $form->field($model, 'CUIT') ?>
+            <?php endif; ?>
+
+            <?= $form->field($model, 'Direccion') ?>
+
+            <?= $form->field($model, 'Telefono') ?>
+
+            <?= Html::activeHiddenInput($model, 'Tipo') ?>
 
             <?= $form->field($model, 'Observaciones') ?>
         </div>

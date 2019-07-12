@@ -47,9 +47,15 @@ class ClientesController extends Controller
 
         $cliente = new Clientes();
 
-        $cliente->setScenario(Clientes::_ALTA);
+        $cliente->Tipo = Yii::$app->request->get('Tipo');
 
-        if($cliente->load(Yii::$app->request->post()) && $cliente->validate()){
+        if ($cliente->Tipo == 'F') {
+            $cliente->setScenario(Clientes::_ALTA_FISICA);
+        } else {
+            $cliente->setScenario(Clientes::_ALTA_JURIDICA);
+        }
+
+        if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Alta($cliente);
 
@@ -59,7 +65,7 @@ class ClientesController extends Controller
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',
                 'model' => $cliente
@@ -73,8 +79,15 @@ class ClientesController extends Controller
         
         $cliente = new Clientes();
 
-        $cliente->setScenario(Clientes::_MODIFICAR);
-
+        $clienteAux = new Clientes();
+        $clienteAux->IdCliente = $id;
+        $clienteAux->Dame();
+        if ($clienteAux->Tipo == 'F') {
+            $cliente->setScenario(Clientes::_ALTA_FISICA);
+        } else {
+            $cliente->setScenario(Clientes::_ALTA_JURIDICA);
+        }
+        
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Modificar($cliente);
@@ -86,13 +99,9 @@ class ClientesController extends Controller
                 return ['error' => $resultado];
             }
         } else {
-            $cliente->IdCliente = $id;
-            
-            $cliente->Dame();
-
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar Cliente',
-                        'model' => $cliente
+                        'model' => $clienteAux
             ]);
         }
     }
