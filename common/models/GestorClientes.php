@@ -29,6 +29,7 @@ class GestorClientes
             ':razonsocial' => $cliente->RazonSocial,
             ':datos' => json_encode([
                 'CUIT' => $cliente->CUIT,
+                'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
                 'Documento' => $cliente->Documento,
@@ -43,7 +44,7 @@ class GestorClientes
     /**
      * Permite modificar un Cliente.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_modifica_rol
+     * xsp_modifica_cliente
      */
     public function Modificar(Clientes $cliente)
     {
@@ -64,6 +65,7 @@ class GestorClientes
             ':razonsocial' => $cliente->RazonSocial,
             ':datos' => json_encode([
                 'CUIT' => $cliente->CUIT,
+                'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
                 'Documento' => $cliente->Documento,

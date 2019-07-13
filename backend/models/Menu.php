@@ -50,9 +50,20 @@ class Menu
             'permiso' => 'BuscarClientes'
         ],
         [
+            'name' => 'Cheques',
+            'icon' => 'fas fa-money-check',
+            'href' => '/cheques',
+            'permiso' => 'BuscarCheques'
+        ],
+        [
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [
+                [
+                    'name' => 'Bancos',
+                    'href' => '/bancos',
+                    'permiso' => 'BuscarBancos'
+                ],
                 [
                     'name' => 'Parámetros',
                     'href' => '/empresa',
