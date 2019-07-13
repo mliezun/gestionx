@@ -21,9 +21,20 @@ class Cheques extends Model
     public $Banco;
     public $Descripcion;
 
+    const SCENARIO_ALTA = 'alta';
+    const SCENARIO_EDITAR = 'editar';
+
+    const ESTADOS = [
+        'D' => 'Disponible',
+        'U' => 'Utilizado',
+        'T' => 'Todos'
+    ];
+
     public function rules()
     {
         return [
+            [['IdCliente', 'IdBanco', 'NroCheque', 'Importe', 'FechaAlta', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdCliente', 'IdBanco', 'NroCheque', 'Importe', 'FechaAlta', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_EDITAR],
             [$this->attributes(), 'safe']
         ];
     }

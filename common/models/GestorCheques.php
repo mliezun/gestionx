@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 
 class GestorCheques
@@ -79,8 +80,8 @@ class GestorCheques
         $query->bindValues([
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':cadena' => $Cadena,
-            ':fi' => $FechaInicio,
-            ':ff' => $FechaFin,
+            ':fi' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':ff' => FechaHelper::formatearDateMysql($FechaFin),
             ':estado' => $Estado,
         ]);
 
