@@ -111,6 +111,24 @@ class VentasController extends BaseController
         }
     }
 
+    public function actionDevolucion($id)
+    {
+        PermisosHelper::verificarPermiso('DevolucionVenta');
+
+        Yii::$app->response->format = 'json';
+        
+        $venta = new Ventas();
+        $venta->IdVenta = $id;
+
+        $resultado = $venta->Devolucion();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
     public function actionLineas($id)
     {
         $venta = new Ventas();

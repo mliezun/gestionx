@@ -15,7 +15,7 @@ class GestorVentas
     public function Alta(Ventas $venta)
     {
         $sql = "call xsp_alta_venta( :token, :idempresa, :idpuntoventa, :idcliente,
-        :idusuario, :monto, :tipo, :observaciones , :IP, :userAgent, :app)";
+        :idusuario, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -28,7 +28,6 @@ class GestorVentas
             ':idusuario' => Yii::$app->user->identity->IdUsuario,
             ':idcliente' => $venta->IdCliente,
             ':idpuntoventa' => $venta->IdPuntoVenta,
-            ':monto' => $venta->Monto,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
         ]);
@@ -44,7 +43,7 @@ class GestorVentas
     public function Modificar(Ventas $venta)
     {
         $sql = "call xsp_modifica_venta( :token, :idventa, :idempresa, :idcliente,
-        :idusuario, :monto, :tipo, :observaciones, :idusuariogestion , :IP, :userAgent, :app)";
+        :idusuario, :tipo, :observaciones, :idusuariogestion , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -58,7 +57,6 @@ class GestorVentas
             ':idcliente' => $venta->IdCliente,
             ':idventa' => $venta->$IdVenta,
             ':idusuario' => $venta->$IdUsuario,
-            ':monto' => $venta->Monto,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
         ]);
