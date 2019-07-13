@@ -128,16 +128,14 @@ class VentasController extends BaseController
             'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
         ];
         $titulo = 'Venta ' . $id;
-        $urlAltaLinea = '/ventas/agregar-linea/' . $id;
-        $urlQuitarLinea = '/ventas/quitar-linea/' . $id;
+        $urlBase = '/ventas';
 
         return $this->render('@app/views/lineas/index', [
             'model' => $venta,
             'lineas' => $lineas,
             'anterior' => $anterior,
             'titulo' => $titulo,
-            'urlAltaLinea' => $urlAltaLinea,
-            'urlQuitarLinea' => $urlQuitarLinea,
+            'urlBase' => $urlBase,
             'tipoPrecio' => 'PrecioVenta'
         ]);
     }
