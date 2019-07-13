@@ -44,7 +44,7 @@ class GestorClientes
     /**
      * Permite modificar un Cliente.
      * Devuelve OK o el mensaje de error en Mensaje.
-     * xsp_modifica_rol
+     * xsp_modifica_cliente
      */
     public function Modificar(Clientes $cliente)
     {

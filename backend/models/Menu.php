@@ -54,6 +54,11 @@ class Menu
             'icon' => 'fas fa-cogs',
             'submenu' => [
                 [
+                    'name' => 'Bancos',
+                    'href' => '/bancos',
+                    'permiso' => 'BuscarBancos'
+                ],
+                [
                     'name' => 'Parámetros',
                     'href' => '/empresa',
                     'permiso' => 'BuscarParametro'
