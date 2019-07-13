@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $modelJson = json_encode($model);
 $lineasJson = json_encode($lineas);
 
-$this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', '$tipoPrecio', $modelJson, $lineasJson);");
+$this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $lineasJson);");
 ?>
 
 <div class="row">
@@ -82,8 +82,16 @@ $this->registerJs("AltaLineas.init('$urlAltaLinea', '$urlQuitarLinea', '$tipoPre
                     </table>
                 </div>
             </div>
-            <div class="lineas--total">
-                Total: ${{ total }}
+            <div class="lineas--bottom">
+                <button  type="button" class="btn btn-secondary"
+                    @click="completar"
+                    data-hint="Completar"
+                >
+                    Completar
+                </button>
+                <div class="lineas--total">
+                    Total: ${{ total }}
+                </div>
             </div>
         </div>
     </div>

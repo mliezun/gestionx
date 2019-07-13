@@ -13,7 +13,7 @@ class PuntosVenta extends Model
     public $Observaciones;
     public $IdEmpresa;
 
-    // Derivados
+    // DatosJSON
     public $Direccion;
     public $Telefono;
     

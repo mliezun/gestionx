@@ -1,6 +1,7 @@
 "use strict";
 var AltaLineas = {
-    init: function (urlAltaLinea, urlQuitarLinea, tipoPrecio, model, lineas) {
+    init: function (urlBase, tipoPrecio, model, lineas) {
+        var id = (model.IdIngreso ? model.IdIngreso : model.IdVenta);
         Vue.component('v-select', VueSelect.VueSelect);
         new Vue({
             el: '#lineas',
@@ -79,7 +80,7 @@ var AltaLineas = {
                 },
                 agregar: function () {
                     var _this = this;
-                    $.post(urlAltaLinea, {
+                    $.post(urlBase + '/agregar-linea/' + id, {
                         LineasForm: {
                             IdArticulo: this.articulo,
                             Cantidad: this.cantidad,
@@ -107,7 +108,7 @@ var AltaLineas = {
                 },
                 borrarLinea: function (i) {
                     var _this = this;
-                    $.post(urlQuitarLinea, {
+                    $.post(urlBase + '/quitar-linea/' + id, {
                         IdArticulo: this.lineas[i].IdArticulo,
                     })
                         .done(function (data) {
@@ -141,6 +142,22 @@ var AltaLineas = {
                         'precio': this.$refs.articulo
                     }
                     next[actual].focus();
+                },
+                completar: function () {
+                    var _this = this;
+                    var uri = (model.IdRemito ? '/remitos' : urlBase) + '/activar/' + id
+                    $.ajax(uri)
+                        .done(function (data) {
+                            if (data.error) {
+                                _this.mostrarMensaje('danger', data.error, 'ban');
+                            } else {
+                                // window.open();
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                            _this.mostrarMensaje('danger', 'Error en la comunicación con el servidor.', 'ban');
+                        })
                 }
             }
         })

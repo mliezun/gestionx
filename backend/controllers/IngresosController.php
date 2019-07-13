@@ -34,8 +34,7 @@ class IngresosController extends BaseController
             $remito->IdRemito = $ingreso->IdRemito;
             $remito->Dame();
             $titulo = 'Remito ' . $remito->NroRemito;
-            $urlAltaLinea = '/ingresos/agregar-linea/' . $id;
-            $urlQuitarLinea = '/ingresos/quitar-linea/' . $id;
+            $urlBase = '/ingresos';
         }
 
         return $this->render('@app/views/lineas/index', [
@@ -43,8 +42,7 @@ class IngresosController extends BaseController
             'lineas' => $lineas,
             'anterior' => $anterior,
             'titulo' => $titulo,
-            'urlAltaLinea' => $urlAltaLinea,
-            'urlQuitarLinea' => $urlQuitarLinea,
+            'urlBase' => $urlBase,
             'tipoPrecio' => 'PrecioCosto'
         ]);
     }

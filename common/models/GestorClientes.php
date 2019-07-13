@@ -27,7 +27,12 @@ class GestorClientes
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
-            ':datos' => $cliente->Datos,
+            ':datos' => json_encode([
+                'CUIT' => $cliente->CUIT,
+                'Telefono' => $cliente->Telefono,
+                'Direccion' => $cliente->Direccion,
+                'Documento' => $cliente->Documento,
+            ]),
             ':tipo' => $cliente->Tipo,
             ':observaciones' => $cliente->Observaciones,
         ]);
@@ -57,7 +62,12 @@ class GestorClientes
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
-            ':datos' => $cliente->Datos,
+            ':datos' => json_encode([
+                'CUIT' => $cliente->CUIT,
+                'Telefono' => $cliente->Telefono,
+                'Direccion' => $cliente->Direccion,
+                'Documento' => $cliente->Documento,
+            ]),
             ':tipo' => $cliente->Tipo,
             ':observaciones' => $cliente->Observaciones,
         ]);
