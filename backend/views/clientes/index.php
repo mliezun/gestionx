@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
                                         <ul>
                                         <?php foreach(json_decode($model['Datos']) as $dato => $valor): ?>
-                                            <?php if (isset($valor)): ?>
+                                            <?php if (isset($valor) && $valor != ''): ?>
                                                 <li><?= Html::encode($dato) ?>: <?= Html::encode($valor) ?></li>
                                             <?php endif; ?>
                                         <?php endforeach; ?>

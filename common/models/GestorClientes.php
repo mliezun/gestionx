@@ -29,6 +29,7 @@ class GestorClientes
             ':razonsocial' => $cliente->RazonSocial,
             ':datos' => json_encode([
                 'CUIT' => $cliente->CUIT,
+                'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
                 'Documento' => $cliente->Documento,
@@ -64,6 +65,7 @@ class GestorClientes
             ':razonsocial' => $cliente->RazonSocial,
             ':datos' => json_encode([
                 'CUIT' => $cliente->CUIT,
+                'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
                 'Documento' => $cliente->Documento,

@@ -43,6 +43,8 @@ $array=ArrayHelper::remove($tipos,'T');
                 <?= $form->field($model, 'CUIT') ?>
             <?php endif; ?>
 
+            <?= $form->field($model, 'Email') ?>
+
             <?= $form->field($model, 'Direccion') ?>
 
             <?= $form->field($model, 'Telefono') ?>

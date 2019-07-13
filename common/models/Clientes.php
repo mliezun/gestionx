@@ -22,6 +22,7 @@ class Clientes extends Model
     public $Telefono;
     public $Direccion;
     public $Documento;
+    public $Email;
     
     const _ALTA_FISICA = 'altaf';
     const _ALTA_JURIDICA = 'altaj';
@@ -43,6 +44,7 @@ class Clientes extends Model
     public function rules()
     {
         return [
+            ['Email', 'email'],
             [['Nombres', 'Apellidos', 'Documento', 'Tipo'],
                 'required', 'on' => self::_ALTA_FISICA],
             [['RazonSocial', 'CUIT','Tipo'],

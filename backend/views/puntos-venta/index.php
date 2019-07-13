@@ -80,13 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         data-hint="Operaciones">
                                                     <i class="fas fa-eye" style="color: orange"></i>
                                                 </a>
-                                                <?php if (PermisosHelper::tienePermiso('AltaRemito')) : ?>
-                                                    <a class="btn btn-default"
-                                                            href="<?= Url::to(['/remitos', 'id' => $model['IdPuntoVenta']]) ?>" 
-                                                            data-hint="Remitos">
-                                                        <i class="fas fa-file-invoice"></i>
-                                                    </a>
-                                                <?php endif; ?>
                                             <?php endif; ?>  
                                             <?php if (PermisosHelper::tienePermiso('ModificarPuntoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
