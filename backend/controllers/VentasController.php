@@ -9,6 +9,7 @@ use common\models\GestorClientes;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
+use common\components\AfipHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -183,6 +184,74 @@ class VentasController extends BaseController
         }
 
         return ['error' => null];
+    }
+
+    public function actionPdf()
+    {
+        $contenido = AfipHelper::generarPDF(json_decode('{
+            "tipo_cbte": 201,
+            "punto_vta": 4000,
+            "fecha": "20190711",
+            "concepto": 3,
+            "tipo_doc": 80,
+            "nro_doc": "30000000007",
+            "cbte_nro": 12345678,
+            "imp_total": "127.00",
+            "imp_tot_conc": "3.00",
+            "imp_neto": "100.00",
+            "imp_iva": "21.00",
+            "imp_trib": "1.00",
+            "imp_op_ex": "2.00",
+            "imp_subtotal": "105.00",
+            "fecha_cbte": "20190711",
+            "fecha_venc_pago": "20190711",
+            "fecha_serv_desde": "20190711",
+            "fecha_serv_hasta": "20190711",
+            "moneda_id": "PES",
+            "moneda_ctz": 1,
+            "idioma_cbte": 1,
+            "nombre_cliente": "Joao Da Silva",
+            "domicilio_cliente": "Rua 76 km 34.5 Alagoas",
+            "pais_dst_cmp": 200,
+            "id_impositivo": "PJ54482221-l",
+            "forma_pago": "30 dias",
+            "obs_generales": "Observaciones Generales<br/>linea2<br/>linea3",
+            "obs_comerciales": "Observaciones Comerciales<br/>texto libre",
+            "motivo_obs": "Factura individual, DocTipo: 80, DocNro 30000000007 no se encuentra registrado en los padrones de AFIP.",
+            "cae": "61123022925855",
+            "fch_venc_cae": "20110320",
+            "localidad_cliente": "Hurlingham",
+            "provincia_cliente": "Buenos Aires",
+            "subtotales_iva": [
+                {
+                    "iva_id": 5,
+                    "base_imp": 100,
+                    "importe": 21
+                }
+            ],
+            "items": [
+                {
+                    "u_mtx": 123456,
+                    "cod_mtx": 1234567890123,
+                    "codigo": "P0001",
+                    "ds": "Descripcion del producto P0001\nLorem ipsum sit amet ",
+                    "qty": 1.00,
+                    "umed": 7,
+                    "precio": 110.00,
+                    "imp_iva": 23.10,
+                    "despacho": "Nº 123456",
+                    "dato_a": "Dato A"
+                }
+            ],
+            "custom-nro-cli": "Cod.123",
+            "custom-pedido": "1234",
+            "custom-remito": "12345",
+            "custom-transporte": "Camiones Ej."
+        }'));
+        return Yii::$app->response->sendContentAsFile($contenido, 'Factura.pdf', [
+            'mimeType' => 'application/pdf',
+            'inline' => true
+        ]);
     }
 }
 
