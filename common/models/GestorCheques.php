@@ -14,7 +14,7 @@ class GestorCheques
      */
     public function Alta(Cheques $cheque)
     {
-        $sql = "call xsp_alta_cheque( :token, :idcheque, :idbanco, :nrocheque, :importe,
+        $sql = "call xsp_alta_cheque( :token, :idcliente, :idbanco, :nrocheque, :importe,
         :fechavenc, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -24,11 +24,11 @@ class GestorCheques
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idcheque' => $cheque->IdCheque,
+            ':idcliente' => $cheque->IdCliente,
             ':idbanco' => $cheque->IdBanco,
-            ':nrochequq' => $cheque->NroCheque,
+            ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
-            ':fechavenc' => $cheque->FechaVencimiento,
+            ':fechavenc' => FechaHelper::formatearDateMysql($cheque->FechaVencimiento),
             ':observaciones' => $cheque->Observaciones,
         ]);
 
@@ -71,7 +71,7 @@ class GestorCheques
      * xsp_buscar_cheques
      * 
      */
-    public function Buscar($Cadena = '', $FechaInicio = '', $FechaFin = '', $Estado = 'A')
+    public function Buscar($Cadena = '', $FechaInicio = '', $FechaFin = '', $Estado = 'D')
     {
         $sql = "call xsp_buscar_cheques( :idempresa, :cadena, :fi, :ff, :estado )";
 

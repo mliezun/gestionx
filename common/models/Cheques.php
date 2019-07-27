@@ -20,6 +20,7 @@ class Cheques extends Model
     // Derivados
     public $Banco;
     public $Descripcion;
+    public $Tipo;
 
     const SCENARIO_ALTA = 'alta';
     const SCENARIO_EDITAR = 'editar';
@@ -30,11 +31,19 @@ class Cheques extends Model
         'T' => 'Todos'
     ];
 
+    public function attributeLabels()
+    {
+        return [
+            'IdBanco' => 'Banco',
+            'IdCliente' => 'Cliente'
+        ];
+    }
+
     public function rules()
     {
         return [
-            [['IdCliente', 'IdBanco', 'NroCheque', 'Importe', 'FechaAlta', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_ALTA],
-            [['IdCliente', 'IdBanco', 'NroCheque', 'Importe', 'FechaAlta', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['IdBanco', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdBanco', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_EDITAR],
             [$this->attributes(), 'safe']
         ];
     }

@@ -38,14 +38,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="alta--button">
             <?php if (PermisosHelper::tienePermiso('AltaChequeCliente')) : ?>
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/cheques/alta']) ?>"
+                        data-modal="<?= Url::to(['/cheques/alta', 'Tipo' => 'Cliente']) ?>"
                         data-hint="Nuevo Cheque Cliente">
                     Nuevo Cheque (Cliente)
                 </button>
             <?php endif; ?>
             <?php if (PermisosHelper::tienePermiso('AltaChequePropio')) : ?>
                 <button type="button" class="btn btn-secondary"
-                        data-modal="<?= Url::to(['/cheques/alta']) ?>"
+                        data-modal="<?= Url::to(['/cheques/alta', 'Tipo' => 'Propio']) ?>"
                         data-hint="Nuevo Cheque Propio">
                     Nuevo Cheque (Propio)
                 </button>

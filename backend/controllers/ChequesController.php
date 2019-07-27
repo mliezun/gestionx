@@ -3,6 +3,9 @@
 namespace backend\controllers;
 
 use common\models\GestorCheques;
+use common\models\GestorBancos;
+use common\models\GestorClientes;
+use common\models\Clientes;
 use common\models\Cheques;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
@@ -50,18 +53,41 @@ class ChequesController extends BaseController
         ]);
     }
 
-    public function actionAlta()
+    public function actionAlta($Tipo)
     {
-        PermisosHelper::verificarPermiso('AltaCheque');
+        PermisosHelper::verificarPermiso('AltaCheque' . $Tipo);
 
         $cheque = new Cheques();
         $cheque->setScenario(Cheques::SCENARIO_ALTA);
 
-        Yii::info(Yii::$app->request->post());
-
         $gestor = new GestorCheques();
 
-        return parent::alta($cheque, [$gestor, 'Alta'], function () use ($cheque) {});
+        if ($cheque->load(Yii::$app->request->post()) && $cheque->validate()) {
+            Yii::$app->response->format = 'json';
+            $resultado = $gestor->Alta($cheque);
+
+            if (\substr($resultado, 0, 2) != 'OK') {
+                return ['error' => $resultado];
+            }
+
+            return ['error' => null];
+        }
+
+        $gestorBancos = new GestorBancos;
+        $bancos = $gestorBancos->Buscar();
+
+        $gestorClientes = new GestorClientes;
+        $clientes = array();
+        foreach ($gestorClientes->Buscar() as $cliente) {
+            $clientes[$cliente['IdCliente']] = Clientes::Nombre($cliente);
+        }
+
+        return $this->renderAjax('alta', [
+            'model' => $cheque,
+            'Tipo' => $Tipo,
+            'bancos' => $bancos,
+            'clientes' => $clientes
+        ]);
     }
 
     public function actionEditar($id)
