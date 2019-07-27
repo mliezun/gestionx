@@ -106,7 +106,8 @@ class Ventas extends Model
      */
     public function Activar()
     {
-        $sql = "call xsp_activar_venta( :token, :idventa, :IP, :userAgent, :app)";
+        $sql = "call xsp_activar_venta( :token, :idventa, :idmediopago, :montopago, :fechadebe,
+        :observacionespago, :idcheque, :idtipocomprobante, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -115,7 +116,13 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => 1,
+            ':montopago' => 50,
+            ':fechadebe' => null,
+            ':observacionespago' => '',
+            ':idcheque' => 0,
+            ':idtipocomprobante' => 1,
         ]);
 
         return $query->queryScalar();
@@ -128,7 +135,7 @@ class Ventas extends Model
      */
     public function AgregarLinea(LineasForm $linea)
     {
-        $sql = "call xsp_alta_linea_venta( :token, :idVenta, :idart, :cant, :precio, :IP, :userAgent, :app)";
+        $sql = "call xsp_alta_linea_venta( :token, :idVenta, :idart, :cant, :precio, :consumestock, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -140,7 +147,8 @@ class Ventas extends Model
             ':idVenta' => $this->IdVenta,
             ':idart' => $linea->IdArticulo,
             ':cant' => $linea->Cantidad,
-            ':precio' => $linea->Precio
+            ':precio' => $linea->Precio,
+            ':consumestock' => 'N'
         ]);
 
         return $query->queryScalar();
@@ -185,4 +193,28 @@ class Ventas extends Model
 
         return $query->queryAll();
     }
+
+    /**
+     * Permite cambiar el estado de la Venta a baja y agregar existencias articulos vendidos.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_devolucion_venta
+     */
+    public function Devolucion()
+    {
+        $sql = "call xsp_devolucion_venta( :token, :idventa, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    
 }

@@ -112,6 +112,13 @@ $proveedor = new Proveedores();
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
+                                                <?php if (PermisosHelper::tienePermiso('DevolucionVenta')) : ?>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
+                                                            data-hint="Devolucion">
+                                                        <i class="fa fa-undo-alt"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
                                                 <button type="button" class="btn btn-default"

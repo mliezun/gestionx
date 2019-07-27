@@ -2,6 +2,7 @@
 var AltaLineas = {
     init: function (urlBase, tipoPrecio, model, lineas) {
         var id = (model.IdIngreso ? model.IdIngreso : model.IdVenta);
+        var idPadre = (model.IdIngreso ? model.IdRemito : model.IdVenta);
         Vue.component('v-select', VueSelect.VueSelect);
         new Vue({
             el: '#lineas',
@@ -145,7 +146,7 @@ var AltaLineas = {
                 },
                 completar: function () {
                     var _this = this;
-                    var uri = (model.IdRemito ? '/remitos' : urlBase) + '/activar/' + id
+                    var uri = (model.IdRemito ? '/remitos' : urlBase) + '/activar/' + idPadre
                     $.ajax(uri)
                         .done(function (data) {
                             if (data.error) {
