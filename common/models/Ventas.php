@@ -106,8 +106,7 @@ class Ventas extends Model
      */
     public function Activar()
     {
-        $sql = "call xsp_activar_venta( :token, :idventa, :idmediopago, :montopago, :fechadebe,
-        :observacionespago, :idcheque, :idtipocomprobante, :IP, :userAgent, :app)";
+        $sql = "call xsp_activar_venta( :token, :idventa, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -116,13 +115,7 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta,
-            ':idmediopago' => 1,
-            ':montopago' => 50,
-            ':fechadebe' => null,
-            ':observacionespago' => '',
-            ':idcheque' => 0,
-            ':idtipocomprobante' => 1,
+            ':idventa' => $this->IdVenta
         ]);
 
         return $query->queryScalar();
@@ -216,5 +209,48 @@ class Ventas extends Model
         return $query->queryScalar();
     }
 
+    /**
+     * 
+     * xsp_pagar_venta_efectivo
+     */
+    public function Pagar(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_venta_efectivo( :token, :idventa, :idmediopago, :monto, 
+        :fechadebe, :fechapago, :observaciones, :IdTipoComprobante , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':IdTipoComprobante' => $pago->IdTipoComprobante,
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
     
+    /**
+     * Permite obtener los pagos de una venta.
+     * xsp_dame_pagos_venta
+     */
+    public function DamePagos()
+    {
+        $sql = "call xsp_dame_pagos_venta( :idVenta )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idVenta' => $this->IdVenta
+        ]);
+
+        return $query->queryAll();
+    }
 }
