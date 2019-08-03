@@ -37,6 +37,10 @@ class Usuarios extends Model implements IdentityInterface
         'S' => 'Suspendido',
         'T' => 'Todos'
     ];
+
+    const APLICACIONES = [
+        'A' => 'Administración'
+    ];
     
     public function attributeLabels()
     {
@@ -346,6 +350,21 @@ class Usuarios extends Model implements IdentityInterface
         $query->bindValue(':token', $this->Token);
 
         return $query->queryColumn();
+    }
+
+    /**
+     * Permite listar las sesiones de un usuario.
+     * xsp_listar_sesiones_usuario
+     */
+    public function ListarSesiones()
+    {
+        $sql = 'CALL xsp_listar_sesiones_usuario ( :idUsuario )';
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValue(':idUsuario', $this->IdUsuario);
+
+        return $query->queryAll();
     }
 
     /**

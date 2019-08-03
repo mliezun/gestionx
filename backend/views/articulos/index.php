@@ -54,11 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
-                                <th>Precio de venta</th>
                                 <th>Precio de compra</th>
                                 <th>Gravamenes</th>
                                 <th>Fecha de alta</th>
-                                <th>Fecha de actualización</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -70,11 +68,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
                                     <td><?= Html::encode($model['Gravamenes']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
-                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaActualizado'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
 

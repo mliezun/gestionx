@@ -29,7 +29,7 @@ use yii\web\View;
             
             <?= $form->field($model, 'Rol') ?>
             
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'Observaciones')->textarea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

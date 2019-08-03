@@ -38,6 +38,8 @@ use yii\web\View;
             <?= $form->field($model, 'Email') ?>
 
             <?= $form->field($model, 'IdRol')->dropDownList(ArrayHelper::map($roles, 'IdRol', 'Rol'), ['prompt' => 'Rol']) ?>
+
+            <?= $form->field($model, 'Observaciones')->textarea() ?>
             
         </div>
         <div class="modal-footer">
