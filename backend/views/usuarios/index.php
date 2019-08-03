@@ -75,7 +75,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                            
+                                            <?php if (PermisosHelper::tienePermiso('BuscarUsuarios')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['usuarios/sesiones', 'id' => $model['IdUsuario']]) ?>"
+                                                        data-hint="Sesiones">
+                                                    <i class="fas fa-sync" style="color: gold"></i>
+                                                </a>
+                                            <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('ModificarUsuario')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['usuarios/editar', 'id' => $model['IdUsuario']]) ?>"

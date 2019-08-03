@@ -18,6 +18,7 @@ class UsuariosController extends BaseController
 {
     public function actionIndex()
     {
+        PermisosHelper::verificarPermiso('BuscarUsuarios');
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
@@ -242,6 +243,30 @@ class UsuariosController extends BaseController
         }
 
         return ['error' => $resultado];
+    }
+
+    public function actionSesiones($id)
+    {
+        PermisosHelper::verificarPermiso('BuscarUsuarios');
+
+        $usuario = new Usuarios;
+
+        $usuario->IdUsuario = $id;
+
+        $usuario->Dame();
+
+        $sesiones = $usuario->ListarSesiones();
+
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $paginado->totalCount = count($sesiones);
+        $sesiones = array_slice($sesiones, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        return $this->render('sesiones', [
+            'model' => $usuario,
+            'models' => $sesiones
+        ]);
     }
 }
 

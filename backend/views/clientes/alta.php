@@ -51,7 +51,7 @@ $array=ArrayHelper::remove($tipos,'T');
 
             <?= Html::activeHiddenInput($model, 'Tipo') ?>
 
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'Observaciones')->textarea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

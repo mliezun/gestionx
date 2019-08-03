@@ -30,6 +30,7 @@ class Ventas extends Model
 
     const TIPOS_ALTA = [
         'P' => 'Presupuesto',
+        'C' => 'Cotización',
         'V' => 'Venta',
         'B' => 'Prestamo'
     ];
