@@ -108,7 +108,7 @@ $proveedor = new Proveedores();
                                                 <?php if ($model['Estado'] == 'A') :?>
                                                     <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
                                                         <a class="btn btn-default"
-                                                                href="<?= Url::to(['/ventas/pagos', 'id' => $model['IdVenta']]) ?>"
+                                                                href="<?= Url::to(['/pagos', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Pagos">
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>

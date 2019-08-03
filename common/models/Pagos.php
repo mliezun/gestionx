@@ -26,19 +26,28 @@ class Pagos extends Model
     //Derivados
     public $IdTipoComprobante;
     public $MedioPago;
+    public $TipoComprobante;
 
     const _ALTA_TARJETA = 'altat';
     const _ALTA_EFECTIVO = 'altae';
+    const _ALTA_MERCADERIA = 'altam';
+    const _ALTA_CHEQUE = 'altac';
 
     const TIPOS = [
         'T' => 'Tarjeta',
         'E' => 'Efectivo',
-        'T' => 'Todos'
+        'C' => 'Cheque',
+        'M' => 'Mercaderia',
+        'A' => 'Todos'
     ];
 
     public function attributeLabels()
     {
         return [
+            'IdRemito' => 'Remito',
+            'IdCheque' => 'Cheque',
+            'TipoComprobante' => 'Tipo de Comprobante',
+            'IdTipoComprobante' => 'Tipo de Comprobante',
             'MedioPago' => 'Medio de Pago',
             'IdMedioPago' => 'Medio de Pago'
         ];
@@ -49,8 +58,12 @@ class Pagos extends Model
         return [
             [['IdVenta','IdMedioPago','IdTipoComprobante','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
-            [['IdVenta','IdMedioPago','IdTipoComprobante','Monto'],
+            [['IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
+            [['IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            'required', 'on' => self::_ALTA_MERCADERIA],
+            [['IdVenta','IdMedioPago','IdTipoComprobante','IdCheque'],
+            'required', 'on' => self::_ALTA_CHEQUE],
             [$this->attributes(), 'safe']
         ];
     }

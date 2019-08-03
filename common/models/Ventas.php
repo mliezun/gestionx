@@ -213,7 +213,7 @@ class Ventas extends Model
      * 
      * xsp_pagar_venta_efectivo
      */
-    public function Pagar(Pagos $pago)
+    public function PagarEfectivo(Pagos $pago)
     {
         $sql = "call xsp_pagar_venta_efectivo( :token, :idventa, :idmediopago, :monto, 
         :fechadebe, :fechapago, :observaciones, :IdTipoComprobante , :IP, :userAgent, :app)";
@@ -228,6 +228,98 @@ class Ventas extends Model
             ':idventa' => $this->IdVenta,
             ':idmediopago' => $pago->IdMedioPago,
             ':monto' => $pago->Monto,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':IdTipoComprobante' => $pago->IdTipoComprobante,
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * 
+     * xsp_pagar_venta_tarjeta
+     */
+    public function PagarTarjeta(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_venta_tarjeta( :token, :idventa, :idmediopago, :monto, 
+        :fechadebe, :fechapago, :observaciones, :IdTipoComprobante,
+        :NroTarjeta, :MesVencimiento, :AnioVencimiento, :CCV , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':IdTipoComprobante' => $pago->IdTipoComprobante,
+            ':observaciones' => $pago->Observaciones,
+            ':NroTarjeta' => $pago->NroTarjeta,
+            ':MesVencimiento' => $pago->MesVencimiento,
+            ':AnioVencimiento' => $pago->AnioVencimiento,
+            ':CCV' => $pago->CCV,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * 
+     * xsp_pagar_venta_cheque
+     */
+    public function PagarCheque(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_venta_cheque( :token, :idventa, :idmediopago, 
+        :fechadebe, :fechapago, :IdCheque, :observaciones, :IdTipoComprobante,
+        :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':IdCheque' => $pago->IdCheque,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':IdTipoComprobante' => $pago->IdTipoComprobante,
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * 
+     * xsp_pagar_venta_mercaderia
+     */
+    public function PagarMercaderia(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_venta_mercaderia( :token, :idventa, :idmediopago, :monto,
+        :fechadebe, :fechapago, :IdRemito, :observaciones, :IdTipoComprobante,
+        :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':monto' => $pago->Monto,
+            ':IdRemito' => $pago->IdRemito,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,
             ':IdTipoComprobante' => $pago->IdTipoComprobante,

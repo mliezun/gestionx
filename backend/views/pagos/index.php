@@ -31,16 +31,30 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="alta--button">
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
                     <button type="button" class="btn btn-primary"
-                            data-modal="<?= Url::to(['/ventas/agregar-pago', 'id' => $model['IdVenta'], 'Tipo' => 'E']) ?>"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E']) ?>"
                             data-hint="Nuevo Pago con Efectivo">
                         Nuevo Pago con Efectivo
                     </button>
                 <?php endif; ?>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaTarjeta')) : ?>
                     <button type="button" class="btn btn-secondary"
-                            data-modal="<?= Url::to(['/ventas/agregar-pago', 'id' => $model['IdVenta'], 'Tipo' => 'T']) ?>"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'T']) ?>"
                             data-hint="Nuevo Pago con Tarjeta">
                         Nuevo Pago con Tarjeta
+                    </button>
+                <?php endif; ?>
+                <?php if (PermisosHelper::tienePermiso('PagarVentaMercaderia')) : ?>
+                    <button type="button" class="btn btn-primary"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'M']) ?>"
+                            data-hint="Nuevo Pago con Mercaderia">
+                        Nuevo Pago con Mercaderia
+                    </button>
+                <?php endif; ?>
+                <?php if (PermisosHelper::tienePermiso('PagarVentaCheque')) : ?>
+                    <button type="button" class="btn btn-secondary"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'C']) ?>"
+                            data-hint="Nuevo Pago con Cheque">
+                        Nuevo Pago con Cheque
                     </button>
                 <?php endif; ?>
             </div>
@@ -56,16 +70,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Medio de Pago</th>
+                                <th>Tipo de Comprobante</th>
                                 <th>Monto</th>
                                 <th>Datos</th>
                                 <th>Fecha de Alta</th>
                                 <th>Observaciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($pagos as $pago): ?>
                                 <tr>
                                     <td><?= Html::encode($pago['MedioPago']) ?></td>
+                                    <td><?= Html::encode($pago['TipoComprobante']) ?></td>
                                     <td><?= Html::encode($pago['Monto']) ?></td>
                                     <td>
                                         <ul>
@@ -79,6 +96,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($pago['FechaAlta'])) ?></td>
                                     <td><?= Html::encode($pago['Observaciones']) ?></td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="...">
+                                            <button type="button" class="btn btn-default"
+                                                    data-ajax="<?= Url::to(['pagos/modificar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
+                                                    data-hint="Modificar">
+                                                <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default"
+                                                    data-ajax="<?= Url::to(['pagos/borrar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
+                                                    data-hint="Borrar">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

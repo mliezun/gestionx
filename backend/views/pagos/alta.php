@@ -1,16 +1,19 @@
 <?php
 
 use common\models\Pagos;
+use common\models\GestorCheques;
 use common\models\GestorMediosPago;
+use common\models\GestorRemitos;
 use common\models\GestorTiposComprobantes;
+use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\web\View;
 
 $mediospago = (new GestorMediosPago())->Listar();
-
 $tiposcomprobantes = (new GestorTiposComprobantes())->Listar();
+$cheques = (new GestorCheques())->Buscar();
+
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -45,12 +48,20 @@ $tiposcomprobantes = (new GestorTiposComprobantes())->Listar();
                 <?= $form->field($model, 'AnioVencimiento') ?>
 
                 <?= $form->field($model, 'CCV') ?>
-
-                <?= $form->field($model, 'Monto') ?>
                 
             <?php endif; ?>
 
-            <?php if ($model['IdMedioPago'] == '1') :?>
+            <?php if ($model['IdMedioPago'] == '2') :?>
+                <?= $form->field($model, 'IdRemito')->dropDownList(ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'), ['prompt' => 'Remito']) ?>
+                
+            <?php endif; ?>
+
+            <?php if ($model['IdMedioPago'] == '5') :?>
+                <?= $form->field($model, 'IdCheque')->dropDownList(ArrayHelper::map($cheques, 'IdCheque', 'Cheque'), ['prompt' => 'Cheque']) ?>
+                
+            <?php endif; ?>
+
+            <?php if ($model['IdMedioPago'] == '1' OR $model['IdMedioPago'] == '2' OR $model['IdMedioPago'] == '3' ) :?>
 
                 <?= $form->field($model, 'Monto') ?>
 
