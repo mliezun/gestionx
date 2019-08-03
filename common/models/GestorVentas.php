@@ -93,9 +93,9 @@ class GestorVentas
      * Para listar todos, rango de fechas nulo.
      * xsp_buscar_ventas
      */
-    public function Buscar($PuntoVenta, $FechaDesde = null, $FechaHasta = null, $Cliente = 0, $Estado = 'E', $Tipo = 'T')
+    public function Buscar($PuntoVenta, $FechaDesde = null, $FechaHasta = null, $Cliente = 0, $Incluye = 'N', $Tipo = 'T')
     {
-        $sql = "call xsp_buscar_ventas( :idpuntoventa, :idempresa, :fechadesde, :fechahasta, :idcliente, :tipo, :estado)";
+        $sql = "call xsp_buscar_ventas( :idpuntoventa, :idempresa, :fechadesde, :fechahasta, :idcliente, :tipo, :incluye)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -104,7 +104,7 @@ class GestorVentas
             ':idcliente' => $Cliente,
             ':fechadesde' => FechaHelper::formatearDateMysql($FechaDesde),
             ':fechahasta' => FechaHelper::formatearDateMysql($FechaHasta),
-            ':estado' => $Estado,
+            ':incluye' => $Incluye,
             ':tipo' => $Tipo,
             ':idpuntoventa' => $PuntoVenta,
         ]);

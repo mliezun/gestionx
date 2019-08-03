@@ -145,9 +145,9 @@ class TabsPuntosVenta extends BaseController
             $FechaDesde = $busqueda->FechaInicio;
             $FechaFin = $busqueda->FechaFin;
             $Cliente = $busqueda->Combo ? $busqueda->Combo : 0;
-            $Estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
+            $Incluye = $busqueda->Check ? $busqueda->Check : 'N';
             $Tipo = $busqueda->Combo3 ? $busqueda->Combo3 : 'T';
-            $ventas = $gestor->Buscar($this->IdPuntoVenta, $FechaDesde, $FechaFin, $Cliente, $Estado, $Tipo);
+            $ventas = $gestor->Buscar($this->IdPuntoVenta, $FechaDesde, $FechaFin, $Cliente, $Incluye, $Tipo);
         } else {
             $ventas = $gestor->Buscar($this->IdPuntoVenta);
         }

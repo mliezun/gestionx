@@ -28,11 +28,11 @@ $proveedor = new Proveedores();
 
             <?= $form->field($busqueda, 'Combo')->dropDownList($clientes, ['prompt' => 'Cliente']) ?>
 
-            <?= $form->field($busqueda, 'Combo2')->dropDownList(Ventas::ESTADOS, ['prompt' => 'Estado']) ?>
-
             <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
+
+            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -103,6 +103,15 @@ $proveedor = new Proveedores();
                                                                 data-hint="Activar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                                <?php if ($model['Estado'] == 'A') :?>
+                                                    <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
+                                                        <a class="btn btn-default"
+                                                                href="<?= Url::to(['/pagos', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Pagos">
+                                                            <i class="fas fa-money-bill-wave"></i>
+                                                        </a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaVenta')) : ?>

@@ -6,6 +6,7 @@ use common\models\Ventas;
 use common\models\Pagos;
 use common\models\PuntosVenta;
 use common\models\GestorVentas;
+use common\models\GestorRemitos;
 use common\models\GestorClientes;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
@@ -17,20 +18,95 @@ use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
-class VentasController extends BaseController
+class PagosController extends BaseController
 {
-    public function actionAlta($id)
+    public function actionIndex($id)
     {
-        PermisosHelper::verificarPermiso('AltaVenta');
+        PermisosHelper::verificarPermiso('PagarVenta');
+
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
 
         $venta = new Ventas();
+        $venta->IdVenta = $id;
 
-        $venta->setScenario(Ventas::_ALTA);
+        $venta->Dame();
 
-        if($venta->load(Yii::$app->request->post()) && $venta->validate()){
-            $venta->IdPuntoVenta = $id;
-            $gestor = new GestorVentas();
-            $resultado = $gestor->Alta($venta);
+        $pagos = $venta->DamePagos();
+
+        $pv = new PuntosVenta();
+        $pv->IdPuntoVenta = $venta->IdPuntoVenta;
+        $pv->Dame();
+        $anterior = [
+            'label' => "Punto de Venta: " . $pv->PuntoVenta,
+            'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
+        ];
+        $titulo = 'Pagos de la Venta ' . $id;
+
+        $paginado->totalCount = count($pagos);
+        $pagos = array_slice($pagos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        return $this->render('index', [
+            'model' => $venta,
+            'pagos' => $pagos,
+            'anterior' => $anterior,
+            'titulo' => $titulo,
+            'busqueda' => $busqueda
+        ]);
+    }
+    
+    public function actionAlta($id)
+    {
+        PermisosHelper::verificarPermiso('PagarVenta');
+
+        $venta = new Ventas();
+        $venta->IdVenta = $id;
+        $venta->Dame();
+
+        $pago = new Pagos();
+        $remitos=0;
+
+        switch (Yii::$app->request->get('Tipo')) {
+            case 'T':
+                PermisosHelper::verificarPermiso('PagarVentaTarjeta');
+                $pago->setScenario(Pagos::_ALTA_TARJETA);
+                $pago->IdMedioPago = 3;
+                break;
+            case 'E':
+                PermisosHelper::verificarPermiso('PagarVentaEfectivo');
+                $pago->setScenario(Pagos::_ALTA_EFECTIVO);
+                $pago->IdMedioPago = 1;
+                break;
+            case 'M':
+                PermisosHelper::verificarPermiso('PagarVentaMercaderia');
+                $pago->setScenario(Pagos::_ALTA_MERCADERIA);
+                $pago->IdMedioPago = 2;
+                $remitos = (new GestorRemitos())->Buscar(0,'','A',0);
+                break;
+            case 'C':
+                PermisosHelper::verificarPermiso('PagarVentaCheque');
+                $pago->setScenario(Pagos::_ALTA_CHEQUE);
+                $pago->IdMedioPago = 5;
+                break;
+        }
+
+        if($pago->load(Yii::$app->request->post())){
+            switch (Yii::$app->request->get('Tipo')) {
+                case 'T':
+                    $resultado = $venta->PagarTarjeta($pago);
+                    break;
+                case 'E':
+                    $resultado = $venta->PagarEfectivo($pago);
+                    break;
+                case 'M':
+                    $resultado = $venta->PagarMercaderia($pago);
+                    break;
+                case 'C':
+                    $resultado = $venta->PagarCheque($pago);
+                    break;
+            }
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
@@ -40,8 +116,9 @@ class VentasController extends BaseController
             }
         } else {
             return $this->renderAjax('alta', [
-                'titulo' => 'Alta Venta',
-                'model' => $venta
+                'titulo' => 'Agregar pago',
+                'model' => $pago,
+                'remitos' => $remitos
             ]);
         }
     }
@@ -76,27 +153,10 @@ class VentasController extends BaseController
         }
     }
 
-    public function actionActivar($id)
-    {
-        PermisosHelper::verificarPermiso('ActivarVenta');
-
-        Yii::$app->response->format = 'json';
-        
-        $venta = new Ventas();
-        $venta->IdVenta = $id;
-
-        $resultado = $venta->Activar();
-
-        if ($resultado == 'OK') {
-            return ['error' => null];
-        } else {
-            return ['error' => $resultado];
-        }
-    }
-
     public function actionAgregarPago($id)
     {
         PermisosHelper::verificarPermiso('PagarVenta');
+        Yii::$app->response->format = 'json';
 
         $venta = new Ventas();
         $venta->IdVenta = $id;
@@ -271,74 +331,6 @@ class VentasController extends BaseController
         }
 
         return ['error' => null];
-    }
-
-    public function actionPdf()
-    {
-        $contenido = AfipHelper::generarPDF(json_decode('{
-            "tipo_cbte": 201,
-            "punto_vta": 4000,
-            "fecha": "20190711",
-            "concepto": 3,
-            "tipo_doc": 80,
-            "nro_doc": "30000000007",
-            "cbte_nro": 12345678,
-            "imp_total": "127.00",
-            "imp_tot_conc": "3.00",
-            "imp_neto": "100.00",
-            "imp_iva": "21.00",
-            "imp_trib": "1.00",
-            "imp_op_ex": "2.00",
-            "imp_subtotal": "105.00",
-            "fecha_cbte": "20190711",
-            "fecha_venc_pago": "20190711",
-            "fecha_serv_desde": "20190711",
-            "fecha_serv_hasta": "20190711",
-            "moneda_id": "PES",
-            "moneda_ctz": 1,
-            "idioma_cbte": 1,
-            "nombre_cliente": "Joao Da Silva",
-            "domicilio_cliente": "Rua 76 km 34.5 Alagoas",
-            "pais_dst_cmp": 200,
-            "id_impositivo": "PJ54482221-l",
-            "forma_pago": "30 dias",
-            "obs_generales": "Observaciones Generales<br/>linea2<br/>linea3",
-            "obs_comerciales": "Observaciones Comerciales<br/>texto libre",
-            "motivo_obs": "Factura individual, DocTipo: 80, DocNro 30000000007 no se encuentra registrado en los padrones de AFIP.",
-            "cae": "61123022925855",
-            "fch_venc_cae": "20110320",
-            "localidad_cliente": "Hurlingham",
-            "provincia_cliente": "Buenos Aires",
-            "subtotales_iva": [
-                {
-                    "iva_id": 5,
-                    "base_imp": 100,
-                    "importe": 21
-                }
-            ],
-            "items": [
-                {
-                    "u_mtx": 123456,
-                    "cod_mtx": 1234567890123,
-                    "codigo": "P0001",
-                    "ds": "Descripcion del producto P0001\nLorem ipsum sit amet ",
-                    "qty": 1.00,
-                    "umed": 7,
-                    "precio": 110.00,
-                    "imp_iva": 23.10,
-                    "despacho": "Nº 123456",
-                    "dato_a": "Dato A"
-                }
-            ],
-            "custom-nro-cli": "Cod.123",
-            "custom-pedido": "1234",
-            "custom-remito": "12345",
-            "custom-transporte": "Camiones Ej."
-        }'));
-        return Yii::$app->response->sendContentAsFile($contenido, 'Factura.pdf', [
-            'mimeType' => 'application/pdf',
-            'inline' => true
-        ]);
     }
 }
 
