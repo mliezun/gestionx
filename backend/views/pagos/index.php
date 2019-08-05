@@ -29,6 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
             <div class="alta--button">
+                <button type="button" class="btn btn-primary"
+                        data-modal="<?= Url::to(['/pagos/eleccion', 'id' => $model['IdVenta']]) ?>"
+                        data-hint="Nuevo Pago">
+                    Nuevo Pago
+                </button>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
                     <button type="button" class="btn btn-primary"
                             data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E']) ?>"
@@ -92,6 +97,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <li><?= Html::encode('Año de Vencimiento') ?>: <?= Html::encode($pago['AnioVencimiento']) ?></li>
                                             <li><?= Html::encode('CCV') ?>: <?= Html::encode($pago['CCV']) ?></li>
                                         <?php endif; ?>
+                                        <?php if ($pago['MedioPago'] == 'Mercaderia') : ?>
+                                            <li><?= Html::encode('Nro de Remito') ?>: <?= Html::encode($pago['NroRemito']) ?></li>
+                                        <?php endif; ?>
+                                        <?php if ($pago['MedioPago'] == 'Cheque') : ?>
+                                            <li><?= Html::encode('Nro de Cheque') ?>: <?= Html::encode($pago['NroCheque']) ?></li>
+                                        <?php endif; ?>
                                         </ul>
                                     </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($pago['FechaAlta'])) ?></td>
@@ -99,12 +110,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
                                         <div class="btn-group" role="group" aria-label="...">
                                             <button type="button" class="btn btn-default"
-                                                    data-ajax="<?= Url::to(['pagos/modificar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
+                                                    data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago']]) ?>"
                                                     data-hint="Modificar">
                                                 <i class="fa fa-edit" style="color: dodgerblue"></i>
                                             </button>
                                             <button type="button" class="btn btn-default"
-                                                    data-ajax="<?= Url::to(['pagos/borrar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
+                                                    data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago']]) ?>"
                                                     data-hint="Borrar">
                                                 <i class="fa fa-trash"></i>
                                             </button>
