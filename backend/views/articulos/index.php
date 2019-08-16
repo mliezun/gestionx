@@ -54,8 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
-                                <th>Precio de venta</th>
                                 <th>Precio de compra</th>
+                                <th>Precio de venta</th>
                                 <th>Gravamenes</th>
                                 <th>Fecha de alta</th>
                                 <th>Fecha de actualización</th>
@@ -70,11 +70,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td><?= Html::encode($model['Gravamenes']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
-                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaActualizado'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
 
@@ -96,6 +95,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php else : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-ajax="<?= Url::to(['articulos/lista-precios', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-hint="Lsitas de Precios">
+                                                    <i class="fas fa-list-alt" style="color: dodgerblue"></i>
+                                                </button>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"

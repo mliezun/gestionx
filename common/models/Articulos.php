@@ -13,14 +13,13 @@ class Articulos extends Model
     public $Codigo;
     public $Descripcion;
     public $PrecioCosto;
-    public $PrecioVenta;
     public $FechaAlta;
-    public $FechaActualizado;
     public $Estado;
 
     // Derivados
     public $Proveedor;
     public $Gravamenes;
+    public $PrecioVenta;
 
     const ESTADOS = [
         'A' => 'Activo',
@@ -49,11 +48,11 @@ class Articulos extends Model
             ['Codigo', 'trim'],
             ['Descripcion', 'trim'],
             // Alta
-            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 
-            'PrecioVenta','Gravamenes'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            'Gravamenes'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
-            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 
-            'PrecioVenta','Gravamenes'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            'Gravamenes'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [['IdArticulo', 'IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
             'FechaAlta', 'FechaActualizado', 'Estado', 'Gravamenes'], 'safe'],

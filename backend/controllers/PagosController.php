@@ -189,20 +189,22 @@ class PagosController extends BaseController
 
         $venta = new Ventas();
         $venta->IdVenta = $pago->IdVenta;
+        $venta->Dame();
+
         $remitos=0;
         $cheques=0;
 
         switch ($pago->MedioPago) {
             case 'Tarjeta':
-                PermisosHelper::verificarPermiso('PagarVentaTarjeta');
+                PermisosHelper::verificarPermiso('ModificarPagoTarjeta');
                 $pago->setScenario(Pagos::_MODIFICAR_TARJETA);
                 break;
             case 'Efectivo':
-                PermisosHelper::verificarPermiso('PagarVentaEfectivo');
+                PermisosHelper::verificarPermiso('ModificarPagoEfectivo');
                 $pago->setScenario(Pagos::_MODIFICAR_EFECTIVO);
                 break;
             case 'Mercaderia':
-                PermisosHelper::verificarPermiso('PagarVentaMercaderia');
+                PermisosHelper::verificarPermiso('ModificarPagoMercaderia');
                 $pago->setScenario(Pagos::_MODIFICAR_MERCADERIA);
                 $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta,'','A',0,'N');
                 $remito = new Remitos();
@@ -211,7 +213,7 @@ class PagosController extends BaseController
                 array_push($remitos, $remito);
                 break;
             case 'Cheque':
-                PermisosHelper::verificarPermiso('PagarVentaCheque');
+                PermisosHelper::verificarPermiso('ModificarPagoCheque');
                 $pago->setScenario(Pagos::_MODIFICAR_CHEQUE);
                 $cheques = (new GestorCheques())->Buscar();
                 $cheque = new Cheques();
@@ -224,16 +226,16 @@ class PagosController extends BaseController
         if($pago->load(Yii::$app->request->post())){
             switch ($pago->MedioPago) {
                 case 'Tarjeta':
-                    $resultado = $venta->ModificarPagoTarjeta($pago);
+                    $resultado = (new Ventas())->ModificarPagoTarjeta($pago);
                     break;
                 case 'Efectivo':
-                    $resultado = $venta->ModificarPagoEfectivo($pago);
+                    $resultado = (new Ventas())->ModificarPagoEfectivo($pago);
                     break;
                 case 'Mercaderia':
-                    $resultado = $venta->ModificarPagoMercaderia($pago);
+                    $resultado = (new Ventas())->ModificarPagoMercaderia($pago);
                     break;
                 case 'Cheque':
-                    $resultado = $venta->ModificarPagoCheque($pago);
+                    $resultado = (new Ventas())->ModificarPagoCheque($pago);
                     break;
             }
 

@@ -17,6 +17,9 @@ class Ventas extends Model
     public $Tipo;
     public $Estado;
     public $Observaciones;
+
+    // Derivados
+    public $MontoPagado;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -141,7 +144,7 @@ class Ventas extends Model
             ':idart' => $linea->IdArticulo,
             ':cant' => $linea->Cantidad,
             ':precio' => $linea->Precio,
-            ':consumestock' => 'N'
+            ':consumestock' => ($this->Tipo == 'P') ? 'N' : 'S'
         ]);
 
         return $query->queryScalar();
@@ -154,7 +157,7 @@ class Ventas extends Model
      */
     public function QuitarLinea($IdArticulo)
     {
-        $sql = "call xsp_borrar_linea_venta( :token, :idVenta, :idart, :IP, :userAgent, :app)";
+        $sql = "call xsp_borrar_linea_venta( :token, :idVenta, :idart, :consumestock, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -164,7 +167,8 @@ class Ventas extends Model
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idVenta' => $this->IdVenta,
-            ':idart' => $IdArticulo
+            ':idart' => $IdArticulo,
+            ':consumestock' => ($this->Tipo == 'P') ? 'N' : 'S'
         ]);
 
         return $query->queryScalar();
@@ -334,7 +338,7 @@ class Ventas extends Model
      */
     public function ModificarPagoEfectivo(Pagos $pago)
     {
-        $sql = "call xsp_pagar_venta_efectivo( :token, :idventa, :idmediopago, :monto, 
+        $sql = "call xsp_modificar_pago_efectivo( :token, :idpago, :monto, 
         :fechadebe, :fechapago, :observaciones, :IdTipoComprobante , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -344,8 +348,7 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta,
-            ':idmediopago' => $pago->IdMedioPago,
+            ':idpago' => $pago->IdPago,
             ':monto' => $pago->Monto,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,
@@ -362,7 +365,7 @@ class Ventas extends Model
      */
     public function ModificarPagoTarjeta(Pagos $pago)
     {
-        $sql = "call xsp_pagar_venta_tarjeta( :token, :idventa, :idmediopago, :monto, 
+        $sql = "call xsp_modificar_pago_tarjeta( :token, :idpago, :monto, 
         :fechadebe, :fechapago, :observaciones, :IdTipoComprobante,
         :NroTarjeta, :MesVencimiento, :AnioVencimiento, :CCV , :IP, :userAgent, :app)";
 
@@ -373,8 +376,7 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta,
-            ':idmediopago' => $pago->IdMedioPago,
+            ':idpago' => $pago->IdPago,
             ':monto' => $pago->Monto,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,
@@ -395,7 +397,7 @@ class Ventas extends Model
      */
     public function ModificarPagoCheque(Pagos $pago)
     {
-        $sql = "call xsp_pagar_venta_cheque( :token, :idventa, :idmediopago, 
+        $sql = "call xsp_modificar_pago_cheque( :token, :idpago, 
         :fechadebe, :fechapago, :IdCheque, :observaciones, :IdTipoComprobante,
         :IP, :userAgent, :app)";
 
@@ -406,8 +408,7 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta,
-            ':idmediopago' => $pago->IdMedioPago,
+            ':idpago' => $pago->IdPago,
             ':IdCheque' => $pago->IdCheque,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,
@@ -424,7 +425,7 @@ class Ventas extends Model
      */
     public function ModificarPagoMercaderia(Pagos $pago)
     {
-        $sql = "call xsp_pagar_venta_mercaderia( :token, :idventa, :idmediopago,
+        $sql = "call xsp_modificar_pago_mercaderia( :token, :idpago,
         :fechadebe, :fechapago, :IdRemito, :observaciones, :IdTipoComprobante,
         :IP, :userAgent, :app)";
 
@@ -435,8 +436,7 @@ class Ventas extends Model
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $this->IdVenta,
-            ':idmediopago' => $pago->IdMedioPago,
+            ':idpago' => $pago->IdPago,
             ':IdRemito' => $pago->IdRemito,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,

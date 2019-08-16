@@ -181,4 +181,21 @@ class PuntosVenta extends Model
         
         return $query->queryAll();
     }
+
+    /**
+     * Procedimiento que sirve para listar las existencias de un punto venta desde la base de datos.
+     * xsp_listar_existencias_puntosventa
+     */
+    public function ListarExistencias()
+    {
+        $sql = 'CALL xsp_listar_existencias_puntosventa( :idPuntoVenta )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+    
+        $query->bindValues([
+            ':idPuntoVenta' => $this->IdPuntoVenta
+        ]);
+        
+        return $query->queryAll();
+    }
 }

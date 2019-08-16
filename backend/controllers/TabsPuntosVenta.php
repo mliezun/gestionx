@@ -45,6 +45,13 @@ class TabsPuntosVenta extends BaseController
                     return $this->Usuarios();
                 }
             ],
+            [
+                'Permiso' => 'BuscarArticulos',
+                'Nombre' => 'Articulos',
+                'Render' => function () {
+                    return $this->Articulos();
+                }
+            ],
         ];
     }
 
@@ -167,6 +174,25 @@ class TabsPuntosVenta extends BaseController
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa,
             'clientes' => $clientes
+        ]);
+    }
+
+    public function Articulos()
+    {
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $puntoventa = new PuntosVenta();
+        $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
+        $puntoventa->Dame();
+
+        $existencias = $puntoventa->ListarExistencias();
+        $paginado->totalCount = count($existencias);
+        $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
+
+        return $this->renderPartial('articulos', [
+            'models' => $existencias,
+            'puntoventa' => $puntoventa
         ]);
     }
 }

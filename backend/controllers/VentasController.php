@@ -236,6 +236,7 @@ class VentasController extends BaseController
         $venta = new Ventas();
 
         $venta->IdVenta = $id;
+        $venta->Dame();
 
         $linea = new LineasForm();
 
@@ -263,6 +264,7 @@ class VentasController extends BaseController
         $venta = new Ventas();
 
         $venta->IdVenta = $id;
+        $venta->Dame();
 
         $resultado = $venta->QuitarLinea(Yii::$app->request->post('IdArticulo'));
 
