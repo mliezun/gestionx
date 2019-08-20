@@ -92,22 +92,32 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <li><?= Html::encode('Año de Vencimiento') ?>: <?= Html::encode($pago['AnioVencimiento']) ?></li>
                                             <li><?= Html::encode('CCV') ?>: <?= Html::encode($pago['CCV']) ?></li>
                                         <?php endif; ?>
+                                        <?php if ($pago['MedioPago'] == 'Mercaderia') : ?>
+                                            <li><?= Html::encode('Nro de Remito') ?>: <?= Html::encode($pago['NroRemito']) ?></li>
+                                        <?php endif; ?>
+                                        <?php if ($pago['MedioPago'] == 'Cheque') : ?>
+                                            <li><?= Html::encode('Nro de Cheque') ?>: <?= Html::encode($pago['NroCheque']) ?></li>
+                                        <?php endif; ?>
                                         </ul>
                                     </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($pago['FechaAlta'])) ?></td>
                                     <td><?= Html::encode($pago['Observaciones']) ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="...">
-                                            <button type="button" class="btn btn-default"
-                                                    data-ajax="<?= Url::to(['pagos/modificar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
-                                                    data-hint="Modificar">
-                                                <i class="fa fa-edit" style="color: dodgerblue"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default"
-                                                    data-ajax="<?= Url::to(['pagos/borrar', 'id' => $model['IdVenta'], 'idpago' => $pago['IdPago']]) ?>"
-                                                    data-hint="Borrar">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
+                                            <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago']]) ?>"
+                                                        data-hint="Modificar">
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('BorrarPagoVenta')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago']]) ?>"
+                                                        data-hint="Borrar">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -116,6 +126,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     </table>
                 </div>
             </div>
+            <div class="lineas--bottom">
+                <div class="lineas--total">
+                    Total de la Venta: <?= Html::encode($model['Monto']) ?>
+                </div>
+                <div class="lineas--total">
+                    Total de los Pagos: <?= Html::encode($model['MontoPagado']) ?>
+                </div>
+            </div>
+            <?php if ($model['Monto'] == $model['MontoPagado']) : ?>
+            <div class="lineas--bottom">
+                <div class="lineas--total">
+                    PAGADO
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
         <?php else: ?>
             <p><strong>No hay pagos que coincidan con el criterio de búsqueda utilizado.</strong></p>

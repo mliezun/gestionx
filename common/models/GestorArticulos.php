@@ -45,7 +45,7 @@ class GestorArticulos
      */
     public function Buscar($IdProveedor = 0,  $Cadena = '', $IncluyeBajas = 'N')
     {
-        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :cadena, :iBajas )";
+        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :cadena, :iBajas , :iBajasListas)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -54,6 +54,7 @@ class GestorArticulos
             ':idprov' => $IdProveedor,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
+            ':iBajasListas' => 'S',
         ]);
 
         return $query->queryAll();

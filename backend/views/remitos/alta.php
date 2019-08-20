@@ -36,6 +36,8 @@ $proveedores = (new GestorProveedores())->Buscar();
 
             <?= $form->field($model, 'NroRemito') ?>
 
+            <?= $form->field($model, 'CAI') ?>
+
             <?= $form->field($model, 'Observaciones') ?>
         </div>
         <div class="modal-footer">

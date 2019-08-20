@@ -8,6 +8,7 @@ class Remitos extends Model
 {
     public $IdRemito;
     public $NroRemito;
+    public $CAI;
     public $NroFactura;
     public $FechaAlta;
     public $FechaFacturado;
@@ -15,6 +16,7 @@ class Remitos extends Model
     public $Observaciones;
     public $IdEmpresa;
     public $IdProveedor;
+    public $IdCliente;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -36,11 +38,11 @@ class Remitos extends Model
     public function rules()
     {
         return [
-            [['IdEmpresa', 'IdProveedor','NroRemito'],
+            [['IdEmpresa', 'IdProveedor','NroRemito','CAI'],
                 'required', 'on' => self::_ALTA],
-            [['IdRemito', 'NroRemito'],
+            [['IdRemito', 'NroRemito','CAI'],
                 'required', 'on' => self::_MODIFICAR],
-            [['IdRemito', 'NroRemito', 'Estado', 'Observaciones','IdEmpresa','IdProveedor'], 'safe']
+            [$this->attributes(), 'safe']
         ];
     }
 

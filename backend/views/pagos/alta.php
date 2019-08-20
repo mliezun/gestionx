@@ -1,19 +1,13 @@
 <?php
 
 use common\models\Pagos;
-use common\models\GestorCheques;
-use common\models\GestorMediosPago;
-use common\models\GestorRemitos;
 use common\models\GestorTiposComprobantes;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
 
-$mediospago = (new GestorMediosPago())->Listar();
 $tiposcomprobantes = (new GestorTiposComprobantes())->Listar();
-$cheques = (new GestorCheques())->Buscar();
-
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -23,7 +17,7 @@ $cheques = (new GestorCheques())->Buscar();
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title"><?= 'Nuevo pago venta' ?></h5>
+            <h5 class="modal-title"><?= (isset($model['IdPago']) ? 'Modificar Pago ' . $model['MedioPago'] : 'Nuevo Pago ' . $model['MedioPago']) ?></h5>
             <button type="button" class="close" onclick="Main.modalClose()">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -40,7 +34,7 @@ $cheques = (new GestorCheques())->Buscar();
 
             <?= $form->field($model, 'IdTipoComprobante')->dropDownList(ArrayHelper::map($tiposcomprobantes, 'IdTipoComprobante', 'TipoComprobante'), ['prompt' => 'Tipo de Comprobante']) ?>
 
-            <?php if ($model['IdMedioPago'] == '3') :?>
+            <?php if ($model['MedioPago'] == 'Tarjeta') :?>
                 <?= $form->field($model, 'NroTarjeta') ?>
 
                 <?= $form->field($model, 'MesVencimiento') ?>
@@ -51,17 +45,17 @@ $cheques = (new GestorCheques())->Buscar();
                 
             <?php endif; ?>
 
-            <?php if ($model['IdMedioPago'] == '2') :?>
+            <?php if ($model['MedioPago'] == 'Mercaderia') :?>
                 <?= $form->field($model, 'IdRemito')->dropDownList(ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'), ['prompt' => 'Remito']) ?>
                 
             <?php endif; ?>
 
-            <?php if ($model['IdMedioPago'] == '5') :?>
-                <?= $form->field($model, 'IdCheque')->dropDownList(ArrayHelper::map($cheques, 'IdCheque', 'Cheque'), ['prompt' => 'Cheque']) ?>
+            <?php if ($model['MedioPago'] == 'Cheque') :?>
+                <?= $form->field($model, 'IdCheque')->dropDownList(ArrayHelper::map($cheques, 'IdCheque', 'NroCheque'), ['prompt' => 'Cheque']) ?>
                 
             <?php endif; ?>
 
-            <?php if ($model['IdMedioPago'] == '1' OR $model['IdMedioPago'] == '2' OR $model['IdMedioPago'] == '3' ) :?>
+            <?php if ($model['MedioPago'] == 'Tarjeta' OR $model['MedioPago'] == 'Efectivo' ) :?>
 
                 <?= $form->field($model, 'Monto') ?>
 

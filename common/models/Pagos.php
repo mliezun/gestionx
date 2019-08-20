@@ -26,12 +26,19 @@ class Pagos extends Model
     //Derivados
     public $IdTipoComprobante;
     public $MedioPago;
+    public $NroRemito;
+    public $NroCheque;
     public $TipoComprobante;
 
     const _ALTA_TARJETA = 'altat';
     const _ALTA_EFECTIVO = 'altae';
     const _ALTA_MERCADERIA = 'altam';
     const _ALTA_CHEQUE = 'altac';
+    const _MODIFICAR_TARJETA = 'modificart';
+    const _MODIFICAR_EFECTIVO = 'modificare';
+    const _MODIFICAR_MERCADERIA = 'modificarm';
+    const _MODIFICAR_CHEQUE = 'modificarc';
+    const _ELECCION = 'eleccion';
 
     const TIPOS = [
         'T' => 'Tarjeta',
@@ -45,6 +52,8 @@ class Pagos extends Model
     {
         return [
             'IdRemito' => 'Remito',
+            'NroRemito' => 'Nro de Remito',
+            'NroCheque' => 'Nro de Cheque',
             'IdCheque' => 'Cheque',
             'TipoComprobante' => 'Tipo de Comprobante',
             'IdTipoComprobante' => 'Tipo de Comprobante',
@@ -64,20 +73,47 @@ class Pagos extends Model
             'required', 'on' => self::_ALTA_MERCADERIA],
             [['IdVenta','IdMedioPago','IdTipoComprobante','IdCheque'],
             'required', 'on' => self::_ALTA_CHEQUE],
+            [['IdVenta','IdMedioPago'],
+            'required', 'on' => self::_ELECCION],
+            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
+            'required', 'on' => self::_MODIFICAR_TARJETA],
+            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            'required', 'on' => self::_MODIFICAR_EFECTIVO],
+            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            'required', 'on' => self::_MODIFICAR_MERCADERIA],
+            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdCheque'],
+            'required', 'on' => self::_MODIFICAR_CHEQUE],
             [$this->attributes(), 'safe']
         ];
     }
 
-    public function DameMedioPago($pago)
+    /**
+     * Permite instanciar un pago desde la base de datos.
+     * xsp_dame_pago
+     */
+    public function Dame()
     {
-        $sql = 'CALL xsp_dame_mediopago( :idMedioPago )';
+        $sql = 'CALL xsp_dame_pago( :idpago )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
-            ':idMedioPago' => $pago->IdMedioPago
+            ':idpago' => $this->IdPago
         ]);
         
-        $pago->attributes = $query->queryOne();
+        $this->attributes = $query->queryOne();
+    }
+
+    public function DameMedioPago()
+    {
+        $sql = 'CALL xsp_dame_mediopago_pago( :MedioPago )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+    
+        $query->bindValues([
+            ':MedioPago' => $this->MedioPago
+        ]);
+        
+        $this->attributes = $query->queryOne();
     }
 }
