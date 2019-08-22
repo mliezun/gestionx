@@ -37,6 +37,7 @@ class GestorArticulos
 
         return $query->queryScalar();
     }
+
     /**
      * Permite buscar articulos dentro de un proveedor de una empresa, indicando una
      * cadena de búsqueda y si se incluyen bajas. Si pIdProveedor = 0 lista para todos
@@ -69,6 +70,26 @@ class GestorArticulos
         }
 
         return $res;
+    }
+
+    /**
+     * Permite buscar articulos y su precios para un cliente de una empresa, indicando una cadena de búsqueda.
+     * 
+     * xsp_buscar_articulos_por_cliente
+     */
+    public function BuscarPorCliente($IdCliente = 0,  $Cadena = '')
+    {
+        $sql = "call xsp_buscar_articulos_por_cliente( :idempresa, :idcliente, :cadena)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':idcliente' => $IdCliente,
+            ':cadena' => $Cadena,
+        ]);
+
+        return $query->queryAll();
     }
 
     /**

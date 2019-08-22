@@ -40,6 +40,7 @@ class Ventas extends Model
 
     const TIPOS = [
         'P' => 'Presupuesto',
+        'C' => 'Cotización',
         'V' => 'Venta',
         'B' => 'Prestamo',
         'T' => 'Todos'

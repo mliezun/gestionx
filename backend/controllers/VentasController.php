@@ -75,6 +75,24 @@ class VentasController extends BaseController
             ]);
         }
     }
+    
+    public function actionBorrar($id)
+    {
+        PermisosHelper::verificarPermiso('BorrarVenta');
+
+        Yii::$app->response->format = 'json';
+        
+        $venta = new Ventas();
+        $venta->IdVenta = $id;
+
+        $resultado = GestorVentas::Borrar($venta);
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
 
     public function actionActivar($id)
     {
@@ -92,74 +110,6 @@ class VentasController extends BaseController
         } else {
             return ['error' => $resultado];
         }
-    }
-
-    public function actionAgregarPago($id)
-    {
-        PermisosHelper::verificarPermiso('PagarVenta');
-
-        $venta = new Ventas();
-        $venta->IdVenta = $id;
-
-        $pago = new Pagos();
-
-        switch (Yii::$app->request->get('Tipo')) {
-            case 'T':
-                $pago->setScenario(Pagos::_ALTA_TARJETA);
-                $pago->IdMedioPago = 3;
-                break;
-            case 'E':
-                $pago->setScenario(Pagos::_ALTA_EFECTIVO);
-                $pago->IdMedioPago = 1;
-                break;
-        }
-
-        if($pago->load(Yii::$app->request->post()) && $pago->validate()){
-            $resultado = $venta->Pagar($pago);
-
-            Yii::$app->response->format = 'json';
-            if (substr($resultado, 0, 2) == 'OK') {
-                return ['error' => null];
-            } else {
-                return ['error' => $resultado];
-            }
-        } else {
-            return $this->renderAjax('@app/views/pagos/alta', [
-                'titulo' => 'Agregar pago',
-                'model' => $pago
-            ]);
-        }
-    }
-
-    public function actionPagos($id)
-    {
-        $venta = new Ventas();
-
-        $venta->IdVenta = $id;
-
-        $venta->Dame();
-
-        $pagos = $venta->DamePagos();
-
-        $pv = new PuntosVenta();
-        $pv->IdPuntoVenta = $venta->IdPuntoVenta;
-        $pv->Dame();
-        $anterior = [
-            'label' => "Punto de Venta: " . $pv->PuntoVenta,
-            'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
-        ];
-        $titulo = 'Pagos de la Venta ' . $id;
-        $urlBase = '/ventas/pagos';
-        $busqueda = new BuscarForm();
-
-        return $this->render('@app/views/pagos/index', [
-            'model' => $venta,
-            'pagos' => $pagos,
-            'anterior' => $anterior,
-            'titulo' => $titulo,
-            'urlBase' => $urlBase,
-            'busqueda' => $busqueda
-        ]);
     }
 
     public function actionDarBaja($id)

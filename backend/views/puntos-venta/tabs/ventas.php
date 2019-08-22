@@ -104,6 +104,13 @@ $proveedor = new Proveedores();
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-ajax="<?= Url::to(['/ventas/borrar', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Borrar">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A') :?>
                                                     <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
@@ -113,6 +120,13 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('DevolucionVenta')) : ?>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Devolucion">
+                                                            <i class="fa fa-undo-alt"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
@@ -121,22 +135,7 @@ $proveedor = new Proveedores();
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
-                                                <?php if (PermisosHelper::tienePermiso('DevolucionVenta')) : ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
-                                                            data-hint="Devolucion">
-                                                        <i class="fa fa-undo-alt"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['ventas/borrar', 'id' => $model['IdVenta']]) ?>"
-                                                        data-hint="Borrar">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            
+                                            <?php endif; ?>   
                                         </div>
                                     </td> 
                                 </tr>

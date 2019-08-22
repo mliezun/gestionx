@@ -15,13 +15,13 @@ use yii\helpers\ArrayHelper;
 class ArticulosController extends BaseController
 {
 
-    public function actionListar($Cadena = '')
+    public function actionListar($id,$Cadena)
     {
         Yii::$app->response->format = 'json';
 
         $gestor = new GestorArticulos();
 
-        return $gestor->Buscar(0, $Cadena);
+        return $gestor->BuscarPorCliente($id,$Cadena);
     }
 
     public function actionIndex()
