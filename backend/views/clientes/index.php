@@ -60,6 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
+                                <th>Lista de Precios</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
                             </tr>
@@ -80,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Clientes::TIPOS[$model['Tipo']]) ?></td>
                                     <td><?= Html::encode(Clientes::ESTADOS[$model['Estado']]) ?></td>
+                                    <td><?= Html::encode($model['Lista']) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>
 

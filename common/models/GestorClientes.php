@@ -13,7 +13,7 @@ class GestorClientes
      */
     public function Alta(Clientes $cliente)
     {
-        $sql = "call xsp_alta_cliente( :token, :idempresa, :nombres, :apellidos, :razonsocial,
+        $sql = "call xsp_alta_cliente( :token, :idempresa, :idlista, :nombres, :apellidos, :razonsocial,
         :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -24,6 +24,7 @@ class GestorClientes
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':idlista' => $cliente->IdListaPrecio,
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
@@ -48,7 +49,7 @@ class GestorClientes
      */
     public function Modificar(Clientes $cliente)
     {
-        $sql = "call xsp_modifica_cliente( :token, :idcliente, :idempresa, :nombres, :apellidos, :razonsocial,
+        $sql = "call xsp_modifica_cliente( :token, :idcliente, :idempresa, :idlista, :nombres, :apellidos, :razonsocial,
         :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -60,6 +61,7 @@ class GestorClientes
             ':app' => Yii::$app->id,
             ':idcliente' => $cliente->IdCliente,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':idlista' => $cliente->IdListaPrecio,
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
