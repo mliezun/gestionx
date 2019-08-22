@@ -51,6 +51,8 @@ $array=ArrayHelper::remove($tipos,'T');
 
             <?= Html::activeHiddenInput($model, 'Tipo') ?>
 
+            <?= $form->field($model, 'IdListaPrecio')->dropDownList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'), ['prompt' => 'Lista']) ?>
+
             <?= $form->field($model, 'Observaciones') ?>
         </div>
         <div class="modal-footer">

@@ -85,6 +85,34 @@ class ArticulosController extends BaseController
         });
     }
 
+    public function actionEditarListas($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarArticulo');
+        
+        $art = new Articulos();
+        $art->setScenario(Articulos::SCENARIO_EDITAR);
+
+        $art->IdArticulo = $id;
+        $art->Dame();
+
+        if ($art->load(Yii::$app->request->post()) && $art->validate()) {
+            $gestor = new GestorArticulos();
+            $resultado = $gestor->Modificar($art);
+
+            Yii::$app->response->format = 'json';
+            if ($resultado == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            return $this->renderAjax('alta', [
+                        'titulo' => 'Editar Listas',
+                        'model' => $art
+            ]);
+        }
+    }
+
     public function actionActivar($id)
     {
         PermisosHelper::verificarPermiso('ActivarArticulo');

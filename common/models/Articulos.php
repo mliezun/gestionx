@@ -19,6 +19,8 @@ class Articulos extends Model
     // Derivados
     public $Proveedor;
     public $Gravamenes;
+    public $PreciosVenta;
+    // Precio por defecto
     public $PrecioVenta;
 
     const ESTADOS = [
@@ -48,14 +50,13 @@ class Articulos extends Model
             ['Codigo', 'trim'],
             ['Descripcion', 'trim'],
             // Alta
-            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta', 'PreciosVenta',
             'Gravamenes'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
-            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta', 'PreciosVenta',
             'Gravamenes'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
-            [['IdArticulo', 'IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'FechaAlta', 'FechaActualizado', 'Estado', 'Gravamenes'], 'safe'],
+            [$this->attributes(), 'safe'],
         ];
     }
 
@@ -74,11 +75,13 @@ class Articulos extends Model
             ':id' => $this->IdArticulo
         ]);
         
-        $res = $query->queryOne();
-        
-        $this->attributes = $res;
-        
-        return $res;
+        $this->attributes = $query->queryOne();
+
+        foreach (json_decode($this->PreciosVenta) as $nombre => $valor){
+            if($nombre == 'Por Defecto'){
+                $this->PrecioVenta = $valor;
+            }
+        }
     }
 
     /**
@@ -137,6 +140,96 @@ class Articulos extends Model
             ':id' => $this->IdArticulo
         ]);
         
+        return $query->queryAll();
+    }
+
+    public function DameListasPrecios()
+    {
+        $sql = 'CALL xsp_listar_listas_precios_articulos( :id )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdArticulo
+        ]);
+        
+        return $query->queryAll();
+    }
+
+    /**
+     * Permite dar de alta un precio de un articulo. Controlando que precio no
+     * existan ya dentro de la misma lista.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_alta_precio_articulo
+     */
+    public function AgregarPrecio(PreciosArticulos $Precio)
+    {
+        $sql = "call xsp_alta_precio_articulo( :token, :idarticulo, :idlistaprecio, :pventa, "
+            . ":IP, :userAgent, :app )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idarticulo' => $this->IdArticulo,
+            ':idlistaprecio' => $Precio->IdListaPrecio,
+            ':pventa' => $Precio->PrecioVenta,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite modificar un precio de un articulo. Controlando que el precio
+     * existan ya dentro de la misma lista.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_modifica_precio_articulo
+     */
+    public function ModificarPrecio(PreciosArticulos $Precio)
+    {
+        $sql = "call xsp_modifica_precio_articulo( :token, :idarticulo, :idlistaprecio, :pventa, "
+            . ":IP, :userAgent, :app )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idarticulo' => $this->IdArticulo,
+            ':idlistaprecio' => $Precio->IdListaPrecio,
+            ':pventa' => $Precio->PrecioVenta,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite borrar un precio de un articulo. Controlando que el precio
+     * existan ya dentro de la misma lista.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_borra_precio_articulo
+     */
+    public function BorrarPrecio(PreciosArticulos $Precio)
+    {
+        $sql = "call xsp_borra_precio_articulo( :token, :idarticulo, :idlistaprecio, "
+            . ":IP, :userAgent, :app )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idarticulo' => $this->IdArticulo,
+            ':idlistaprecio' => $Precio->IdListaPrecio,
+        ]);
+
         return $query->queryScalar();
     }
 }

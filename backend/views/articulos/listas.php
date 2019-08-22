@@ -9,8 +9,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 
-$proveedores = (new GestorProveedores())->Buscar();
-$gravamenes = (new GestorTiposGravamenes())->Buscar();
 $listas = (new GestorListasPrecio)->Buscar();
 
 /* @var $this View */
@@ -21,7 +19,7 @@ $listas = (new GestorListasPrecio)->Buscar();
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title"><?= (isset($model['Articulo']) ? 'Modificar artículo: ' . $model['Articulo'] : 'Nuevo artículo') ?></h5>
+            <h5 class="modal-title"><?= ($titulo) ?></h5>
             <button type="button" class="close" onclick="Main.modalClose()">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -35,20 +33,24 @@ $listas = (new GestorListasPrecio)->Buscar();
             <?= Html::activeHiddenInput($model, 'IdArticulo') ?>
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
-            
-            <?= $form->field($model, 'IdProveedor')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
 
-            <?= $form->field($model, 'Articulo') ?>
+            <?= Html::activeHiddenInput($model, 'IdProveedor') ?>
 
-            <?= $form->field($model, 'Codigo') ?>
+            <?= Html::activeHiddenInput($model, 'Articulo') ?>
 
-            <?= $form->field($model, 'Descripcion') ?>
+            <?= Html::activeHiddenInput($model, 'Codigo') ?>
 
-            <?= $form->field($model, 'PrecioCosto') ?>
+            <?= Html::activeHiddenInput($model, 'Descripcion') ?>
 
-            <?= $form->field($model, 'PrecioVenta') ?>
+            <?= Html::activeHiddenInput($model, 'PrecioCosto') ?>
 
-            <?= $form->field($model, 'Gravamenes')->checkboxList(ArrayHelper::map($gravamenes, 'IdTipoGravamen', 'TipoGravamen'), ['prompt' => 'TipoGravamen']) ?>
+            <?= Html::activeHiddenInput($model, 'PrecioVenta') ?>
+
+            <?= Html::activeHiddenInput($model, 'Gravamenes') ?>
+
+            <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
+                <?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?>
+            <?php endforeach; ?>
 
             <?= $form->field($model, 'PreciosVenta')->checkboxList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista')) ?>
         </div>

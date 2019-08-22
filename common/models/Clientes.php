@@ -16,6 +16,10 @@ class Clientes extends Model
     public $Tipo;
     public $Estado;
     public $Observaciones;
+    public $IdListaPrecio;
+
+    //Derivados
+    public $Lista;
 
     // DatosJSON
     public $CUIT;
@@ -45,15 +49,22 @@ class Clientes extends Model
     {
         return [
             ['Email', 'email'],
-            [['Nombres', 'Apellidos', 'Documento', 'Tipo'],
+            [['Nombres', 'Apellidos', 'Documento', 'Tipo', 'IdListaPrecio'],
                 'required', 'on' => self::_ALTA_FISICA],
-            [['RazonSocial', 'CUIT','Tipo'],
+            [['RazonSocial', 'CUIT','Tipo', 'IdListaPrecio'],
                 'required', 'on' => self::_ALTA_JURIDICA],
-            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento'],
+            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento', 'IdListaPrecio'],
                 'required', 'on' => self::_MODIFICAR_FISICA],
-            [['IdCliente','IdEmpresa','RazonSocial', 'CUIT'],
+            [['IdCliente','IdEmpresa','RazonSocial', 'CUIT', 'IdListaPrecio'],
                 'required', 'on' => self::_MODIFICAR_JURIDICA],
             [$this->attributes(), 'safe']
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'IdListaPrecio' => 'Lista'
         ];
     }
 
@@ -83,6 +94,12 @@ class Clientes extends Model
         ]);
         
         $this->attributes = $query->queryOne();
+
+        // foreach(json_decode($this['Datos'], true) as $dato => $valor){
+        //     if (isset($valor) && $valor != ''){
+        //         $this->attributes = $valor;
+        //     }
+        // }
     }
 
 

@@ -65,6 +65,12 @@ class Menu
                     'permiso' => 'BuscarBancos'
                 ],
                 [
+                    'name' => 'Listas de Precio',
+                    'icon' => 'fas fa-list-alt',
+                    'href' => '/listas-precio',
+                    'permiso' => 'BuscarListasPrecio'
+                ],
+                [
                     'name' => 'Parámetros',
                     'href' => '/empresa',
                     'permiso' => 'BuscarParametro'

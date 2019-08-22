@@ -15,7 +15,7 @@ class GestorArticulos
     public function Alta(Articulos $Articulo)
     {
         $sql = "call xsp_alta_articulo( :token, :idprov, :idempresa, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamene, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamene, :idslistaprecio, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -32,6 +32,7 @@ class GestorArticulos
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
             ':pidstiposgravamene' => json_encode($Articulo->Gravamenes),
+            ':idslistaprecio' => json_encode($Articulo->PreciosVenta),
         ]);
 
         return $query->queryScalar();
@@ -57,7 +58,17 @@ class GestorArticulos
             ':iBajasListas' => 'S',
         ]);
 
-        return $query->queryAll();
+        $res = $query->queryAll();
+
+        foreach ($res as &$elemento) {
+            foreach (json_decode($elemento['PreciosVenta']) as $nombre => $valor){
+                if($nombre == 'Por Defecto'){
+                    $elemento['PrecioVenta'] = $valor;
+                }
+            }
+        }
+
+        return $res;
     }
 
     /**
