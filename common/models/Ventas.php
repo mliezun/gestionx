@@ -89,6 +89,100 @@ class Ventas extends Model
         $this->attributes = $query->queryOne();
     }
 
+    /**
+     * Permite obtener los datos para generar un comprobante de Venta.
+     * xsp_generar_comprobante_venta
+     * 
+     */
+    public function GenerarComprobante()
+    {
+        $sql = 'CALL xsp_generar_comprobante_venta ( :idventa )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+    
+        $query->bindValues([
+            ':idventa' => $this->IdVenta
+        ]);
+        
+        return $query->queryAll();
+    }
+
+    /**
+     * Retorna los datos necesarios para mandar al WS de la AFIP.
+     */
+    public function GenerarComprobanteAfip()
+    {
+        $datos = $this->GenerarComprobante();
+
+        $datosAfip = [
+            // Cantidad de comprobantes a registrar
+            'CantReg' 	=> 1,
+            // Punto de venta
+            'PtoVta' 	=> $datos['IdPuntoVenta'],
+            // Tipo de comprobante (ver tipos disponibles) 
+            'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
+            // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
+            'Concepto' 	=> 1,
+            // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
+            'DocTipo' 	=> 99,
+            // Número de documento del comprador (0 consumidor final)
+            'DocNro' 	=> 0,
+            // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
+            'CbteDesde' 	=> $datos['IdVenta'],
+            // Número de comprobante o numero del último comprobante en caso de ser mas de uno
+            'CbteHasta' 	=> $datos['IdVenta'],
+            // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
+            'CbteFch' 	=> intval(date('Ymd')),
+            // Importe total del comprobante
+            'ImpTotal' 	=> $datos['Total'],
+            // Importe neto no gravado
+            'ImpTotConc' 	=> 0,
+            // Importe neto gravado
+            'ImpNeto' 	=> 0,
+            // Importe exento de IVA
+            'ImpOpEx' 	=> 0,
+            //Importe total de IVA
+            'ImpIVA' 	=> 0,
+            //Importe total de tributos
+            'ImpTrib' 	=> 0,
+            //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
+            'MonId' 	=> 'PES',
+            // Cotización de la moneda usada (1 para pesos argentinos)  
+            'MonCotiz' 	=> 1,
+            // (Opcional) Alícuotas asociadas al comprobante
+            'Iva' 		=> [], 
+        ];
+
+        $articulos = json_decode($datos['Articulos'], true);
+
+        $ivas = [];
+
+        $importeIVA = 0;
+
+        foreach ($articulos as $articulo) {
+            $idTipoIva = $articulo['IdTipoIVA'];
+            if (!array_key_exists($idTipoIva, $ivas)) {
+                $ivas[$idTipoIva] = [
+                    'Id' => $idTipoIva,
+                    'BaseImp' => 0,
+                    'Importe' => 0
+                ];
+            }
+            $ivas[$idTipoIva]['BaseImp'] += $articulo['Subtotal'];
+            $ivas[$idTipoIva]['Importe'] += $articulo['ImporteIVA'];
+            $importeIVA += $articulo['ImporteIVA'];
+        }
+
+        $datosAfip['ImpNeto'] = $datos['Total'] - $importeIVA;
+        $datosAfip['ImpIVA'] = $importeIVA;
+
+        foreach ($ivas as $id => $iva) {
+            $datosAfip['Iva'][] = $iva;
+        }
+
+        return $datosAfip;
+    }
+
 
     /**
      * Permite cambiar el estado de la Venta siempre y cuando no esté dado de baja ya.

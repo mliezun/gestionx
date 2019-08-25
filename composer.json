@@ -20,7 +20,6 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "yiisoft/yii2-redis": "*",
         "bower-asset/font-awesome": "*",
-        "bower-asset/bootstrap-confirmation2": "*",
         "bower-asset/material-design-iconic-font": "*",
         "bower-asset/flag-icon-css": "*",
         "2amigos/yii2-date-picker-widget": "*",
@@ -30,7 +29,8 @@
         "phpnt/yii2-slimscroll": "*",
         "mailgun/mailgun-php": "*",
         "sizeg/yii2-jwt": "^1.1",
-        "php-http/guzzle6-adapter": "*"
+        "php-http/guzzle6-adapter": "*",
+        "afipsdk/afip.php": "^0.6.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

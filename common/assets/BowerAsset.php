@@ -18,7 +18,6 @@ class BowerAsset extends AssetBundle
 {
     public $sourcePath = '@bower/';
     public $js = [
-        'bootstrap-confirmation2/bootstrap-confirmation.min.js'
     ];
     public $css = [
         'font-awesome/css/all.min.css',
