@@ -24,9 +24,9 @@ class ListasPrecioController extends BaseController
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $estado = $busqueda->Check ? $busqueda->Check : 'N';
-            $listas = GestorListasPrecio::Buscar($busqueda->Cadena, $estado);
+            $listas = GestorListasPrecio::Buscar('S',$busqueda->Cadena, $estado);
         } else {
-            $listas = GestorListasPrecio::Buscar();
+            $listas = GestorListasPrecio::Buscar('S');
         }
 
         $paginado->totalCount = count($listas);

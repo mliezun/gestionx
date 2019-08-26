@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                                            
+                                            <?php if ($model['Lista']!='Por Defecto'): ?>
                                             <?php if (PermisosHelper::tienePermiso('ModificarListaPrecio')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['/listas-precio/editar', 'id' => $model['IdListaPrecio']]) ?>" 
@@ -83,14 +83,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio')) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio') ) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['/listas-precio/borrar', 'id' => $model['IdListaPrecio']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            
+                                            <?php endif; ?>
                                         </div>
                                     </td> 
                                 </tr>

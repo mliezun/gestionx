@@ -5,7 +5,7 @@ namespace backend\controllers;
 use common\models\Usuarios;
 use common\models\Clientes;
 use common\models\GestorClientes;
-use common\models\GestorListasPrecios;
+use common\models\GestorListasPrecio;
 use common\models\forms\BuscarForm;
 use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;

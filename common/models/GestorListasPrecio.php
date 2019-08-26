@@ -82,9 +82,9 @@ class GestorListasPrecio
      * y si se incluyen bajas.
      * xsp_buscar_listas_precio
      */
-    public function Buscar( $Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar( $IncluyeDefecto = 'N', $Cadena = '', $IncluyeBajas = 'N')
     {
-        $sql = "call xsp_buscar_listas_precio( :idempresa, :cadena, :iBajas)";
+        $sql = "call xsp_buscar_listas_precio( :idempresa, :cadena, :iBajas, :iDefecto)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -92,6 +92,7 @@ class GestorListasPrecio
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
+            ':iDefecto' => $IncluyeDefecto,
         ]);
 
         return $query->queryAll();

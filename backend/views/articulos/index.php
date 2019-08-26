@@ -25,6 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
 
+            <?= $form->field($busqueda, 'Combo2')->dropDownList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'), ['prompt' => 'Lista de Precios']) ?>
+
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
@@ -57,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Precio de compra</th>
                                 <th>Precios por Defecto</th>
                                 <th>Precios por Lista</th>
-                                <th>Gravamenes</th>
+                                <th>Gravamen</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -79,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php endforeach; ?>
                                         </ul>
                                     </td>
-                                    <td><?= Html::encode($model['Gravamenes']) ?></td>
+                                    <td><?= Html::encode($model['Gravamen']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                     <td>

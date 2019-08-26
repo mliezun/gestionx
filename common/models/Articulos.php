@@ -18,8 +18,10 @@ class Articulos extends Model
 
     // Derivados
     public $Proveedor;
-    public $Gravamenes;
+    public $IdTipoGravamen;
+    public $Gravamen;
     public $PreciosVenta;
+
     // Precio por defecto
     public $PrecioVenta;
 
@@ -34,7 +36,9 @@ class Articulos extends Model
     public function attributeLabels()
     {
         return [
-            'IdProveedor' => 'Proveedor'
+            'IdProveedor' => 'Proveedor',
+            'IdTipoGravamen' => 'Gravamen',
+            'PreciosVenta' => 'Listas de precios'
         ];
     }
 
@@ -49,12 +53,14 @@ class Articulos extends Model
             ['Articulo', 'trim'],
             ['Codigo', 'trim'],
             ['Descripcion', 'trim'],
+            ['PrecioCosto', 'number'],
+            ['PrecioVenta', 'number'],
             // Alta
-            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta', 'PreciosVenta',
-            'Gravamenes'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            'IdTipoGravamen'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
-            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta', 'PreciosVenta',
-            'Gravamenes'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            'IdTipoGravamen'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [$this->attributes(), 'safe'],
         ];
@@ -76,12 +82,6 @@ class Articulos extends Model
         ]);
         
         $this->attributes = $query->queryOne();
-
-        foreach (json_decode($this->PreciosVenta) as $nombre => $valor){
-            if($nombre == 'Por Defecto'){
-                $this->PrecioVenta = $valor;
-            }
-        }
     }
 
     /**

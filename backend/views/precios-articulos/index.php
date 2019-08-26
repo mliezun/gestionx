@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Precio de compra</th>
                                 <th>Precios por Defecto</th>
                                 <th>Precios por Lista</th>
-                                <th>Gravamenes</th>
+                                <th>Gravamen</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
                             </tr>
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php endforeach; ?>
                                         </ul>
                                     </td>
-                                    <td><?= Html::encode($model['Gravamenes']) ?></td>
+                                    <td><?= Html::encode($model['Gravamen']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                 </tr>
@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo') && $precio['Lista']!= 'Por Defecto') : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['precios-articulos/borrar', 'idArt' => $precio['IdArticulo'], 'idLis' => $precio['IdListaPrecio']]) ?>"
                                                         data-hint="Borrar">

@@ -31,7 +31,7 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamene' => json_encode($Articulo->Gravamenes),
+            ':pidstiposgravamene' => $Articulo->IdTipoGravamen,
             ':idslistaprecio' => json_encode($Articulo->PreciosVenta),
         ]);
 
@@ -45,31 +45,33 @@ class GestorArticulos
      * xsp_buscar_articulos
      * 
      */
-    public function Buscar($IdProveedor = 0,  $Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar($Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N')
     {
-        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :cadena, :iBajas , :iBajasListas)";
+        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
 
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idprov' => $IdProveedor,
+            ':idlistaprecio' => $IdListaPrecio,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
             ':iBajasListas' => 'S',
         ]);
 
-        $res = $query->queryAll();
+        return $query->queryAll();
+        // $res = $query->queryAll();
 
-        foreach ($res as &$elemento) {
-            foreach (json_decode($elemento['PreciosVenta']) as $nombre => $valor){
-                if($nombre == 'Por Defecto'){
-                    $elemento['PrecioVenta'] = $valor;
-                }
-            }
-        }
+        // foreach ($res as &$elemento) {
+        //     foreach (json_decode($elemento['PreciosVenta']) as $nombre => $valor){
+        //         if($nombre == 'Por Defecto'){
+        //             $elemento['PrecioVenta'] = $valor;
+        //         }
+        //     }
+        // }
 
-        return $res;
+        // return $res;
     }
 
     /**
@@ -116,7 +118,7 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamenes' => json_encode($Articulo->Gravamenes),
+            ':pidstiposgravamenes' => $Articulo->IdTipoGravamen,
         ]);
 
         return $query->queryScalar();

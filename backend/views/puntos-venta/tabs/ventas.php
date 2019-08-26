@@ -34,6 +34,8 @@ $proveedor = new Proveedores();
 
             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 
+            <?= $form->field($busqueda, 'Check2')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir anulables', 'value' => 'S', 'uncheck' => 'N')); ?>
+
             <?php ActiveForm::end(); ?>
         </div>
 
@@ -104,7 +106,7 @@ $proveedor = new Proveedores();
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
+                                                    <?php if (PermisosHelper::tienePermiso('BorrarVenta') && $anulable == 'S') : ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['/ventas/borrar', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Borrar">
@@ -120,7 +122,7 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('DevolucionVenta')) : ?>
+                                                    <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Devolucion">
@@ -128,7 +130,7 @@ $proveedor = new Proveedores();
                                                         </button>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaVenta')) : ?>
+                                                <?php if (PermisosHelper::tienePermiso('DarBajaVenta') && $anulable == 'S') : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
                                                             data-hint="Dar baja">
