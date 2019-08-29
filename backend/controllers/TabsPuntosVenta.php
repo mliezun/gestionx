@@ -148,14 +148,14 @@ class TabsPuntosVenta extends BaseController
 
         $gestor = new GestorVentas();
 
-        $Anulable = 'N';
+        $anulable = 'N';
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $FechaDesde = $busqueda->FechaInicio;
             $FechaFin = $busqueda->FechaFin;
             $Cliente = $busqueda->Combo ? $busqueda->Combo : 0;
             $Incluye = $busqueda->Check ? $busqueda->Check : 'N';
-            $Anulable = $busqueda->Check2 ? $busqueda->Check2 : 'N';
+            $anulable = $busqueda->Check2 ? $busqueda->Check2 : 'N';
             $Tipo = $busqueda->Combo3 ? $busqueda->Combo3 : 'T';
             $ventas = $gestor->Buscar($this->IdPuntoVenta, $FechaDesde, $FechaFin, $Cliente, $Incluye, $Tipo);
         } else {
@@ -177,7 +177,7 @@ class TabsPuntosVenta extends BaseController
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa,
             'clientes' => $clientes,
-            'anulable' => $Anulable
+            'anulable' => $anulable
         ]);
     }
 

@@ -9,14 +9,13 @@ use yii\helpers\ArrayHelper;
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Clientes */
-$tipos=Clientes::TIPOS;
-$array=ArrayHelper::remove($tipos,'T');
+
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title"><?= (isset($model['Cliente']) ? 'Modificar Cliente: ' . $model['Cliente'] : 'Nuevo Cliente') ?></h5>
+            <h5 class="modal-title"><?= (isset($model['IdCliente']) ? 'Modificar Cliente: ' . Clientes::Nombre($model) : 'Nuevo Cliente') ?></h5>
             <button type="button" class="close" onclick="Main.modalClose()">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -35,13 +34,13 @@ $array=ArrayHelper::remove($tipos,'T');
                 <?= $form->field($model, 'Nombres') ?>
 
                 <?= $form->field($model, 'Apellidos') ?>
-
-                <?= $form->field($model, 'Documento') ?>
             <?php else: ?>
                 <?= $form->field($model, 'RazonSocial') ?>
-
-                <?= $form->field($model, 'CUIT') ?>
             <?php endif; ?>
+
+            <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento']) ?>
+
+            <?= $form->field($model, 'Documento') ?>
 
             <?= $form->field($model, 'Email') ?>
 

@@ -64,6 +64,8 @@ $proveedor = new Proveedores();
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
+                                <th>Tributo</th>
+                                <th>Comprobante</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
                             </tr>
@@ -77,6 +79,8 @@ $proveedor = new Proveedores();
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
+                                    <td><?= Html::encode($model['TipoTributo']) ?></td>
+                                    <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>
 

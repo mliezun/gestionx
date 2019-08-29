@@ -6,6 +6,7 @@ use common\models\Usuarios;
 use common\models\Clientes;
 use common\models\GestorClientes;
 use common\models\GestorListasPrecio;
+use common\models\GestorTiposDocAfip;
 use common\models\forms\BuscarForm;
 use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
@@ -56,7 +57,8 @@ class ClientesController extends Controller
             $cliente->setScenario(Clientes::_ALTA_JURIDICA);
         }
 
-        $listas = GestorListasPrecio::Buscar();
+        $listas = GestorListasPrecio::Buscar('S');
+        $tiposdoc = GestorTiposDocAfip::Buscar();
 
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
@@ -72,7 +74,8 @@ class ClientesController extends Controller
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',
                 'model' => $cliente,
-                'listas' => $listas
+                'listas' => $listas,
+                'tiposdoc' => $tiposdoc
             ]);
         }
     }
@@ -92,7 +95,8 @@ class ClientesController extends Controller
             $cliente->setScenario(Clientes::_MODIFICAR_JURIDICA);
         }
         
-        $listas = GestorListasPrecio::Buscar();
+        $listas = GestorListasPrecio::Buscar('S');
+        $tiposdoc = GestorTiposDocAfip::Buscar();
 
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
@@ -108,7 +112,8 @@ class ClientesController extends Controller
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar Cliente',
                         'model' => $clienteAux,
-                        'listas' => $listas
+                        'listas' => $listas,
+                        'tiposdoc' => $tiposdoc
             ]);
         }
     }

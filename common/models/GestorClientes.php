@@ -13,8 +13,8 @@ class GestorClientes
      */
     public function Alta(Clientes $cliente)
     {
-        $sql = "call xsp_alta_cliente( :token, :idempresa, :idlista, :nombres, :apellidos, :razonsocial,
-        :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_alta_cliente( :token, :idempresa, :idlista, :iddoc, :nombres, :apellidos,"
+        .":razonsocial, :documento, :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -25,15 +25,15 @@ class GestorClientes
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idlista' => $cliente->IdListaPrecio,
+            ':iddoc' => $cliente->IdTipoDocAfip,
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
+            ':documento' => $cliente->Documento,
             ':datos' => json_encode([
-                'CUIT' => $cliente->CUIT,
                 'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
-                'Documento' => $cliente->Documento,
             ]),
             ':tipo' => $cliente->Tipo,
             ':observaciones' => $cliente->Observaciones,
@@ -49,8 +49,8 @@ class GestorClientes
      */
     public function Modificar(Clientes $cliente)
     {
-        $sql = "call xsp_modifica_cliente( :token, :idcliente, :idempresa, :idlista, :nombres, :apellidos, :razonsocial,
-        :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_cliente( :token, :idcliente, :idempresa, :idlista, :iddoc, "
+        .":nombres, :apellidos, :razonsocial, :documento, :datos, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -62,15 +62,15 @@ class GestorClientes
             ':idcliente' => $cliente->IdCliente,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idlista' => $cliente->IdListaPrecio,
+            ':iddoc' => $cliente->IdTipoDocAfip,
             ':nombres' => $cliente->Nombres,
             ':apellidos' => $cliente->Apellidos,
             ':razonsocial' => $cliente->RazonSocial,
+            ':documento' => $cliente->Documento,
             ':datos' => json_encode([
-                'CUIT' => $cliente->CUIT,
                 'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
                 'Direccion' => $cliente->Direccion,
-                'Documento' => $cliente->Documento,
             ]),
             ':tipo' => $cliente->Tipo,
             ':observaciones' => $cliente->Observaciones,

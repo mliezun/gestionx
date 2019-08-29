@@ -56,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Nombre</th>
+                                <th>Documento</th>
                                 <th>Datos</th>
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
@@ -69,6 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode(Clientes::Nombre($model)) ?></td>
+                                    <td><?= Html::encode($model['TipoDocAfip']) ?>: <?= Html::encode($model['Documento']) ?></td>
                                     <td>
                                         <ul>
                                         <?php foreach(json_decode($model['Datos']) as $dato => $valor): ?>
