@@ -1,15 +1,16 @@
 <?php
 
 use common\models\Articulos;
-use common\models\GestorTiposGravamenes;
-use common\models\GestorProveedores;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 
-$proveedores = (new GestorProveedores())->Buscar();
-$gravamenes = (new GestorTiposGravamenes())->Buscar();
+//$listas = array_diff($listas_completo,array(array_search('Por Defecto',$listas_completo)));
+
+// foreach(array_keys($listas,array_search('Por Defecto',$listas,array_column($listas, 'IdListaPrecio'))) as $key ){
+//     unset($listas[$key]);
+// }
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -46,7 +47,11 @@ $gravamenes = (new GestorTiposGravamenes())->Buscar();
 
             <?= $form->field($model, 'PrecioVenta') ?>
 
-            <?= $form->field($model, 'Gravamenes')->checkboxList(ArrayHelper::map($gravamenes, 'IdTipoGravamen', 'TipoGravamen'), ['prompt' => 'TipoGravamen']) ?>
+            <?= $form->field($model, 'IdTipoGravamen')->dropDownList(ArrayHelper::map($gravamenes, 'IdTipoGravamen', 'TipoGravamen'), ['prompt' => 'Gravamen']) ?>
+
+            <?php if (!isset($model['Articulo'])) : ?>
+                <?= $form->field($model, 'PreciosVenta')->checkboxList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista')) ?>
+            <?php endif; ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

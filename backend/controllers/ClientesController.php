@@ -5,6 +5,8 @@ namespace backend\controllers;
 use common\models\Usuarios;
 use common\models\Clientes;
 use common\models\GestorClientes;
+use common\models\GestorListasPrecio;
+use common\models\GestorTiposDocAfip;
 use common\models\forms\BuscarForm;
 use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
@@ -55,6 +57,9 @@ class ClientesController extends Controller
             $cliente->setScenario(Clientes::_ALTA_JURIDICA);
         }
 
+        $listas = GestorListasPrecio::Buscar('S');
+        $tiposdoc = GestorTiposDocAfip::Buscar();
+
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Alta($cliente);
@@ -68,7 +73,9 @@ class ClientesController extends Controller
         } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',
-                'model' => $cliente
+                'model' => $cliente,
+                'listas' => $listas,
+                'tiposdoc' => $tiposdoc
             ]);
         }
     }
@@ -83,11 +90,14 @@ class ClientesController extends Controller
         $clienteAux->IdCliente = $id;
         $clienteAux->Dame();
         if ($clienteAux->Tipo == 'F') {
-            $cliente->setScenario(Clientes::_ALTA_FISICA);
+            $cliente->setScenario(Clientes::_MODIFICAR_FISICA);
         } else {
-            $cliente->setScenario(Clientes::_ALTA_JURIDICA);
+            $cliente->setScenario(Clientes::_MODIFICAR_JURIDICA);
         }
         
+        $listas = GestorListasPrecio::Buscar('S');
+        $tiposdoc = GestorTiposDocAfip::Buscar();
+
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Modificar($cliente);
@@ -101,7 +111,9 @@ class ClientesController extends Controller
         } else {
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar Cliente',
-                        'model' => $clienteAux
+                        'model' => $clienteAux,
+                        'listas' => $listas,
+                        'tiposdoc' => $tiposdoc
             ]);
         }
     }

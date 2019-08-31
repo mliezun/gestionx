@@ -5,6 +5,8 @@ namespace backend\controllers;
 use common\models\GestorArticulos;
 use common\models\Articulos;
 use common\models\GestorProveedores;
+use common\models\GestorTiposGravamenes;
+use common\models\GestorListasPrecio;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
@@ -15,13 +17,13 @@ use yii\helpers\ArrayHelper;
 class ArticulosController extends BaseController
 {
 
-    public function actionListar($Cadena = '')
+    public function actionListar($id,$Cadena)
     {
         Yii::$app->response->format = 'json';
 
         $gestor = new GestorArticulos();
 
-        return $gestor->Buscar(0, $Cadena);
+        return $gestor->BuscarPorCliente($id,$Cadena);
     }
 
     public function actionIndex()
@@ -36,7 +38,7 @@ class ArticulosController extends BaseController
         $gestor = new GestorArticulos();
 
         if ($busqueda->load(Yii::$app->request->get()) && $busqueda->validate()) {
-            $articulos = $gestor->Buscar($busqueda->Combo, $busqueda->Cadena, $busqueda->Check);
+            $articulos = $gestor->Buscar($busqueda->Cadena, $busqueda->Combo, $busqueda->Combo2, $busqueda->Check);
         } else {
             $articulos = $gestor->Buscar();
         }
@@ -47,42 +49,131 @@ class ArticulosController extends BaseController
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
 
+        $listas = GestorListasPrecio::Buscar();
+
         return $this->render('index', [
             'models' => $articulos,
             'busqueda' => $busqueda,
-            'proveedores' => $proveedores
+            'proveedores' => $proveedores,
+            'listas' => $listas,
         ]);
     }
 
     public function actionAlta()
     {
+        // PermisosHelper::verificarPermiso('AltaArticulo');
+
+        // $art = new Articulos();
+        // $art->setScenario(Articulos::SCENARIO_ALTA);
+
+        // Yii::info(Yii::$app->request->post());
+
+        // $gestor = new GestorArticulos();
+
+        // return parent::alta($art, [$gestor, 'Alta'], function () use ($art) {
+        //     $art->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+        // });
         PermisosHelper::verificarPermiso('AltaArticulo');
 
-        $art = new Articulos();
-        $art->setScenario(Articulos::SCENARIO_ALTA);
+        $articulo = new Articulos();
+        $articulo->setScenario(Articulos::SCENARIO_ALTA);
 
-        Yii::info(Yii::$app->request->post());
+        $proveedores = (new GestorProveedores())->Buscar();
+        $gravamenes = (new GestorTiposGravamenes())->Buscar();
+        $listas = (new GestorListasPrecio)->Buscar();
 
-        $gestor = new GestorArticulos();
+        if($articulo->load(Yii::$app->request->post()) && $articulo->validate() ){
+            $resultado = (new GestorArticulos())->Alta($articulo);
 
-        return parent::alta($art, [$gestor, 'Alta'], function () use ($art) {
-            $art->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
-        });
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            return $this->renderAjax('alta', [
+                'titulo' => 'Alta Articulo',
+                'model' => $articulo,
+                'listas' => $listas,
+                'proveedores' => $proveedores,
+                'gravamenes' => $gravamenes
+            ]);
+        }
     }
 
     public function actionEditar($id)
+    {
+        // PermisosHelper::verificarPermiso('ModificarArticulo');
+        
+        // $art = new Articulos();
+        // $art->setScenario(Articulos::SCENARIO_EDITAR);
+
+        // $gestor = new GestorArticulos();
+
+        // return parent::alta($art, array($gestor, 'Modificar'), function () use ($art, $id) {
+        //     $art->IdArticulo = $id;
+        //     $art->Dame();
+        // });
+
+        PermisosHelper::verificarPermiso('ModificarArticulo');
+
+        $articulo = new Articulos();
+        $articulo->setScenario(Articulos::SCENARIO_EDITAR);
+
+        if($articulo->load(Yii::$app->request->post()) && $articulo->validate() ){
+            $resultado = (new GestorArticulos())->Modificar($articulo);
+
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $articulo->IdArticulo = $id;
+            $articulo->Dame();
+
+            $proveedores = (new GestorProveedores())->Buscar();
+            $gravamenes = (new GestorTiposGravamenes())->Buscar();
+            $listas = (new GestorListasPrecio)->Buscar();
+
+            return $this->renderAjax('alta', [
+                'titulo' => 'Modificar Pago',
+                'model' => $articulo,
+                'listas' => $listas,
+                'proveedores' => $proveedores,
+                'gravamenes' => $gravamenes
+            ]);
+        }
+    }
+
+    public function actionEditarListas($id)
     {
         PermisosHelper::verificarPermiso('ModificarArticulo');
         
         $art = new Articulos();
         $art->setScenario(Articulos::SCENARIO_EDITAR);
 
-        $gestor = new GestorArticulos();
+        $art->IdArticulo = $id;
+        $art->Dame();
 
-        return parent::alta($art, array($gestor, 'Modificar'), function () use ($art, $id) {
-            $art->IdArticulo = $id;
-            $art->Dame();
-        });
+        if ($art->load(Yii::$app->request->post()) && $art->validate()) {
+            $gestor = new GestorArticulos();
+            $resultado = $gestor->Modificar($art);
+
+            Yii::$app->response->format = 'json';
+            if ($resultado == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            return $this->renderAjax('alta', [
+                        'titulo' => 'Editar Listas',
+                        'model' => $art
+            ]);
+        }
     }
 
     public function actionActivar($id)

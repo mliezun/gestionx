@@ -12,6 +12,8 @@ class Ventas extends Model
     public $IdEmpresa;
     public $IdCliente;
     public $IdUsuario;
+    public $IdTipoComprobanteAfip;
+    public $IdTipoTributo;
     public $Monto;
     public $FechaAlta;
     public $Tipo;
@@ -20,6 +22,10 @@ class Ventas extends Model
 
     // Derivados
     public $MontoPagado;
+    public $TipoComprobanteAfip;
+    public $TipoTributo;
+    public $Cliente;
+    public $Usuario;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -40,6 +46,7 @@ class Ventas extends Model
 
     const TIPOS = [
         'P' => 'Presupuesto',
+        'C' => 'Cotización',
         'V' => 'Venta',
         'B' => 'Prestamo',
         'T' => 'Todos'
@@ -48,7 +55,9 @@ class Ventas extends Model
     public function attributeLabels()
     {
         return [
-            'IdCliente' => 'Cliente'
+            'IdCliente' => 'Cliente',
+            'IdTipoComprobanteAfip' => 'Tipo de Comprobante',
+            'IdTipoTributo' => 'Tipo de Tributo'
         ];
     }
  

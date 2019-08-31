@@ -55,8 +55,8 @@ class GestorVentas
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idusuariogestion' => Yii::$app->user->identity->IdUsuario,
             ':idcliente' => $venta->IdCliente,
-            ':idventa' => $venta->$IdVenta,
-            ':idusuario' => $venta->$IdUsuario,
+            ':idventa' => $venta->IdVenta,
+            ':idusuario' => $venta->IdUsuario,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
         ]);
@@ -81,7 +81,7 @@ class GestorVentas
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idventa' => $venta->$IdVenta,
+            ':idventa' => $venta->IdVenta,
         ]);
 
         return $query->queryScalar();

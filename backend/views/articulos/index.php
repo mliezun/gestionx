@@ -25,6 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
 
+            <?= $form->field($busqueda, 'Combo2')->dropDownList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'), ['prompt' => 'Lista de Precios']) ?>
+
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
@@ -55,8 +57,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
                                 <th>Precio de compra</th>
-                                <th>Precio de venta</th>
-                                <th>Gravamenes</th>
+                                <th>Precios por Defecto</th>
+                                <th>Precios por Lista</th>
+                                <th>Gravamen</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -71,7 +74,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
                                     <td><?= Html::encode($model['PrecioVenta']) ?></td>
-                                    <td><?= Html::encode($model['Gravamenes']) ?></td>
+                                    <td>
+                                        <ul>
+                                        <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
+                                            <li><?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?></li>
+                                        <?php endforeach; ?>
+                                        </ul>
+                                    </td>
+                                    <td><?= Html::encode($model['Gravamen']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
@@ -85,6 +95,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['/precios-articulos', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-hint="Listas de Precio">
+                                                    <i class="fas fa-list-alt" style="color: green"></i>
+                                                </a>
+                                            <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
                                                     <button type="button" class="btn btn-default"
@@ -94,11 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php else : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['articulos/lista-precios', 'id' => $model['IdArticulo']]) ?>"
-                                                        data-hint="Lsitas de Precios">
-                                                    <i class="fas fa-list-alt" style="color: dodgerblue"></i>
-                                                </button>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"

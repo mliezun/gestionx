@@ -15,7 +15,7 @@ class GestorArticulos
     public function Alta(Articulos $Articulo)
     {
         $sql = "call xsp_alta_articulo( :token, :idprov, :idempresa, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamene, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamene, :idslistaprecio, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -31,11 +31,13 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamene' => json_encode($Articulo->Gravamenes),
+            ':pidstiposgravamene' => $Articulo->IdTipoGravamen,
+            ':idslistaprecio' => json_encode($Articulo->PreciosVenta),
         ]);
 
         return $query->queryScalar();
     }
+
     /**
      * Permite buscar articulos dentro de un proveedor de una empresa, indicando una
      * cadena de búsqueda y si se incluyen bajas. Si pIdProveedor = 0 lista para todos
@@ -43,18 +45,50 @@ class GestorArticulos
      * xsp_buscar_articulos
      * 
      */
-    public function Buscar($IdProveedor = 0,  $Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar($Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N')
     {
-        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :cadena, :iBajas , :iBajasListas)";
+        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
 
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idprov' => $IdProveedor,
+            ':idlistaprecio' => $IdListaPrecio,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
             ':iBajasListas' => 'S',
+        ]);
+
+        return $query->queryAll();
+        // $res = $query->queryAll();
+
+        // foreach ($res as &$elemento) {
+        //     foreach (json_decode($elemento['PreciosVenta']) as $nombre => $valor){
+        //         if($nombre == 'Por Defecto'){
+        //             $elemento['PrecioVenta'] = $valor;
+        //         }
+        //     }
+        // }
+
+        // return $res;
+    }
+
+    /**
+     * Permite buscar articulos y su precios para un cliente de una empresa, indicando una cadena de búsqueda.
+     * 
+     * xsp_buscar_articulos_por_cliente
+     */
+    public function BuscarPorCliente($IdCliente = 0,  $Cadena = '')
+    {
+        $sql = "call xsp_buscar_articulos_por_cliente( :idempresa, :idcliente, :cadena)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':idcliente' => $IdCliente,
+            ':cadena' => $Cadena,
         ]);
 
         return $query->queryAll();
@@ -84,7 +118,7 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamenes' => json_encode($Articulo->Gravamenes),
+            ':pidstiposgravamenes' => $Articulo->IdTipoGravamen,
         ]);
 
         return $query->queryScalar();

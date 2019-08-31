@@ -18,6 +18,7 @@ class BuscarForm extends Model
     public $Combo3;
     public $Combo4;
     public $Periodo;
+    public $Check2;
 
     /**
      * Reglas para validar los formularios.
@@ -29,9 +30,10 @@ class BuscarForm extends Model
         return [
             [['Cadena'], 'trim'],
             ['Check', 'in', 'range' => ['S', 'N']],
+            ['Check2', 'in', 'range' => ['S', 'N']],
             [['Numero', 'Id', 'Numero2'], 'integer', 'min' => 0],
             [['Numero', 'Id', 'Numero2', 'Combo', 'Combo2', 'Combo3', 'Combo4'], 'default', 'value' => 0],
-            [['Check', 'FechaInicio', 'FechaFin', 'Id', 'Numero', 'Combo',
+            [['Check', 'FechaInicio', 'FechaFin', 'Id', 'Numero', 'Combo', 'Check2',
                 'Combo2', 'Combo3', 'Cadena', 'Numero2', 'Combo4', 'Periodo'], 'safe'],
         ];
     }

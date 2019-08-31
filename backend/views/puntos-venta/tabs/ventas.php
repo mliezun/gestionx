@@ -34,6 +34,8 @@ $proveedor = new Proveedores();
 
             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 
+            <?= $form->field($busqueda, 'Check2')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir anulables', 'value' => 'S', 'uncheck' => 'N')); ?>
+
             <?php ActiveForm::end(); ?>
         </div>
 
@@ -62,6 +64,8 @@ $proveedor = new Proveedores();
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
+                                <th>Tributo</th>
+                                <th>Comprobante</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
                             </tr>
@@ -75,6 +79,8 @@ $proveedor = new Proveedores();
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
+                                    <td><?= Html::encode($model['TipoTributo']) ?></td>
+                                    <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>
 
@@ -104,6 +110,13 @@ $proveedor = new Proveedores();
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('BorrarVenta') && $anulable == 'S') : ?>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-ajax="<?= Url::to(['/ventas/borrar', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Borrar">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A') :?>
                                                     <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
@@ -113,30 +126,22 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Devolucion">
+                                                            <i class="fa fa-undo-alt"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaVenta')) : ?>
+                                                <?php if (PermisosHelper::tienePermiso('DarBajaVenta') && $anulable == 'S') : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
                                                     </button>
                                                 <?php endif; ?>
-                                                <?php if (PermisosHelper::tienePermiso('DevolucionVenta')) : ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
-                                                            data-hint="Devolucion">
-                                                        <i class="fa fa-undo-alt"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarVenta')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['ventas/borrar', 'id' => $model['IdVenta']]) ?>"
-                                                        data-hint="Borrar">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            
+                                            <?php endif; ?>   
                                         </div>
                                     </td> 
                                 </tr>

@@ -11,11 +11,17 @@ class Clientes extends Model
     public $Nombres;
     public $Apellidos;
     public $RazonSocial;
-    // public $Datos;
+    public $Datos;
     public $FechaAlta;
     public $Tipo;
     public $Estado;
     public $Observaciones;
+    public $IdListaPrecio;
+    public $IdTipoDocAfip;
+
+    //Derivados
+    public $Lista;
+    public $TipoDocAfip;
 
     // DatosJSON
     public $CUIT;
@@ -44,16 +50,25 @@ class Clientes extends Model
     public function rules()
     {
         return [
+            ['Documento', 'trim'],
             ['Email', 'email'],
-            [['Nombres', 'Apellidos', 'Documento', 'Tipo'],
+            [['Nombres', 'Apellidos', 'Documento', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_ALTA_FISICA],
-            [['RazonSocial', 'CUIT','Tipo'],
+            [['RazonSocial', 'Documento','Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_ALTA_JURIDICA],
-            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento'],
+            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_FISICA],
-            [['IdCliente','IdEmpresa','RazonSocial', 'CUIT'],
+            [['IdCliente','IdEmpresa','RazonSocial', 'Documento', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_JURIDICA],
             [$this->attributes(), 'safe']
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'IdListaPrecio' => 'Lista',
+            'IdTipoDocAfip' => 'Tipo de Documento'
         ];
     }
 
@@ -83,6 +98,12 @@ class Clientes extends Model
         ]);
         
         $this->attributes = $query->queryOne();
+
+        // foreach(json_decode($this['Datos'], true) as $dato => $valor){
+        //     if (isset($valor) && $valor != ''){
+        //         $this->attributes = $valor;
+        //     }
+        // }
     }
 
 

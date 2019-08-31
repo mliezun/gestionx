@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="alta--button">
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
                     <button type="button" class="btn btn-primary"
-                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E']) ?>"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E', 'Prueba'=> 'GG']) ?>"
                             data-hint="Nuevo Pago con Efectivo">
                         Nuevo Pago con Efectivo
                     </button>

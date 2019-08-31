@@ -3,6 +3,7 @@ var AltaLineas = {
     init: function (urlBase, tipoPrecio, model, lineas) {
         var id = (model.IdIngreso ? model.IdIngreso : model.IdVenta);
         var idPadre = (model.IdIngreso ? model.IdRemito : model.IdVenta);
+        var idCliente = (model.IdIngreso ? 0 : model.IdCliente);
         Vue.component('v-select', VueSelect.VueSelect);
         new Vue({
             el: '#lineas',
@@ -46,7 +47,7 @@ var AltaLineas = {
                 fetchOptions: function (search, loading) {
                     var _this = this;
                     loading(true);
-                    $.get('/articulos/listar?Cadena=' + search)
+                    $.get('/articulos/listar?id='+ idCliente +'&Cadena=' + search)
                         .done(function (data) {
                             loading(false);
                             _this.options = data;
