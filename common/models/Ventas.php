@@ -64,9 +64,9 @@ class Ventas extends Model
     public function rules()
     {
         return [
-            [['IdCliente','Tipo'],
+            [['IdCliente','Tipo','IdTipoTributo','IdTipoComprobanteAfip'],
                 'required', 'on' => self::_ALTA],
-            [['IdVenta','IdCliente','Tipo'],
+            [['IdVenta','IdCliente','Tipo','IdTipoTributo','IdTipoComprobanteAfip'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];

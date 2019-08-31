@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Precio de compra</th>
                                 <th>Precios por Defecto</th>
                                 <th>Precios por Lista</th>
-                                <th>Gravamen</th>
+                                <th>IVA</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
                             </tr>
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php endforeach; ?>
                                         </ul>
                                     </td>
-                                    <td><?= Html::encode($model['Gravamen']) ?></td>
+                                    <td><?= Html::encode($model['TipoIVA']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
                                 </tr>

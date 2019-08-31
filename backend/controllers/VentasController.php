@@ -7,6 +7,8 @@ use common\models\Pagos;
 use common\models\PuntosVenta;
 use common\models\GestorVentas;
 use common\models\GestorClientes;
+use common\models\GestorTiposComprobantesAfip;
+use common\models\GestorTiposTributos;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
@@ -24,7 +26,6 @@ class VentasController extends BaseController
         PermisosHelper::verificarPermiso('AltaVenta');
 
         $venta = new Ventas();
-
         $venta->setScenario(Ventas::_ALTA);
 
         if($venta->load(Yii::$app->request->post()) && $venta->validate()){
@@ -39,9 +40,16 @@ class VentasController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
+            $clientes = (new GestorClientes())->Listar();
+            $comprobantes = GestorTiposComprobantesAfip::Buscar();
+            $tributos = GestorTiposTributos::Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',
-                'model' => $venta
+                'model' => $venta,
+                'clientes' => $clientes,
+                'comprobantes' => $comprobantes,
+                'tributos' => $tributos
             ]);
         }
     }
@@ -66,12 +74,17 @@ class VentasController extends BaseController
             }
         } else {
             $venta->IdVenta = $id;
-            
             $venta->Dame();
+            $clientes = (new GestorClientes())->Listar();
+            $comprobantes = GestorTiposComprobantesAfip::Buscar();
+            $tributos = GestorTiposTributos::Buscar();
 
             return $this->renderAjax('alta', [
-                        'titulo' => 'Editar Venta',
-                        'model' => $venta
+                'titulo' => 'Editar Venta',
+                'model' => $venta,
+                'clientes' => $clientes,
+                'comprobantes' => $comprobantes,
+                'tributos' => $tributos
             ]);
         }
     }

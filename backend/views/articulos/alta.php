@@ -35,7 +35,9 @@ use yii\web\View;
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
             
-            <?= $form->field($model, 'IdProveedor')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+            <?php if (!isset($model['Articulo'])): ?>
+                <?= $form->field($model, 'IdProveedor')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+            <?php endif; ?>
 
             <?= $form->field($model, 'Articulo') ?>
 
@@ -47,7 +49,7 @@ use yii\web\View;
 
             <?= $form->field($model, 'PrecioVenta') ?>
 
-            <?= $form->field($model, 'IdTipoGravamen')->dropDownList(ArrayHelper::map($gravamenes, 'IdTipoGravamen', 'TipoGravamen'), ['prompt' => 'Gravamen']) ?>
+            <?= $form->field($model, 'IdTipoIVA')->dropDownList(ArrayHelper::map($ivas, 'IdTipoIVA', 'TipoIVA'), ['prompt' => 'IVA']) ?>
 
             <?php if (!isset($model['Articulo'])) : ?>
                 <?= $form->field($model, 'PreciosVenta')->checkboxList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista')) ?>

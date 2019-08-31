@@ -9,6 +9,7 @@ class Articulos extends Model
     public $IdArticulo;
     public $IdProveedor;
     public $IdEmpresa;
+    public $IdTipoIVA;
     public $Articulo;
     public $Codigo;
     public $Descripcion;
@@ -18,8 +19,7 @@ class Articulos extends Model
 
     // Derivados
     public $Proveedor;
-    public $IdTipoGravamen;
-    public $Gravamen;
+    public $TipoIVA;
     public $PreciosVenta;
 
     // Precio por defecto
@@ -37,7 +37,7 @@ class Articulos extends Model
     {
         return [
             'IdProveedor' => 'Proveedor',
-            'IdTipoGravamen' => 'Gravamen',
+            'IdTipoIVA' => 'IVA',
             'PreciosVenta' => 'Listas de precios'
         ];
     }
@@ -57,10 +57,10 @@ class Articulos extends Model
             ['PrecioVenta', 'number'],
             // Alta
             [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IdTipoGravamen'], 'required', 'on' => self::SCENARIO_ALTA],
+            'IdTipoIVA'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
             [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
-            'IdTipoGravamen'], 'required', 'on' => self::SCENARIO_EDITAR],
+            'IdTipoIVA'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [$this->attributes(), 'safe'],
         ];
