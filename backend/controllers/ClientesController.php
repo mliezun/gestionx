@@ -57,9 +57,6 @@ class ClientesController extends Controller
             $cliente->setScenario(Clientes::_ALTA_JURIDICA);
         }
 
-        $listas = GestorListasPrecio::Buscar('S');
-        $tiposdoc = GestorTiposDocAfip::Buscar();
-
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Alta($cliente);
@@ -71,6 +68,9 @@ class ClientesController extends Controller
                 return ['error' => $resultado];
             }
         } else {
+            $listas = GestorListasPrecio::Buscar('S');
+            $tiposdoc = GestorTiposDocAfip::Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',
                 'model' => $cliente,
@@ -85,19 +85,18 @@ class ClientesController extends Controller
         PermisosHelper::verificarPermiso('ModificarCliente');
         
         $cliente = new Clientes();
+        $cliente->IdCliente = $id;
+        $cliente->Dame();
 
-        $clienteAux = new Clientes();
-        $clienteAux->IdCliente = $id;
-        $clienteAux->Dame();
-        if ($clienteAux->Tipo == 'F') {
+        // $clienteAux = new Clientes();
+        // $clienteAux->IdCliente = $id;
+        // $clienteAux->Dame();
+        if ($cliente->Tipo == 'F') {
             $cliente->setScenario(Clientes::_MODIFICAR_FISICA);
         } else {
             $cliente->setScenario(Clientes::_MODIFICAR_JURIDICA);
         }
         
-        $listas = GestorListasPrecio::Buscar('S');
-        $tiposdoc = GestorTiposDocAfip::Buscar();
-
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
             $gestor = new GestorClientes();
             $resultado = $gestor->Modificar($cliente);
@@ -109,9 +108,12 @@ class ClientesController extends Controller
                 return ['error' => $resultado];
             }
         } else {
+            $listas = GestorListasPrecio::Buscar('S');
+            $tiposdoc = GestorTiposDocAfip::Buscar();
+
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar Cliente',
-                        'model' => $clienteAux,
+                        'model' => $cliente,
                         'listas' => $listas,
                         'tiposdoc' => $tiposdoc
             ]);

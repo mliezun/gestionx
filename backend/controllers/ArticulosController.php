@@ -5,7 +5,7 @@ namespace backend\controllers;
 use common\models\GestorArticulos;
 use common\models\Articulos;
 use common\models\GestorProveedores;
-use common\models\GestorTiposGravamenes;
+use common\models\GestorTiposIVA;
 use common\models\GestorListasPrecio;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
@@ -78,13 +78,9 @@ class ArticulosController extends BaseController
         $articulo = new Articulos();
         $articulo->setScenario(Articulos::SCENARIO_ALTA);
 
-        $proveedores = (new GestorProveedores())->Buscar();
-        $gravamenes = (new GestorTiposGravamenes())->Buscar();
-        $listas = (new GestorListasPrecio)->Buscar();
-
         if($articulo->load(Yii::$app->request->post()) && $articulo->validate() ){
             $resultado = (new GestorArticulos())->Alta($articulo);
-
+            
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
                 return ['error' => null];
@@ -92,12 +88,16 @@ class ArticulosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
+            $proveedores = GestorProveedores::Buscar();
+            $listas = GestorListasPrecio::Buscar();
+            $ivas = GestorTiposIVA::Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Articulo',
                 'model' => $articulo,
                 'listas' => $listas,
                 'proveedores' => $proveedores,
-                'gravamenes' => $gravamenes
+                'ivas' => $ivas
             ]);
         }
     }
@@ -134,16 +134,16 @@ class ArticulosController extends BaseController
             $articulo->IdArticulo = $id;
             $articulo->Dame();
 
-            $proveedores = (new GestorProveedores())->Buscar();
-            $gravamenes = (new GestorTiposGravamenes())->Buscar();
-            $listas = (new GestorListasPrecio)->Buscar();
+            $proveedores = GestorProveedores::Buscar();
+            $listas = GestorListasPrecio::Buscar();
+            $ivas = GestorTiposIVA::Buscar();
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Modificar Pago',
                 'model' => $articulo,
                 'listas' => $listas,
                 'proveedores' => $proveedores,
-                'gravamenes' => $gravamenes
+                'ivas' => $ivas
             ]);
         }
     }

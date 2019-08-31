@@ -15,7 +15,7 @@ class GestorArticulos
     public function Alta(Articulos $Articulo)
     {
         $sql = "call xsp_alta_articulo( :token, :idprov, :idempresa, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamene, :idslistaprecio, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :pventa, :idiva, :idslistaprecio, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -31,7 +31,7 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamene' => $Articulo->IdTipoGravamen,
+            ':idiva' => $Articulo->IdTipoIVA,
             ':idslistaprecio' => json_encode($Articulo->PreciosVenta),
         ]);
 
@@ -103,7 +103,7 @@ class GestorArticulos
     public function Modificar(Articulos $Articulo)
     {
         $sql = "call xsp_modifica_articulo( :token, :idarticulo, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :pidstiposgravamenes, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :pventa, :iva, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -118,7 +118,7 @@ class GestorArticulos
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
             ':pventa' => $Articulo->PrecioVenta,
-            ':pidstiposgravamenes' => $Articulo->IdTipoGravamen,
+            ':iva' => $Articulo->IdTipoIVA,
         ]);
 
         return $query->queryScalar();

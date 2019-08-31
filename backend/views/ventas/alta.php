@@ -1,17 +1,16 @@
 <?php
 
 use common\models\Ventas;
-use common\models\GestorClientes;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 
-$clientes = (new GestorClientes())->Listar();
-
 /* @var $this View */
 /* @var $form ActiveForm */
-/* @var $model Remitos */
+/* @var $model Ventas */
+/* @var $comprobantes TiposComprobantesAfip */
+/* @var $tributos TiposTributos */
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -32,7 +31,13 @@ $clientes = (new GestorClientes())->Listar();
             
             <?= $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']) ?>
 
-            <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
+            <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
+
+            <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo'), ['prompt' => 'Tipo de Tributo']) ?>
+
+            <?php if (!isset($model['IdVenta'])): ?>
+                <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
+            <?php endif; ?>
 
             <?= $form->field($model, 'Observaciones') ?>
         </div>

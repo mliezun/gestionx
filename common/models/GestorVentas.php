@@ -14,8 +14,8 @@ class GestorVentas
      */
     public function Alta(Ventas $venta)
     {
-        $sql = "call xsp_alta_venta( :token, :idempresa, :idpuntoventa, :idcliente,
-        :idusuario, :tipo, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_alta_venta( :token, :idempresa, :idpuntoventa, :idcliente,"
+        .":idcomprobante, :idtributo, :tipo, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -25,8 +25,9 @@ class GestorVentas
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
-            ':idusuario' => Yii::$app->user->identity->IdUsuario,
             ':idcliente' => $venta->IdCliente,
+            ':idcomprobante' => $venta->IdTipoComprobanteAfip,
+            ':idtributo' => $venta->IdTipoTributo,
             ':idpuntoventa' => $venta->IdPuntoVenta,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
@@ -42,8 +43,8 @@ class GestorVentas
      */
     public function Modificar(Ventas $venta)
     {
-        $sql = "call xsp_modifica_venta( :token, :idventa, :idempresa, :idcliente,
-        :idusuario, :tipo, :observaciones, :idusuariogestion , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_venta( :token, :idventa, :idempresa, :idcliente,"
+        .":idcomprobante, :idtributo, :tipo, :observaciones, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -53,10 +54,10 @@ class GestorVentas
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
-            ':idusuariogestion' => Yii::$app->user->identity->IdUsuario,
             ':idcliente' => $venta->IdCliente,
+            ':idcomprobante' => $venta->IdTipoComprobanteAfip,
+            ':idtributo' => $venta->IdTipoTributo,
             ':idventa' => $venta->IdVenta,
-            ':idusuario' => $venta->IdUsuario,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
         ]);
