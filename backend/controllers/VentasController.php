@@ -242,17 +242,13 @@ class VentasController extends BaseController
     {
         $venta = new Ventas;
         $venta->IdVenta = $id;
-        // $comprobante = $venta->GenerarComprobanteAfip();
+        $comprobante = $venta->GenerarComprobante();
 
-        $params = Yii::$app->session->get('Parametros');
+        $res = AfipHelper::ImprimirComprobante($comprobante);
 
-        $res = AfipHelper::altaComprobante([
-            'CUIT' => $params['CUIT'],
-            'cert' => $params['AFIPCERT'],
-            'key' => $params['AFIPKEY'],
-            'Comprobante' => []
+        return Yii::$app->response->sendContentAsFile($res, 'Factura.pdf', [
+            'inline' => true,
+            'mimeType' => 'application/pdf'
         ]);
-
-        Yii::info($res);
     }
 }

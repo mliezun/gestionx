@@ -126,6 +126,14 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
+                                                        <a class="btn btn-default"
+                                                                href="<?= Url::to(['/ventas/comprobante', 'id' => $model['IdVenta']]) ?>"
+                                                                target="_blank"
+                                                                data-hint="Imprimir Factura">
+                                                            <i class="fas fa-print"></i>
+                                                        </a>
+                                                    <?php endif; ?>
                                                     <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
