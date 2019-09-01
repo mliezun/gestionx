@@ -2,6 +2,8 @@
 
 namespace common\components;
 
+use Yii;
+
 class NinjaArrayHelper
 {
     public static function normalizar($datos, $normalizacion)
@@ -15,7 +17,7 @@ class NinjaArrayHelper
                 $clave = $normalizacion[$clave];
                 if (gettype($clave) === 'array') {
                     $first_key = array_key_first($valor);
-                    if (gettype($valor[$first_key]) === 'array') {
+                    if (isset($first_key) && gettype($valor[$first_key]) === 'array') {
                         $nuevoValor = [];
                         foreach ($valor as $v) {
                             $nuevoValor[] = self::normalizar($v, $clave[1]);
