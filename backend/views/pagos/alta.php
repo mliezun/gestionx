@@ -1,13 +1,10 @@
 <?php
 
 use common\models\Pagos;
-use common\models\GestorTiposComprobantes;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
-
-$tiposcomprobantes = (new GestorTiposComprobantes())->Listar();
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -31,8 +28,6 @@ $tiposcomprobantes = (new GestorTiposComprobantes())->Listar();
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
 
             <?= Html::activeHiddenInput($model, 'IdMedioPago') ?>
-
-            <?= $form->field($model, 'IdTipoComprobante')->dropDownList(ArrayHelper::map($tiposcomprobantes, 'IdTipoComprobante', 'TipoComprobante'), ['prompt' => 'Tipo de Comprobante']) ?>
 
             <?php if ($model['MedioPago'] == 'Tarjeta') :?>
                 <?= $form->field($model, 'NroTarjeta') ?>

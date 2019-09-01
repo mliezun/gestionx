@@ -186,17 +186,28 @@ class TabsPuntosVenta extends BaseController
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
+        $busqueda = new BuscarForm();
+
         $puntoventa = new PuntosVenta();
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
+
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $pSinStock = $busqueda->Check ? $busqueda->Check : 'N';
+            $cadena = $busqueda->Cadena ? $busqueda->Cadena : '';
+            $existencias = $puntoventa->ListarExistencias($cadena,$pSinStock);
+        } else {
+            $existencias = $puntoventa->ListarExistencias();
+        }
+        
         $puntoventa->Dame();
 
-        $existencias = $puntoventa->ListarExistencias();
         $paginado->totalCount = count($existencias);
         $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
 
         return $this->renderPartial('articulos', [
             'models' => $existencias,
-            'puntoventa' => $puntoventa
+            'puntoventa' => $puntoventa,
+            'busqueda' => $busqueda
         ]);
     }
 }
