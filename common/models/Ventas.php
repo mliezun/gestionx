@@ -89,6 +89,24 @@ class Ventas extends Model
         $this->attributes = $query->queryOne();
     }
 
+    /**
+     * Permite obtener los datos para generar un comprobante de Venta.
+     * xsp_generar_comprobante_venta
+     * 
+     */
+    public function GenerarComprobante()
+    {
+        $sql = 'CALL xsp_generar_comprobante_venta ( :idventa )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+    
+        $query->bindValues([
+            ':idventa' => $this->IdVenta
+        ]);
+        
+        return $query->queryOne();
+    }
+
 
     /**
      * Permite cambiar el estado de la Venta siempre y cuando no esté dado de baja ya.

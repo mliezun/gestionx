@@ -27,7 +27,7 @@ use yii\web\View;
 
             <?= Html::activeHiddenInput($model, 'Parametro') ?>
             
-            <?= $form->field($model, 'Valor') ?>
+            <?= $form->field($model, 'Valor')->textarea() ?>
 
             <?= $form->field($auditoria, 'Motivo') ?>
 
