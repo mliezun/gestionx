@@ -244,7 +244,9 @@ class VentasController extends BaseController
         $venta->IdVenta = $id;
         $comprobante = $venta->GenerarComprobante();
 
-        $res = AfipHelper::ImprimirComprobante($comprobante);
+        $params = Yii::$app->session->get('Parametros');
+
+        $res = AfipHelper::ImprimirComprobante($params, $comprobante);
 
         return Yii::$app->response->sendContentAsFile($res, 'Factura.pdf', [
             'inline' => true,

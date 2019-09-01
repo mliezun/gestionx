@@ -9,12 +9,10 @@ use Yii;
 
 class AfipHelper
 {
-    public static function ImprimirComprobante($datos)
+    public static function ImprimirComprobante($params, $datos)
     {
         // Normalizo los datos de la venta para enviar a AFIP
         $datosAfip = self::datosAfip($datos);
-
-        $params = Yii::$app->session->get('Parametros');
 
         // Envío los datos de la venta a AFIP
         $resultado = self::altaComprobante([
@@ -23,7 +21,6 @@ class AfipHelper
             'key' => $params['AFIPKEY'],
             'Comprobante' => $datosAfip
         ]);
-        // TODO: verificar resultado
         $resultado = self::datosResultado($resultado);
 
         // Agrego los datos de los artículos para generar pdf
@@ -31,9 +28,10 @@ class AfipHelper
 
         // Normalizo los datos para generar pdf
         $datosPdf = self::datosPdf($datosAfip);
+        $datosCliente = self::datosCliente($datos);
 
         // Genero archivo pdf
-        return self::generarPDF($datosPdf, $resultado);
+        return self::generarPDF($params, $datosPdf, $datosCliente, $resultado);
     }
 
     /**
@@ -46,7 +44,7 @@ class AfipHelper
             'CantReg' 	=> 1,
             // Punto de venta
             'PtoVta' 	=> $datos['IdPuntoVenta'],
-            // Tipo de comprobante (ver tipos disponibles) 
+            // Tipo de comprobante (ver tipos disponibles)
             'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
             // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
             'Concepto' 	=> 1,
@@ -61,31 +59,31 @@ class AfipHelper
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             'CbteFch' 	=> intval(date('Ymd')),
             // Importe total del comprobante
-            'ImpTotal' 	=> $datos['Monto'],
+            'ImpTotal' 	=> $datos['Total'],
             // Importe neto no gravado
             'ImpTotConc' 	=> 0,
             // Importe neto gravado
-            'ImpNeto' 	=> 0,
+            'ImpNeto' 	=> $datos['Total'],
             // Importe exento de IVA
             'ImpOpEx' 	=> 0,
             //Importe total de IVA
             'ImpIVA' 	=> 0,
             //Importe total de tributos
             'ImpTrib' 	=> 0,
-            //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
+            //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos)
             'MonId' 	=> 'PES',
-            // Cotización de la moneda usada (1 para pesos argentinos)  
-            'MonCotiz' 	=> 1,
-            // (Opcional) Alícuotas asociadas al comprobante
-            // 'Iva' 		=> [], 
+            // Cotización de la moneda usada (1 para pesos argentinos)
+            'MonCotiz' 	=> 1
         ];
 
         $articulos = json_decode($datos['Articulos'], true);
 
+        // Listado de ivas por artículo para inclusión opcional en la factura
         $ivas = [];
-
+        // Monto total del importe de iva para inclusión opcional en la factura
         $importeIVA = 0;
 
+        // Calculo los montos de iva por artículo
         foreach ($articulos as $articulo) {
             $idTipoIva = $articulo['IdTipoIVA'];
             if (!array_key_exists($idTipoIva, $ivas)) {
@@ -95,19 +93,20 @@ class AfipHelper
                     'Importe' => 0
                 ];
             }
-            $ivas[$idTipoIva]['BaseImp'] += $articulo['Subtotal'];
+            $ivas[$idTipoIva]['BaseImp'] += $articulo['Subtotal'] - $articulo['ImporteIVA'];
             $ivas[$idTipoIva]['Importe'] += $articulo['ImporteIVA'];
             $importeIVA += $articulo['ImporteIVA'];
         }
 
-        $datosAfip['ImpNeto'] = $datos['Total'];
-        $datosAfip['ImpTrib'] = 0;
-
-        /*
-        foreach ($ivas as $id => $iva) {
-            $datosAfip['Iva'][] = $iva;
+        // Si es Factura 'A' o 'M' agrego IVA
+        if ($datos['IdTipoComprobanteAfip'] == 1 || $datos['IdTipoComprobanteAfip'] == 51) {
+            $datosAfip['Iva'] = array();
+            foreach ($ivas as $id => $iva) {
+                $datosAfip['Iva'][] = $iva;
+            }
+            $datosAfip['ImpNeto'] = number_format($datosAfip['ImpNeto'] - $importeIVA, 2);
+            $datosAfip['ImpIVA'] = number_format($importeIVA, 2);
         }
-        */
 
         return $datosAfip;
     }
@@ -154,13 +153,25 @@ class AfipHelper
         ]);
     }
 
+    private static function datosCliente($datos)
+    {
+        $datos = array_merge($datos, json_decode($datos['Datos'], true));
+        return NinjaArrayHelper::normalizar($datos, [
+            'NombreCliente' => 'nombre_cliente',
+            'Direccion' => 'domicilio_cliente',
+            'Provincia' => 'provincia_cliente',
+            'Localidad' => 'localidad_cliente'
+        ]);
+    }
+
     private static function datosResultado($resultado)
     {
         $resultado = json_decode(json_encode($resultado), true);
         return NinjaArrayHelper::normalizar($resultado, [
             'CAE' => 'cae',
             'CodAutorizacion' => 'cae',
-            'FchVto' => 'fch_venc_cae'
+            'FchVto' => 'fch_venc_cae',
+            'CAEFchVto' => 'fch_venc_cae'
         ]);
     }
 
@@ -169,15 +180,12 @@ class AfipHelper
      * Generación de comprobante de AFIP.
      * Referencia: https://github.com/mliezun/eratospdf
      */
-    private static function generarPDF($datos, $resultado)
+    private static function generarPDF($params, $datosPdf, $datosCliente, $resultado)
     {
-        $json = array_merge($datos, $resultado);
+        $json = array_merge($datosPdf, $datosCliente, $resultado);
         $json['fecha'] = date('Ymd');
         $json['fecha_cbte'] = "{$json['fecha_cbte']}";
-        $json['subtotales_iva'] = [];
         $json['idioma_cbte'] = 1;
-
-        $params = Yii::$app->session->get('Parametros');
 
         $json['conf_pdf'] = [
             // 'LOGO' => $params['LOGO'],
