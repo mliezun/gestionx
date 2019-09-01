@@ -65,23 +65,23 @@ class Pagos extends Model
     public function rules()
     {
         return [
-            [['IdVenta','IdMedioPago','IdTipoComprobante','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
+            [['IdVenta','IdMedioPago','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
-            [['IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            [['IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
-            [['IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            [['IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_MERCADERIA],
-            [['IdVenta','IdMedioPago','IdTipoComprobante','IdCheque'],
+            [['IdVenta','IdMedioPago','IdCheque'],
             'required', 'on' => self::_ALTA_CHEQUE],
             [['IdVenta','IdMedioPago'],
             'required', 'on' => self::_ELECCION],
-            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
+            [['IdPago','IdVenta','IdMedioPago','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
             'required', 'on' => self::_MODIFICAR_TARJETA],
-            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_MODIFICAR_EFECTIVO],
-            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdRemito','Monto'],
+            [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_MODIFICAR_MERCADERIA],
-            [['IdPago','IdVenta','IdMedioPago','IdTipoComprobante','IdCheque'],
+            [['IdPago','IdVenta','IdMedioPago','IdCheque'],
             'required', 'on' => self::_MODIFICAR_CHEQUE],
             [$this->attributes(), 'safe']
         ];

@@ -101,7 +101,7 @@ $proveedor = new Proveedores();
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E' OR $model['Estado'] == 'A') : ?>
+                                            <?php if ($model['Estado'] != 'B') : ?>
                                                 <?php if ($model['Estado'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
@@ -118,20 +118,20 @@ $proveedor = new Proveedores();
                                                         </button>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
-                                                <?php if ($model['Estado'] == 'A') :?>
-                                                    <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
-                                                        <a class="btn btn-default"
-                                                                href="<?= Url::to(['/pagos', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Pagos">
-                                                            <i class="fas fa-money-bill-wave"></i>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
+                                                <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
+                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta') && $model['Estado'] == 'P') : ?>
                                                         <a class="btn btn-default"
                                                                 href="<?= Url::to(['/ventas/comprobante', 'id' => $model['IdVenta']]) ?>"
                                                                 target="_blank"
                                                                 data-hint="Imprimir Factura">
                                                             <i class="fas fa-print"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
+                                                        <a class="btn btn-default"
+                                                                href="<?= Url::to(['/pagos', 'id' => $model['IdVenta']]) ?>"
+                                                                data-hint="Pagos">
+                                                            <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                     <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>

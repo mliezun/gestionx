@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php ActiveForm::end(); ?>
         </div>
-        <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
+        <?php if (PermisosHelper::tienePermiso('PagarVenta') && $model['Estado'] != 'P') : ?>
             <div class="alta--button">
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
                     <button type="button" class="btn btn-primary"
@@ -70,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Medio de Pago</th>
-                                <th>Tipo de Comprobante</th>
                                 <th>Monto</th>
                                 <th>Datos</th>
                                 <th>Fecha de Alta</th>
@@ -82,7 +81,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($pagos as $pago): ?>
                                 <tr>
                                     <td><?= Html::encode($pago['MedioPago']) ?></td>
-                                    <td><?= Html::encode($pago['TipoComprobante']) ?></td>
                                     <td><?= Html::encode($pago['Monto']) ?></td>
                                     <td>
                                         <ul>
@@ -126,24 +124,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     </table>
                 </div>
             </div>
-            <div class="lineas--bottom">
-                <div class="lineas--total">
-                    Total de la Venta: <?= Html::encode($model['Monto']) ?>
-                </div>
-                <div class="lineas--total">
-                    Total de los Pagos: <?= Html::encode($model['MontoPagado']) ?>
-                </div>
-            </div>
-            <?php if ($model['Monto'] == $model['MontoPagado']) : ?>
-            <div class="lineas--bottom">
-                <div class="lineas--total">
-                    PAGADO
-                </div>
-            </div>
-            <?php endif; ?>
         </div>
         <?php else: ?>
             <p><strong>No hay pagos que coincidan con el criterio de búsqueda utilizado.</strong></p>
+        <?php endif; ?>
+        <?php if ($model['Estado'] != 'P') : ?>
+        <div class="lineas--bottom">
+            <div class="lineas--total">
+                Total de la Venta: <?= Html::encode($model['Monto']) ?>
+            </div>
+            <div class="lineas--total">
+                Total de los Pagos: <?= Html::encode($model['MontoPagado']) ?>
+            </div>
+        </div>
+        <?php else: ?>
+        <div class="lineas--bottom">
+            <div class="lineas--total">
+                PAGADO
+            </div>
+        </div>
         <?php endif; ?>
     </div>
 </div>
