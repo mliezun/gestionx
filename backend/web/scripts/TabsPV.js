@@ -6,28 +6,63 @@ var TabsPV = {
             el: '#tabsPV',
             data: function () {
                 return {
-                    IdPuntoVenta: IdPuntoVenta
+                    IdPuntoVenta: IdPuntoVenta,
+                    query: ''
                 };
             },
             created: function () {
                 var _this = this;
+                var query = location.search
+                if (query) {
+                    var queryObj = {};
+                    query = query.replace('?', '').split('=');
+                    for (var i = 0; i < query.length; i += 2) {
+                        queryObj[query[i]] = query[i+1];
+                    }
+                    query = queryObj;
+                }
+                this.query = query;
                 $(document).ready(function () {
-                    var Nombre = Object.keys(_this.$refs)[0];
-                    _this.setTab(Nombre);
+                    if (!query) {
+                        var Nombre = Object.keys(_this.$refs)[0];
+                        _this.setTab(Nombre, true);
+                    } else {
+                        _this.setTab(query['tab'], true);
+                    }
                 });
             },
             methods: {
-                setTab: function (Nombre) {
+                setQuery: function (key, val) {
+                    if (!this.query) {
+                        this.query = {}
+                    }
+                    this.query[key] = val;
+                    var search = '?';
                     var _this = this;
-                    document.getElementById('tabContent').innerHTML = '';
-                    Object.keys(_this.$refs).forEach(r => {
-                        _this.$refs[r].classList.remove('active');
-                    });
-                    _this.$refs[Nombre].classList.add('active');
-                    $.ajax('/puntos-venta/tab-content/' + _this.IdPuntoVenta + '?Nombre=' + Nombre)
-                        .done(function (data) {
-                            _this.setContent(data);
+                    var keys = Object.keys(this.query);
+                    keys.forEach(function (k, ix) {
+                        search += k + '=' + _this.query[k];
+                        if (ix !== keys.length - 1) {
+                            search += '&';
+                        }
+                    })
+                    location.search = search;
+                },
+                setTab: function (Nombre, firstLoad) {
+                    if (firstLoad) {
+                        var _this = this;
+                        document.getElementById('tabContent').innerHTML = '';
+                        Object.keys(_this.$refs).forEach(r => {
+                            _this.$refs[r].classList.remove('active');
                         });
+                        _this.$refs[Nombre].classList.add('active');
+                        $.ajax('/puntos-venta/tab-content/' + _this.IdPuntoVenta + '?Nombre=' + Nombre)
+                            .done(function (data) {
+                                _this.setContent(data);
+                            });
+                    } else {
+                        this.setQuery('tab', Nombre);
+                    }
                 },
                 setContent: function (data) {
                     var _this = this;

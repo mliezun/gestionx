@@ -153,7 +153,7 @@ var AltaLineas = {
                             if (data.error) {
                                 _this.mostrarMensaje('danger', data.error, 'ban');
                             } else {
-                                // window.open();
+                                window.open('/puntos-venta/operaciones/' + _this.ingreso.IdPuntoVenta + '?tab=' + (model.IdRemito ? 'Remitos' : 'Ventas'), '_self');
                             }
                         })
                         .catch(function (err) {
