@@ -28,6 +28,14 @@ class PreciosArticulos extends Model
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'IdListaPrecio' => 'Lista',
+            'PrecioVenta' => 'Precio'
+        ];
+    }
+
     /**
      * Procedimiento que sirve para instanciar un precio articulo desde la base de datos.
      * xsp_dame_precio_articulo

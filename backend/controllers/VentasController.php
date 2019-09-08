@@ -12,7 +12,7 @@ use common\models\GestorTiposTributos;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
-use common\components\AfipHelper;
+use common\components\ComprobanteHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -242,11 +242,12 @@ class VentasController extends BaseController
     {
         $venta = new Ventas;
         $venta->IdVenta = $id;
+        $venta->Dame();
         $comprobante = $venta->GenerarComprobante();
 
         $params = Yii::$app->session->get('Parametros');
 
-        $res = AfipHelper::ImprimirComprobante($params, $comprobante);
+        $res = ComprobanteHelper::ImprimirComprobante($params, $comprobante, $venta->Tipo === 'V');
 
         return Yii::$app->response->sendContentAsFile($res, 'Factura.pdf', [
             'inline' => true,
