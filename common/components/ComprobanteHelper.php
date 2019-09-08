@@ -7,21 +7,27 @@ use yii\web\HttpException;
 use afipsdk;
 use Yii;
 
-class AfipHelper
+class ComprobanteHelper
 {
-    public static function ImprimirComprobante($params, $datos)
+    public static function ImprimirComprobante($params, $datos, $esAfip = true)
     {
         // Normalizo los datos de la venta para enviar a AFIP
         $datosAfip = self::datosAfip($datos);
 
         // Envío los datos de la venta a AFIP
-        $resultado = self::altaComprobante([
-            'CUIT' => $params['CUIT'],
-            'cert' => $params['AFIPCERT'],
-            'key' => $params['AFIPKEY'],
-            'Comprobante' => $datosAfip
-        ]);
-        $resultado = self::datosResultado($resultado);
+        if ($esAfip) {
+            $resultado = self::altaComprobante([
+                'CUIT' => $params['CUIT'],
+                'cert' => $params['AFIPCERT'],
+                'key' => $params['AFIPKEY'],
+                'Comprobante' => $datosAfip
+            ]);
+            $resultado = self::datosResultado($resultado);
+        } else {
+            $idempresa = "" . Yii::$app->user->identity->IdEmpresa;
+            $cae = $idempresa . str_pad("{$datos['IdVenta']}", 16 - strlen($idempresa), '0', STR_PAD_LEFT);
+            $resultado = ['cae' => $cae];
+        }
 
         // Agrego los datos de los artículos para generar pdf
         $datosAfip['Articulos'] = json_decode($datos['Articulos'], true);
@@ -31,7 +37,7 @@ class AfipHelper
         $datosCliente = self::datosCliente($datos);
 
         // Genero archivo pdf
-        return self::generarPDF($params, $datosPdf, $datosCliente, $resultado);
+        return self::generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip);
     }
 
     /**
@@ -180,7 +186,7 @@ class AfipHelper
      * Generación de comprobante de AFIP.
      * Referencia: https://github.com/mliezun/eratospdf
      */
-    private static function generarPDF($params, $datosPdf, $datosCliente, $resultado)
+    private static function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
     {
         $json = array_merge($datosPdf, $datosCliente, $resultado);
         $json['fecha'] = date('Ymd');
@@ -198,6 +204,11 @@ class AfipHelper
             //'INICIO' => '',
             //'BORRADOR' => ''
         ];
+
+        if (!$esAfip) {
+            $json['conf_pdf']['PRESUPUESTO'] = true;
+            $json['tipo_cbte'] = 11;
+        }
 
         /*
         LOGO=logo.png
