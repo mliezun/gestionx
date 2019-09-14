@@ -251,11 +251,14 @@ class Usuarios extends Model implements IdentityInterface
      */
     public function DamePassword()
     {
-        $sql = "CALL xsp_dame_password_hash ( :usuario )";
+        $sql = "CALL xsp_dame_password_hash ( :host, :usuario )";
 
         $query = Yii::$app->db->createCommand($sql);
 
-        $query->bindValue(':usuario', $this->Usuario);
+        $query->bindValues([
+            ':host' => Yii::$app->request->headers->get('host'),
+            ':usuario' => $this->Usuario
+        ]);
 
         return $query->queryScalar();
     }

@@ -29,7 +29,7 @@ class GestorCheques
             ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
             ':fechavenc' => FechaHelper::formatearDateMysql($cheque->FechaVencimiento),
-            ':observaciones' => $cheque->Observaciones,
+            ':observaciones' => $cheque->Obversaciones,
         ]);
 
         return $query->queryScalar();
@@ -55,10 +55,10 @@ class GestorCheques
             ':idcheque' => $cheque->IdCheque,
             ':idcheque' => $cheque->IdCheque,
             ':idbanco' => $cheque->IdBanco,
-            ':nrochequq' => $cheque->NroCheque,
+            ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
             ':fechavenc' => $cheque->FechaVencimiento,
-            ':observaciones' => $cheque->Observaciones,
+            ':observaciones' => $cheque->Obversaciones,
         ]);
 
         return $query->queryScalar();

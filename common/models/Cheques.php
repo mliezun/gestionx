@@ -15,7 +15,7 @@ class Cheques extends Model
     public $FechaAlta;
     public $FechaVencimiento;
     public $Estado;
-    public $Observaciones;
+    public $Obversaciones;
 
     // Derivados
     public $Banco;
@@ -35,7 +35,8 @@ class Cheques extends Model
     {
         return [
             'IdBanco' => 'Banco',
-            'IdCliente' => 'Cliente'
+            'IdCliente' => 'Cliente',
+            'Obversaciones' => 'Observaciones'
         ];
     }
 

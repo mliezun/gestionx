@@ -58,7 +58,7 @@ class Ventas extends Model
         return [
             'IdCliente' => 'Cliente',
             'IdTipoComprobanteAfip' => 'Tipo de Comprobante',
-            'IdTipoTributo' => 'Tipo de Tributo'
+            'IdTipoTributo' => 'Impuestos adicionales'
         ];
     }
  

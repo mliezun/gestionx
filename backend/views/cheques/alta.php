@@ -1,6 +1,9 @@
 <?php
 
 use common\models\Cheques;
+use common\models\GestorBancos;
+use common\models\GestorClientes;
+use common\models\Clientes;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -8,6 +11,15 @@ use yii\web\View;
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Cheques */
+
+$gestorBancos = new GestorBancos;
+$bancos = $gestorBancos->Buscar();
+
+$gestorClientes = new GestorClientes;
+$clientes = array();
+foreach ($gestorClientes->Buscar() as $cliente) {
+    $clientes[$cliente['IdCliente']] = Clientes::Nombre($cliente);
+}
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -30,7 +42,7 @@ use yii\web\View;
 
             <?= $form->field($model, 'IdBanco')->dropDownList(ArrayHelper::map($bancos, 'IdBanco', 'Banco'), ['prompt' => 'Banco']) ?>
 
-            <?php if ($Tipo == 'Cliente') {
+            <?php if (isset($model->IdCliente)) {
                 echo $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']);
             }
             ?>
@@ -39,7 +51,7 @@ use yii\web\View;
 
             <?= $form->field($model, 'FechaVencimiento') ?>
 
-            <?= $form->field($model, 'Observaciones')->textarea() ?>
+            <?= $form->field($model, 'Obversaciones')->textarea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

@@ -67,6 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>FechaAlta</th>
                                 <th>FechaVencimiento</th>
                                 <th>Estado</th>
+                                <th>Observaciones</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -80,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['FechaAlta']) ?></td>
                                     <td><?= Html::encode($model['FechaVencimiento']) ?></td>
                                     <td><?= Html::encode(Cheques::ESTADOS[$model['Estado']]) ?></td>
+                                    <td><?= Html::encode($model['Obversaciones']) ?></td>
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
@@ -92,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </button>
                                             <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
-                                                <?php if (PermisosHelper::tienePermiso('ActivarCheque')): ?>
+                                                <?php if (PermisosHelper::tienePermiso('TODO:ActivarCheque')): ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['cheques/activar', 'id' => $model['IdCheque']]) ?>"
                                                             data-hint="Activar">
@@ -100,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php else : ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaCheque')) : ?>
+                                                <?php if (PermisosHelper::tienePermiso('TODO:DarBajaCheque')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-ajax="<?= Url::to(['cheques/dar-baja', 'id' => $model['IdCheque']]) ?>"
                                                             data-hint="Dar baja">
