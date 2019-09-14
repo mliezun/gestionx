@@ -56,7 +56,7 @@ class Articulos extends Model
             ['PrecioCosto', 'number'],
             ['PrecioVenta', 'number'],
             // Alta
-            [['IdEmpresa', 'IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            [['IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
             'IdTipoIVA'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
             [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
