@@ -62,7 +62,7 @@ class VentasController extends BaseController
 
         $venta->setScenario(Ventas::_MODIFICAR);
 
-        if ($venta->load(Yii::$app->request->post()) && $venta->validate()) {
+        if ($venta->load(Yii::$app->request->post())) {
             $gestor = new GestorVentas();
             $resultado = $gestor->Modificar($venta);
 

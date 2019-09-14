@@ -26,8 +26,8 @@ class GestorVentas
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idcliente' => $venta->IdCliente,
-            ':idcomprobante' => $venta->IdTipoComprobanteAfip,
-            ':idtributo' => $venta->IdTipoTributo == '' ? null : $venta->IdTipoTributo,
+            ':idcomprobante' => ($venta->IdTipoComprobanteAfip != '') ? $venta->IdTipoComprobanteAfip : null,
+            ':idtributo' => ($venta->IdTipoTributo != '')  ? $venta->IdTipoTributo : null,
             ':idpuntoventa' => $venta->IdPuntoVenta,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
@@ -44,7 +44,7 @@ class GestorVentas
     public function Modificar(Ventas $venta)
     {
         $sql = "call xsp_modifica_venta( :token, :idventa, :idempresa, :idcliente,"
-        .":idcomprobante, :idtributo, :tipo, :observaciones, :IP, :userAgent, :app)";
+        .":idcomprobante, :idtributo, :observaciones, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -55,10 +55,9 @@ class GestorVentas
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idcliente' => $venta->IdCliente,
-            ':idcomprobante' => $venta->IdTipoComprobanteAfip,
-            ':idtributo' => $venta->IdTipoTributo,
+            ':idcomprobante' => ($venta->IdTipoComprobanteAfip != '') ? $venta->IdTipoComprobanteAfip : null,
+            ':idtributo' => ($venta->IdTipoTributo != '')  ? $venta->IdTipoTributo : null,
             ':idventa' => $venta->IdVenta,
-            ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
         ]);
 
