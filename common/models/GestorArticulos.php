@@ -24,7 +24,7 @@ class GestorArticulos
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idempresa' => $Articulo->IdEmpresa,
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idprov' => $Articulo->IdProveedor,
             ':articulo' => $Articulo->Articulo,
             ':codigo' => $Articulo->Codigo,
