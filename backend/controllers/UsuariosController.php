@@ -230,19 +230,19 @@ class UsuariosController extends BaseController
         $parametros = Yii::$app->session->get('Parametros');
         $from = "{$parametros['EMPRESA']} <{$parametros['CORREONOTIFICACIONES']}>";
 
+        $resultado = $usuario->RestablecerPassword($pass);
+
+        if ($resultado != 'OK') {
+            return ['error' => $resultado];
+        }
+        
         EmailHelper::enviarEmail($from, $usuario->Email,
         'Restablecimiento de contraseña ' . $parametros['EMPRESA'],
         'restablecer-pass', [
             'password' => $pass
         ]);
-
-        $resultado = $usuario->RestablecerPassword($pass);
-
-        if ($resultado == 'OK') {
-            return ['error' => null];
-        }
-
-        return ['error' => $resultado];
+            
+        return ['error' => null];
     }
 
     public function actionSesiones($id)
@@ -267,6 +267,42 @@ class UsuariosController extends BaseController
             'model' => $usuario,
             'models' => $sesiones
         ]);
+    }
+
+    public function actionActivar($id)
+    {
+        PermisosHelper::verificarPermiso('ActivarUsuario');
+
+        Yii::$app->response->format = 'json';
+        
+        $usuario = new Usuarios();
+        $usuario->IdUsuario = $id;
+
+        $resultado = $usuario->Activar();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
+    public function actionDarBaja($id)
+    {
+        PermisosHelper::verificarPermiso('DarBajaUsuario');
+
+        Yii::$app->response->format = 'json';
+        
+        $usuario = new Usuarios();
+        $usuario->IdUsuario = $id;
+
+        $resultado = $usuario->DarBaja();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
     }
 }
 

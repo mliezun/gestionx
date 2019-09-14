@@ -58,16 +58,16 @@ class Ventas extends Model
         return [
             'IdCliente' => 'Cliente',
             'IdTipoComprobanteAfip' => 'Tipo de Comprobante',
-            'IdTipoTributo' => 'Tipo de Tributo'
+            'IdTipoTributo' => 'Impuestos adicionales'
         ];
     }
  
     public function rules()
     {
         return [
-            [['IdCliente','Tipo','IdTipoTributo','IdTipoComprobanteAfip'],
+            [['IdCliente','Tipo','IdTipoComprobanteAfip'],
                 'required', 'on' => self::_ALTA],
-            [['IdVenta','IdCliente','Tipo','IdTipoTributo','IdTipoComprobanteAfip'],
+            [['IdVenta','IdCliente','Tipo','IdTipoComprobanteAfip'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];

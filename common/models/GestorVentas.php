@@ -27,7 +27,7 @@ class GestorVentas
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idcliente' => $venta->IdCliente,
             ':idcomprobante' => $venta->IdTipoComprobanteAfip,
-            ':idtributo' => $venta->IdTipoTributo,
+            ':idtributo' => $venta->IdTipoTributo == '' ? null : $venta->IdTipoTributo,
             ':idpuntoventa' => $venta->IdPuntoVenta,
             ':tipo' => $venta->Tipo,
             ':observaciones' => $venta->Observaciones,
