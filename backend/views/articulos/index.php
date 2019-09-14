@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarArticulo')) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('TODO:BorrarArticulo')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['articulos/borrar', 'id' => $model['IdArticulo']]) ?>"
                                                         data-hint="Borrar">

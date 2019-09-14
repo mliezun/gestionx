@@ -188,12 +188,14 @@ class PuntosVenta extends Model
      */
     public function ListarExistencias()
     {
-        $sql = 'CALL xsp_listar_existencias_puntosventa( :idPuntoVenta )';
+        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
-            ':idPuntoVenta' => $this->IdPuntoVenta
+            ':cadena' => '',
+            ':idPuntoVenta' => $this->IdPuntoVenta,
+            ':sinStock' => 'N'
         ]);
         
         return $query->queryAll();

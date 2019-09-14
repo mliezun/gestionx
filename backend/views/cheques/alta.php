@@ -42,7 +42,7 @@ foreach ($gestorClientes->Buscar() as $cliente) {
 
             <?= $form->field($model, 'IdBanco')->dropDownList(ArrayHelper::map($bancos, 'IdBanco', 'Banco'), ['prompt' => 'Banco']) ?>
 
-            <?php if (isset($model->IdCliente)) {
+            <?php if (isset($model->IdCliente) || (isset($Tipo) && $Tipo == 'Cliente')) {
                 echo $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']);
             }
             ?>
