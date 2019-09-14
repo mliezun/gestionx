@@ -20,12 +20,6 @@ class Menu
             'permiso' => 'BuscarUsuarios'
         ],
         [
-            'name' => 'Roles',
-            'icon' => 'fas fa-user-tag', 
-            'href' => '/roles',
-            'permiso' => 'BuscarRoles'
-        ],
-        [
             'name' => 'Puntos de Venta',
             'icon' => 'far fa-building',
             'href' => '/puntos-venta',
@@ -59,6 +53,11 @@ class Menu
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [
+                [
+                    'name' => 'Roles',
+                    'href' => '/roles',
+                    'permiso' => 'BuscarRoles'
+                ],
                 [
                     'name' => 'Bancos',
                     'href' => '/bancos',
