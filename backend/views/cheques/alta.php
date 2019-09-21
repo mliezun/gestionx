@@ -8,6 +8,8 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
+use kartik\select2\Select2;
+
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Cheques */
@@ -40,10 +42,24 @@ foreach ($gestorClientes->Buscar() as $cliente) {
 
             <?= $form->field($model, 'NroCheque') ?>
 
-            <?= $form->field($model, 'IdBanco')->dropDownList(ArrayHelper::map($bancos, 'IdBanco', 'Banco'), ['prompt' => 'Banco']) ?>
+            <?= $form->field($model, 'IdBanco')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($bancos, 'IdBanco', 'Banco'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Banco'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
 
             <?php if (isset($model->IdCliente) || (isset($Tipo) && $Tipo == 'Cliente')) {
-                echo $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']);
+                echo $form->field($model, 'IdCliente')->widget(Select2::classname(), [
+                    'data' => $clientes,
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Cliente'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
             }
             ?>
 

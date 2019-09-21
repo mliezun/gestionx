@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -23,11 +24,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Proveedor'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ],
+            ]) ?>
 
-            <?= $form->field($busqueda, 'Combo2')->dropDownList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'), ['prompt' => 'Lista de Precios']) ?>
+            <?= $form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Lista de Precios'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ]
+            ]) ?>
 
-            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
+            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button', 'style' => 'margin-left: 10px']) ?> 
 
             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
 

@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\date\DatePicker;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -23,11 +24,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'FechaInicio') ?>
+            <?= $form->field($busqueda, 'FechaInicio')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha desde'],
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy'
+                ]
+            ]) ?>
 
-            <?= $form->field($busqueda, 'FechaFin') ?>
+            <?= $form->field($busqueda, 'FechaFin')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha hasta'],
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy'
+                ]
+            ]) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(Cheques::ESTADOS, ['prompt' => 'Proveedor']) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(Cheques::ESTADOS, ['prompt' => 'Estado']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
@@ -78,8 +93,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Banco']) ?></td>
                                     <td><?= Html::encode($model['NroCheque']) ?></td>
                                     <td><?= Html::encode($model['Importe']) ?></td>
-                                    <td><?= Html::encode($model['FechaAlta']) ?></td>
-                                    <td><?= Html::encode($model['FechaVencimiento']) ?></td>
+                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
+                                    <td><?= Html::encode(FechaHelper::formatearDateLocal($model['FechaVencimiento'])) ?></td>
                                     <td><?= Html::encode(Cheques::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['Obversaciones']) ?></td>
                                     <td>
