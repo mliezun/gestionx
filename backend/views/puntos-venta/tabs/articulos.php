@@ -16,6 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="row">
     <div class="col-sm-12">
+        <div class="buscar--form">
+            <?php $form = ActiveForm::begin(['layout' => 'inline',]); ?>
+
+            <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
+
+            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?>
+
+             <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir sin stock', 'value' => 'S', 'uncheck' => 'N')); ?> 
+
+            <?php ActiveForm::end(); ?>
+        </div>
+
         <div id="errores"> </div>
         
         <?php if (count($models) > 0): ?>
