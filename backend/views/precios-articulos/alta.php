@@ -6,6 +6,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
 use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -40,7 +41,7 @@ use kartik\select2\Select2;
                 
             <?php endif; ?>
 
-            <?= $form->field($model, 'PrecioVenta') ?>
+            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

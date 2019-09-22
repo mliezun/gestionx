@@ -6,6 +6,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
 use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -67,7 +68,7 @@ use kartik\select2\Select2;
 
             <?php if ($model['MedioPago'] == 'Tarjeta' OR $model['MedioPago'] == 'Efectivo' ) :?>
 
-                <?= $form->field($model, 'Monto') ?>
+                <?= $form->field($model, 'Monto')->widget(MaskMoney::classname()) ?>
 
             <?php endif; ?>
 

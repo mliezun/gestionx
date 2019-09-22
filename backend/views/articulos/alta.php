@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -47,9 +48,9 @@ use kartik\select2\Select2;
 
             <?= $form->field($model, 'Descripcion') ?>
 
-            <?= $form->field($model, 'PrecioCosto') ?>
+            <?= $form->field($model, 'PrecioCosto')->widget(MaskMoney::classname()) ?>
 
-            <?= $form->field($model, 'PrecioVenta') ?>
+            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
 
             <?= $form->field($model, 'IdTipoIVA')->dropDownList(ArrayHelper::map($ivas, 'IdTipoIVA', 'TipoIVA'), ['prompt' => 'IVA']) ?>
 

@@ -8,6 +8,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 use backend\assets\IngresosAsset;
 
 IngresosAsset::register($this);
@@ -21,8 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $modelJson = json_encode($model);
 $lineasJson = json_encode($lineas);
+$configMoney = json_encode(Yii::$app->params['maskMoneyOptions']);
 
-$this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $lineasJson);");
+$this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $lineasJson, $configMoney);");
 ?>
 
 <div class="row">
@@ -57,13 +59,13 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                             </tr>
                             <tr>
                                 <td>
-                                    <v-select v-model="articulo" ref="articulo" @search="fetchOptions" :options="options" :reduce="art => art.IdArticulo" label="Articulo"/>
+                                    <select ref="articulo" class="form-control"></select>
                                 </td>
                                 <td>
-                                    <input v-model="cantidad" @keypress.enter="goNext('cantidad')" ref="cantidad" type="number" class="form-control" placeholer="Cantidad">
+                                    <input v-model="cantidad" min="0" ref="cantidad" type="number" class="form-control">
                                 </td>
                                 <td>
-                                    <input v-model="precio" @keypress.enter="goNext('precio')" ref="precio" type="number" class="form-control" placeholder="Precio">
+                                    <input ref="precio" class="form-control">
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-default"

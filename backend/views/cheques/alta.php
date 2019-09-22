@@ -9,6 +9,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -63,7 +64,7 @@ foreach ($gestorClientes->Buscar() as $cliente) {
             }
             ?>
 
-            <?= $form->field($model, 'Importe') ?>
+            <?= $form->field($model, 'Importe')->widget(MaskMoney::classname()) ?>
 
             <?= $form->field($model, 'FechaVencimiento') ?>
 

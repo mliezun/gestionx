@@ -14,5 +14,7 @@ class IngresosAsset extends AssetBundle
         'scripts/AltaLineas.js'
     ];
     public $depends = [
+        'kartik\money\MaskMoneyAsset',
+        'kartik\select2\Select2Asset'
     ];
 }
