@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use common\models\Ventas;
-use common\models\Pagos;
+use common\models\Clientes;
 use common\models\PuntosVenta;
 use common\models\GestorVentas;
 use common\models\GestorClientes;
@@ -164,10 +164,12 @@ class VentasController extends BaseController
     public function actionLineas($id)
     {
         $venta = new Ventas();
-
         $venta->IdVenta = $id;
-
         $venta->Dame();
+
+        $cliente = new Clientes();
+        $cliente->IdCliente = $venta->IdCliente;
+        $cliente->Dame();
 
         $lineas = $venta->DameLineas();
 
@@ -178,7 +180,7 @@ class VentasController extends BaseController
             'label' => "Punto de Venta: " . $pv->PuntoVenta,
             'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
         ];
-        $titulo = 'Venta ' . $id;
+        $titulo = "Venta #$id - Cliente: {$cliente->getNombre()}" . ($cliente->Observaciones ? " [{$cliente->Observaciones}]" : '');
         $urlBase = '/ventas';
 
         return $this->render('@app/views/lineas/index', [

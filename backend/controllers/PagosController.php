@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\models\Ventas;
+use common\models\Clientes;
 use common\models\Pagos;
 use common\models\Remitos;
 use common\models\Cheques;
@@ -34,8 +35,11 @@ class PagosController extends BaseController
 
         $venta = new Ventas();
         $venta->IdVenta = $id;
-
         $venta->Dame();
+
+        $cliente = new Clientes();
+        $cliente->IdCliente = $venta->IdCliente;
+        $cliente->Dame();
 
         $pagos = $venta->DamePagos();
 
@@ -46,7 +50,7 @@ class PagosController extends BaseController
             'label' => "Punto de Venta: " . $pv->PuntoVenta,
             'link' => Url::to(['/puntos-venta/operaciones', 'id' => $venta->IdPuntoVenta])
         ];
-        $titulo = 'Pagos de la Venta ' . $id;
+        $titulo = "Pagos de la Venta #$id - Cliente: {$cliente->getNombre()}" . ($cliente->Observaciones ? " [{$cliente->Observaciones}]" : '');
 
         $paginado->totalCount = count($pagos);
         $pagos = array_slice($pagos, $paginado->page * $paginado->pageSize, $paginado->pageSize);

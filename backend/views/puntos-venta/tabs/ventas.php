@@ -97,7 +97,7 @@ $proveedor = new Proveedores();
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['Cliente']) ?></td>
+                                    <td><?= Html::encode($model['Cliente'] . ($model['ObservacionesCliente'] ? " [{$model['ObservacionesCliente']}]" : '') ) ?></td>
                                     <td><?= Html::encode($model['Usuario']) ?></td>
                                     <td><?= Html::encode($model['Monto']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
