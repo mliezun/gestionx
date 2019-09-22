@@ -22,15 +22,14 @@
         "bower-asset/font-awesome": "*",
         "bower-asset/material-design-iconic-font": "*",
         "bower-asset/flag-icon-css": "*",
-        "2amigos/yii2-date-picker-widget": "*",
-        "2amigos/yii2-date-time-picker-widget": "*",
-        "kartik-v/yii2-widget-select2": "*",
         "bower-asset/vue": "*",
         "phpnt/yii2-slimscroll": "*",
         "mailgun/mailgun-php": "*",
         "sizeg/yii2-jwt": "^1.1",
         "php-http/guzzle6-adapter": "*",
-        "afipsdk/afip.php": "^0.6.0"
+        "afipsdk/afip.php": "^0.6.0",
+        "kartik-v/yii2-widget-datepicker": "@dev",
+        "kartik-v/yii2-widget-select2": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

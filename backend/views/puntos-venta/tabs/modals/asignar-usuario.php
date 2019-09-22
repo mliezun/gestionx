@@ -4,6 +4,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -24,7 +25,14 @@ use yii\web\View;
         <div class="modal-body">
             <div id="errores-modal"> </div>
 
-            <?= $form->field($model, 'IdUsuario')->dropDownList(ArrayHelper::map($usuarios, 'IdUsuario', 'Usuario'), ['prompt' => 'Usuario']) ?>
+            <?= $form->field($model, 'IdUsuario')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($usuarios, 'IdUsuario', 'Usuario'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Usuario'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

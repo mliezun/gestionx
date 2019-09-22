@@ -10,11 +10,10 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-
-$proveedor = new Proveedores();
 ?>
 
 <div class="row">
@@ -24,9 +23,17 @@ $proveedor = new Proveedores();
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Proveedor'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ],
+            ]) ?>
 
-            <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado']) ?>
+            <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado', 'style' => 'margin-left: 10px']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
@@ -65,11 +72,9 @@ $proveedor = new Proveedores();
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <?php $proveedor->IdProveedor=$model['IdProveedor'];
-                                    $proveedor->Dame(); ?>
                                     <td><?= Html::encode($model['NroRemito']) ?></td>
                                     <td><?= Html::encode($model['NroFactura']) ?></td>
-                                    <td><?= Html::encode($proveedor->Proveedor) ?></td>
+                                    <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaFacturado'])) ?></td>
                                     <td><?= Html::encode(Remitos::ESTADOS[$model['Estado']]) ?></td>

@@ -5,6 +5,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -41,12 +42,26 @@ use yii\web\View;
             <?php endif; ?>
 
             <?php if ($model['MedioPago'] == 'Mercaderia') :?>
-                <?= $form->field($model, 'IdRemito')->dropDownList(ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'), ['prompt' => 'Remito']) ?>
+                <?= $form->field($model, 'IdRemito')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Nro de Remito'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ]) ?>
                 
             <?php endif; ?>
 
             <?php if ($model['MedioPago'] == 'Cheque') :?>
-                <?= $form->field($model, 'IdCheque')->dropDownList(ArrayHelper::map($cheques, 'IdCheque', 'NroCheque'), ['prompt' => 'Cheque']) ?>
+                <?= $form->field($model, 'IdCheque')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($cheques, 'IdCheque', 'NroCheque'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Nro de Cheque'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ]) ?>
                 
             <?php endif; ?>
 

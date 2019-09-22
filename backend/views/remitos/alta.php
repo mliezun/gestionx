@@ -6,8 +6,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
-
-$proveedores = (new GestorProveedores())->Buscar();
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -32,7 +31,14 @@ $proveedores = (new GestorProveedores())->Buscar();
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
             
-            <?= $form->field($model, 'IdProveedor')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+            <?= $form->field($model, 'IdProveedor')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Proveedor'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
 
             <?= $form->field($model, 'NroRemito') ?>
 

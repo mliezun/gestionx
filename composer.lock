@@ -4,131 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "73a3b584f9a2a0d8a89fc8ef857e7ea0",
+    "content-hash": "807a52631d7ad3dd24f16e2dcb4d2628",
     "packages": [
-        {
-            "name": "2amigos/yii2-date-picker-widget",
-            "version": "1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/2amigos/yii2-date-picker-widget.git",
-                "reference": "d09c2444e8c2329e38528bba77002dd65186c1ff"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/2amigos/yii2-date-picker-widget/zipball/d09c2444e8c2329e38528bba77002dd65186c1ff",
-                "reference": "d09c2444e8c2329e38528bba77002dd65186c1ff",
-                "shasum": ""
-            },
-            "require": {
-                "bower-asset/bootstrap-datepicker": "1.7.0",
-                "yiisoft/yii2": ">=2.0.9",
-                "yiisoft/yii2-bootstrap": "*"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*"
-            },
-            "type": "yii2-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                },
-                "asset-installer-paths": {
-                    "bower-asset-library": "vendor/bower"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "dosamigos\\datepicker\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "2amigOS! Consulting Group",
-                    "email": "hola@2amigos.us",
-                    "homepage": "http://2amigos.us",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Bootstrap DatePicker widget for Yii2.",
-            "homepage": "http://yiiwheels.com/extension/bootstrap-datepicker",
-            "keywords": [
-                "2amigos",
-                "datepicker",
-                "extension",
-                "widget",
-                "yii",
-                "yii 2",
-                "yii2"
-            ],
-            "time": "2017-07-05T05:52:03+00:00"
-        },
-        {
-            "name": "2amigos/yii2-date-time-picker-widget",
-            "version": "1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/2amigos/yii2-date-time-picker-widget.git",
-                "reference": "721a23e245b3b2a5ca2669e9a35a4ebdab321c8c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/2amigos/yii2-date-time-picker-widget/zipball/721a23e245b3b2a5ca2669e9a35a4ebdab321c8c",
-                "reference": "721a23e245b3b2a5ca2669e9a35a4ebdab321c8c",
-                "shasum": ""
-            },
-            "require": {
-                "bower-asset/smalot-bootstrap-datetimepicker": "2.4.4",
-                "yiisoft/yii2": "~2.0",
-                "yiisoft/yii2-bootstrap": "~2.0.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*",
-                "scrutinizer/ocular": "~1.1"
-            },
-            "type": "yii2-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                },
-                "asset-installer-paths": {
-                    "bower-asset-library": "vendor/bower"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "dosamigos\\datetimepicker\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "2amigOS! Consulting Group",
-                    "email": "hola@2amigos.us",
-                    "homepage": "http://2amigos.us",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Bootstrap DateTimePicker widget for Yii2.",
-            "homepage": "http://yiiwheels.com/extension/bootstrap-datetimepicker",
-            "keywords": [
-                "2amigos",
-                "DateTimePicker",
-                "extension",
-                "widget",
-                "yii",
-                "yii 2",
-                "yii2"
-            ],
-            "time": "2017-07-05T05:38:36+00:00"
-        },
         {
             "name": "afipsdk/afip.php",
             "version": "v0.6.0",
@@ -175,48 +52,6 @@
                 "soap"
             ],
             "time": "2019-07-29T19:44:32+00:00"
-        },
-        {
-            "name": "bower-asset/bootstrap",
-            "version": "v3.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/68b0d231a13201eb14acd3dc84e51543d16e5f7e",
-                "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
-            },
-            "require": {
-                "bower-asset/jquery": ">=1.9.1,<4.0"
-            },
-            "type": "bower-asset",
-            "license": [
-                "MIT"
-            ]
-        },
-        {
-            "name": "bower-asset/bootstrap-datepicker",
-            "version": "v1.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/uxsolutions/bootstrap-datepicker.git",
-                "reference": "d364be5b066b38f3675a5a1dc174ce1ab1f3360e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/uxsolutions/bootstrap-datepicker/zipball/d364be5b066b38f3675a5a1dc174ce1ab1f3360e",
-                "reference": "d364be5b066b38f3675a5a1dc174ce1ab1f3360e"
-            },
-            "require": {
-                "bower-asset/jquery": ">=1.7.1,<4.0.0"
-            },
-            "type": "bower-asset",
-            "license": [
-                "Apache-2.0"
-            ]
         },
         {
             "name": "bower-asset/flag-icon-css",
@@ -326,7 +161,7 @@
             "version": "v1.3.8",
             "source": {
                 "type": "git",
-                "url": "git@github.com:rochal/jQuery-slimScroll.git",
+                "url": "https://github.com/rochal/jQuery-slimScroll.git",
                 "reference": "cf39d364e777ef95574c30c42d3b85cb2bf325d3"
             },
             "dist": {
@@ -337,26 +172,11 @@
             "type": "bower-asset"
         },
         {
-            "name": "bower-asset/smalot-bootstrap-datetimepicker",
-            "version": "2.4.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/smalot/bootstrap-datetimepicker.git",
-                "reference": "32143c8b45575e51c92a8e29997cbe556d1bbba3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/smalot/bootstrap-datetimepicker/zipball/32143c8b45575e51c92a8e29997cbe556d1bbba3",
-                "reference": "32143c8b45575e51c92a8e29997cbe556d1bbba3"
-            },
-            "type": "bower-asset"
-        },
-        {
             "name": "bower-asset/vue",
             "version": "v2.6.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vuejs/vue.git",
+                "url": "git@github.com:vuejs/vue.git",
                 "reference": "e90cc60c4718a69e2c919275a999b7370141f3bf"
             },
             "dist": {
@@ -906,21 +726,76 @@
             "time": "2019-03-13T17:14:54+00:00"
         },
         {
-            "name": "kartik-v/yii2-widget-select2",
-            "version": "v2.1.3",
+            "name": "kartik-v/yii2-widget-datepicker",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kartik-v/yii2-widget-select2.git",
-                "reference": "f1ae98b7ec3e46ba0193471647ce15d07aa67f58"
+                "url": "https://github.com/kartik-v/yii2-widget-datepicker.git",
+                "reference": "d75bfb12918b29902d96ecf8decd7e40b007d77f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/f1ae98b7ec3e46ba0193471647ce15d07aa67f58",
-                "reference": "f1ae98b7ec3e46ba0193471647ce15d07aa67f58",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-datepicker/zipball/d75bfb12918b29902d96ecf8decd7e40b007d77f",
+                "reference": "d75bfb12918b29902d96ecf8decd7e40b007d77f",
                 "shasum": ""
             },
             "require": {
-                "kartik-v/yii2-krajee-base": ">=1.9"
+                "kartik-v/yii2-krajee-base": ">=2.0.0"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "kartik\\date\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Enhanced Yii2 wrapper for the bootstrap datepicker plugin (sub repo split from yii2-widgets).",
+            "homepage": "https://github.com/kartik-v/yii2-widget-datepicker",
+            "keywords": [
+                "date",
+                "extension",
+                "form",
+                "jquery",
+                "picker",
+                "plugin",
+                "select2",
+                "widget",
+                "yii2"
+            ],
+            "time": "2019-08-23T17:23:20+00:00"
+        },
+        {
+            "name": "kartik-v/yii2-widget-select2",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-widget-select2.git",
+                "reference": "798dcea12997d806da14c5affde2f166338a6d54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/798dcea12997d806da14c5affde2f166338a6d54",
+                "reference": "798dcea12997d806da14c5affde2f166338a6d54",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-krajee-base": ">=1.9",
+                "select2/select2": ">=4.0"
             },
             "type": "yii2-extension",
             "extra": {
@@ -956,7 +831,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2018-09-07T08:11:16+00:00"
+            "time": "2019-09-02T12:53:16+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -1687,6 +1562,44 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "select2/select2",
+            "version": "4.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/select2/select2.git",
+                "reference": "c4b730a0a014ea38641bfbcb245e4b7aa0ca5657"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/select2/select2/zipball/c4b730a0a014ea38641bfbcb245e4b7aa0ca5657",
+                "reference": "c4b730a0a014ea38641bfbcb245e4b7aa0ca5657",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "dist/js/select2.js"
+                    ],
+                    "styles": [
+                        "dist/css/select2.css"
+                    ],
+                    "files": [
+                        "dist/js/select2.js",
+                        "dist/js/i18n/*.js",
+                        "dist/css/select2.css"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Select2 is a jQuery based replacement for select boxes.",
+            "homepage": "https://select2.org/",
+            "time": "2019-08-28T03:09:32+00:00"
+        },
+        {
             "name": "sizeg/yii2-jwt",
             "version": "v1.2.0",
             "source": {
@@ -2291,69 +2204,6 @@
             "time": "2019-07-30T15:17:45+00:00"
         },
         {
-            "name": "yiisoft/yii2-bootstrap",
-            "version": "2.0.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/yiisoft/yii2-bootstrap.git",
-                "reference": "073c9ab0a4eb71f2485d84c96a1967130300d8fc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/073c9ab0a4eb71f2485d84c96a1967130300d8fc",
-                "reference": "073c9ab0a4eb71f2485d84c96a1967130300d8fc",
-                "shasum": ""
-            },
-            "require": {
-                "bower-asset/bootstrap": "3.4.* | 3.3.* | 3.2.* | 3.1.*",
-                "yiisoft/yii2": "~2.0.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "<7"
-            },
-            "type": "yii2-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "yii\\bootstrap\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Paul Klimov",
-                    "email": "klimov.paul@gmail.com"
-                },
-                {
-                    "name": "Alexander Makarov",
-                    "email": "sam@rmcreative.ru",
-                    "homepage": "http://rmcreative.ru/"
-                },
-                {
-                    "name": "Antonio Ramirez",
-                    "email": "amigo.cobos@gmail.com"
-                },
-                {
-                    "name": "Qiang Xue",
-                    "email": "qiang.xue@gmail.com",
-                    "homepage": "http://www.yiiframework.com/"
-                }
-            ],
-            "description": "The Twitter Bootstrap extension for the Yii framework",
-            "keywords": [
-                "bootstrap",
-                "yii2"
-            ],
-            "time": "2019-04-23T13:18:43+00:00"
-        },
-        {
             "name": "yiisoft/yii2-bootstrap4",
             "version": "2.0.6",
             "source": {
@@ -2638,6 +2488,27 @@
                 "parser"
             ],
             "time": "2019-01-16T14:22:17+00:00"
+        },
+        {
+            "name": "bower-asset/bootstrap",
+            "version": "v3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twbs/bootstrap.git",
+                "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/68b0d231a13201eb14acd3dc84e51543d16e5f7e",
+                "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.9.1,<4.0"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "bower-asset/typeahead.js",
@@ -5014,6 +4885,69 @@
             "time": "2019-06-13T22:48:21+00:00"
         },
         {
+            "name": "yiisoft/yii2-bootstrap",
+            "version": "2.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-bootstrap.git",
+                "reference": "073c9ab0a4eb71f2485d84c96a1967130300d8fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/073c9ab0a4eb71f2485d84c96a1967130300d8fc",
+                "reference": "073c9ab0a4eb71f2485d84c96a1967130300d8fc",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/bootstrap": "3.4.* | 3.3.* | 3.2.* | 3.1.*",
+                "yiisoft/yii2": "~2.0.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "<7"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\bootstrap\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Klimov",
+                    "email": "klimov.paul@gmail.com"
+                },
+                {
+                    "name": "Alexander Makarov",
+                    "email": "sam@rmcreative.ru",
+                    "homepage": "http://rmcreative.ru/"
+                },
+                {
+                    "name": "Antonio Ramirez",
+                    "email": "amigo.cobos@gmail.com"
+                },
+                {
+                    "name": "Qiang Xue",
+                    "email": "qiang.xue@gmail.com",
+                    "homepage": "http://www.yiiframework.com/"
+                }
+            ],
+            "description": "The Twitter Bootstrap extension for the Yii framework",
+            "keywords": [
+                "bootstrap",
+                "yii2"
+            ],
+            "time": "2019-04-23T13:18:43+00:00"
+        },
+        {
             "name": "yiisoft/yii2-debug",
             "version": "2.0.14",
             "source": {
@@ -5159,7 +5093,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "kartik-v/yii2-widget-datepicker": 20,
+        "kartik-v/yii2-widget-select2": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
