@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(Bancos::ESTADOS, ['prompt' => 'Proveedor']) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(Bancos::ESTADOS, ['prompt' => 'Estado']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 

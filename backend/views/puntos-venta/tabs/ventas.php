@@ -10,6 +10,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use kartik\date\DatePicker;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -22,13 +24,35 @@ $proveedor = new Proveedores();
         <div class="buscar--form">
             <?php $form = ActiveForm::begin(['layout' => 'inline']); ?>
 
-            <?= $form->field($busqueda, 'FechaInicio')->input('text', ['placeholder' => 'Fecha desde']) ?>
+            <?= $form->field($busqueda, 'FechaInicio')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha desde'],
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy'
+                ]
+            ]) ?>
 
-            <?= $form->field($busqueda, 'FechaFin')->input('text', ['placeholder' => 'Fecha hasta']) ?>
+            <?= $form->field($busqueda, 'FechaFin')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha hasta'],
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy'
+                ]
+            ]) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList($clientes, ['prompt' => 'Cliente']) ?>
+            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
+                'data' => $clientes,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Cliente'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '343px'
+                ],
+            ]) ?>
 
-            <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo']) ?>
+            <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo', 'style' => 'margin-left: 10px']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
@@ -73,7 +97,7 @@ $proveedor = new Proveedores();
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['Cliente']) ?></td>
+                                    <td><?= Html::encode($model['Cliente'] . ($model['ObservacionesCliente'] ? " [{$model['ObservacionesCliente']}]" : '') ) ?></td>
                                     <td><?= Html::encode($model['Usuario']) ?></td>
                                     <td><?= Html::encode($model['Monto']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
@@ -106,7 +130,7 @@ $proveedor = new Proveedores();
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['ventas/activar', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Activar">
+                                                                data-hint="Completar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>

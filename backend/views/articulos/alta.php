@@ -5,12 +5,8 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
-
-//$listas = array_diff($listas_completo,array(array_search('Por Defecto',$listas_completo)));
-
-// foreach(array_keys($listas,array_search('Por Defecto',$listas,array_column($listas, 'IdListaPrecio'))) as $key ){
-//     unset($listas[$key]);
-// }
+use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -36,7 +32,14 @@ use yii\web\View;
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
             
             <?php if (!isset($model['Articulo'])): ?>
-                <?= $form->field($model, 'IdProveedor')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
+                <?= $form->field($model, 'IdProveedor')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Proveedor'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
             <?php endif; ?>
 
             <?= $form->field($model, 'Articulo') ?>
@@ -45,9 +48,9 @@ use yii\web\View;
 
             <?= $form->field($model, 'Descripcion') ?>
 
-            <?= $form->field($model, 'PrecioCosto') ?>
+            <?= $form->field($model, 'PrecioCosto')->widget(MaskMoney::classname()) ?>
 
-            <?= $form->field($model, 'PrecioVenta') ?>
+            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
 
             <?= $form->field($model, 'IdTipoIVA')->dropDownList(ArrayHelper::map($ivas, 'IdTipoIVA', 'TipoIVA'), ['prompt' => 'IVA']) ?>
 

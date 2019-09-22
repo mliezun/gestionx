@@ -5,6 +5,8 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
+use kartik\select2\Select2;
+use kartik\money\MaskMoney;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -28,11 +30,18 @@ use yii\web\View;
             <?= Html::activeHiddenInput($model, 'IdArticulo') ?>
 
             <?php if (!isset($model['IdListaPrecio'])) :?>
-                <?= $form->field($model, 'IdListaPrecio')->dropDownList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'), ['prompt' => 'Lista']) ?>
+                <?= $form->field($model, 'IdListaPrecio')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($listas, 'IdListaPrecio', 'Lista'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Lista'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ]) ?>
                 
             <?php endif; ?>
 
-            <?= $form->field($model, 'PrecioVenta') ?>
+            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

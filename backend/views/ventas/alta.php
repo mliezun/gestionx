@@ -5,7 +5,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
-use dosamigos\select2\Select2;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -29,16 +29,15 @@ use dosamigos\select2\Select2;
             <div id="errores-modal"> </div>
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
-            
-            <?= $form
-                ->field($model, 'IdCliente')
-                ->widget(
-                    Select2::class,
-                    [
-                        'items' => $clientes
-                    ]
-                )
-            ?>
+
+            <?= $form->field($model, 'IdCliente')->widget(Select2::classname(), [
+                'data' => $clientes,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Cliente'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
 
             <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
 

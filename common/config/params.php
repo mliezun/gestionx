@@ -1,6 +1,14 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'support@example.com',
-    'user.passwordResetTokenExpire' => 3600,
+    'bsVersion' => '4.x',
+    'maskMoneyOptions' => [
+        'prefix' => '$ ',
+        'suffix' => '',
+        'affixesStay' => false,
+        'thousands' => '.',
+        'decimal' => ',',
+        'precision' => 2, 
+        'allowZero' => false,
+        'allowNegative' => false
+    ]
 ];

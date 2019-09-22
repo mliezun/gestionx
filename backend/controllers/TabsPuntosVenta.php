@@ -65,6 +65,11 @@ class TabsPuntosVenta extends BaseController
         return parent::renderPartial('@app/views/puntos-venta/tabs/' . $view, $options);
     }
 
+    public function renderAjax($view, $options = [])
+    {
+        return parent::renderAjax('@app/views/puntos-venta/tabs/' . $view, $options);
+    }
+
     public function Lista()
     {
         return $this->renderPartial('tablist', [
@@ -99,7 +104,7 @@ class TabsPuntosVenta extends BaseController
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
 
-        return $this->renderPartial('remitos', [
+        return $this->renderAjax('remitos', [
             'models' => $remitos,
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
@@ -132,7 +137,7 @@ class TabsPuntosVenta extends BaseController
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
         
-        return $this->renderPartial('usuarios', [
+        return $this->renderAjax('usuarios', [
             'models' => $usuarios,
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa
@@ -172,7 +177,7 @@ class TabsPuntosVenta extends BaseController
         $gclientes = new GestorClientes();
         $clientes = $gclientes->Listar();
         
-        return $this->renderPartial('ventas', [
+        return $this->renderAjax('ventas', [
             'models' => $ventas,
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa,
@@ -206,7 +211,7 @@ class TabsPuntosVenta extends BaseController
         $paginado->totalCount = count($existencias);
         $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
 
-        return $this->renderPartial('articulos', [
+        return $this->renderAjax('articulos', [
             'rectificaciones' => $rectificaciones,
             'models' => $existencias,
             'puntoventa' => $puntoventa,

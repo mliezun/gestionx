@@ -66,7 +66,7 @@ var TabsPV = {
                 },
                 setContent: function (data) {
                     var _this = this;
-                    document.getElementById('tabContent').innerHTML = data;
+                    $('#tabContent').html(data);
                     $('form').submit(function (e) {
                         _this.submitBuscar(this);
                         e.preventDefault();

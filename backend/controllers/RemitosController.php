@@ -34,10 +34,13 @@ class RemitosController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
+            $proveedores = (new GestorProveedores())->Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta remito',
-                'model' => $remito
+                'model' => $remito,
+                'proveedores' => $proveedores
             ]);
         }
     }

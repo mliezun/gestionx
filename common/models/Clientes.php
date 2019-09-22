@@ -83,6 +83,11 @@ class Clientes extends Model
         return $nombre;
     }
 
+    public function getNombre()
+    {
+        return self::Nombre($this->getAttributes());
+    }
+
     /**
      * Permite instanciar un cliente desde la base de datos.
      * xsp_dame_cliente
