@@ -5,6 +5,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
+use dosamigos\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -29,7 +30,15 @@ use yii\web\View;
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
             
-            <?= $form->field($model, 'IdCliente')->dropDownList($clientes, ['prompt' => 'Cliente']) ?>
+            <?= $form
+                ->field($model, 'IdCliente')
+                ->widget(
+                    Select2::class,
+                    [
+                        'items' => $clientes
+                    ]
+                )
+            ?>
 
             <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
 

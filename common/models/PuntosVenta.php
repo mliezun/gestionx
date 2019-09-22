@@ -3,6 +3,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\RectificacionesPV;
 
 class PuntosVenta extends Model
 {
@@ -186,18 +187,116 @@ class PuntosVenta extends Model
      * Procedimiento que sirve para listar las existencias de un punto venta desde la base de datos.
      * xsp_listar_existencias_puntosventa
      */
-    public function ListarExistencias()
+    public function ListarExistencias($cadena = '',$SinSotck = 'N')
     {
         $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
-            ':cadena' => '',
+            ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
-            ':sinStock' => 'N'
+            ':sinStock' => $SinSotck
         ]);
         
         return $query->queryAll();
+    }
+
+    /**
+     * Permite dar de alta una Rectificacion de Punto de Venta, incrementando o decrementando la cantidad
+	 * de existencias de un articulo en un punto de venta con la posibilidad de que se aplique
+	 * la accion contraria inmediatamente en otro punto de venta de la misma empresa
+	 * Devuelve OK + Id o el mensaje de error en Mensaje.
+     * xsp_alta_rectificacionpv
+     */
+    public function AltaRectificacion(RectificacionesPV $Rectificacion)
+    {
+        $sql = "call xsp_alta_rectificacionpv( :token, :idempresa, :idorigen, :iddestino, :idarticulo, :cantidad".
+        ", :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idorigen' => $this->IdPuntoVenta,
+            ':iddestino' => $Rectificacion->IdPuntoVentaDestino,
+            ':idarticulo' => $Rectificacion->IdArticulo,
+            ':cantidad' => $Rectificacion->Cantidad,
+            ':observaciones' => $Rectificacion->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite buscar rectificaciones dentro de un punto de venta de una empresa, indicando una cadena de búsqueda
+     * y si se incluyen bajas. Si pIdPuntoVenta = 0 lista todas las rectficaciones activos de una empresa.
+     * xsp_buscar_rectificacionespv
+     */
+    public function ListarRectificaciones($cadena = '',$Incluye = 'N')
+    {
+        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, :cadena, :incluye )';
+        
+        $query = Yii::$app->db->createCommand($sql);
+    
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':cadena' => $cadena,
+            ':idPuntoVenta' => $this->IdPuntoVenta,
+            ':incluye' => $Incluye,
+        ]);
+        
+        return $query->queryAll();
+    }
+
+    /**
+     * Permite borrar una Rectificacion de Punto de Venta, dentro del tiempo de anulacion.
+	 * Siempre y cuando se encuentre pendiente de confirmación
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_borra_rectificacionpv
+     */
+    public function BorrarRectificacion(RectificacionesPV $Rectificacion)
+    {
+        $sql = "call xsp_borra_rectificacionpv( :token, :idrectificacion,".
+        " :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idrectificacion' => $Rectificacion->IdRectificacionPV,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite devolver una rectificacion, solamente si esta se encuentra pendiente de confirmación.
+	 * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_devolucion_rectificacionpv
+     */
+    public function DevolverRectificacion(RectificacionesPV $Rectificacion)
+    {
+        $sql = "call xsp_devolucion_rectificacionpv( :token, :idrectificacion,".
+        " :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idrectificacion' => $Rectificacion->IdRectificacionPV,
+        ]);
+
+        return $query->queryScalar();
     }
 }
