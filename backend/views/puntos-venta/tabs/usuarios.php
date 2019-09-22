@@ -8,6 +8,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -85,6 +86,24 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+        <div class="pull-right">
+            <?=
+            LinkPager::widget([
+                'pagination' => $paginado,
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>> ',
+                'nextPageLabel' => '>',
+                'prevPageLabel' => '<',
+                'pageCssClass' => 'page-link',
+                'activePageCssClass' => 'page-item-active',
+                'firstPageCssClass' => 'page-link',
+                'lastPageCssClass' => 'page-link',
+                'nextPageCssClass' => 'page-link',
+                'prevPageCssClass' => 'page-link',
+            ]);
+            ?>
+        </div>
+        <div class="clearfix"></div>
         <?php else: ?>
             <p><strong>No hay usuarios que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>

@@ -56,6 +56,7 @@ class ArticulosController extends BaseController
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
             'listas' => $listas,
+            'paginado' => $paginado
         ]);
     }
 

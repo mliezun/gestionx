@@ -4152,6 +4152,10 @@ Pills vertical
     line-height: 1;
 }
 
+.page-link a {
+    color: #71748d;
+}
+
 .page-link:hover {
     z-index: 2;
     color: #fff;
@@ -4160,11 +4164,19 @@ Pills vertical
     border-color: #5969ff;
 }
 
-.page-item.active .page-link {
+.page-link:hover a {
+    color: whitesmoke;
+}
+
+.page-item-active {
     z-index: 1;
     color: #fff;
     background-color: #5969ff;
     border-color: #5969ff;
+}
+
+.page-item-active a {
+    color: whitesmoke;
 }
 
 

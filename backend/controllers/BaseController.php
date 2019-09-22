@@ -64,7 +64,8 @@ class BaseController extends Controller
 
         return $this->render('index', [
             'models' => $elems,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

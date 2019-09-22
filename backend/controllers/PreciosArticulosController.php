@@ -47,7 +47,8 @@ class PreciosArticulosController extends BaseController
             'precios' => $precios,
             'anterior' => $anterior,
             'titulo' => $titulo,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
     

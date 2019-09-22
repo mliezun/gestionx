@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\web\View;
 use common\components\PermisosHelper;
 use common\models\EmpresasModel;
+use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -90,5 +91,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+        <div class="pull-right">
+            <?=
+            LinkPager::widget([
+                'pagination' => $paginado,
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>> ',
+                'nextPageLabel' => '>',
+                'prevPageLabel' => '<',
+                'pageCssClass' => 'page-link',
+                'activePageCssClass' => 'page-item-active',
+                'firstPageCssClass' => 'page-link',
+                'lastPageCssClass' => 'page-link',
+                'nextPageCssClass' => 'page-link',
+                'prevPageCssClass' => 'page-link',
+            ]);
+            ?>
+        </div>
+        <div class="clearfix"></div>
     </div>
 </div>
