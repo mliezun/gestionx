@@ -29,7 +29,8 @@
         "php-http/guzzle6-adapter": "*",
         "afipsdk/afip.php": "^0.6.0",
         "kartik-v/yii2-widget-datepicker": "@dev",
-        "kartik-v/yii2-widget-select2": "@dev"
+        "kartik-v/yii2-widget-select2": "@dev",
+        "kartik-v/yii2-money": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
