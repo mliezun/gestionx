@@ -29,7 +29,7 @@ use kartik\select2\Select2;
             <div id="errores-modal"> </div>
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
-            
+
             <?= $form->field($model, 'IdCliente')->widget(Select2::classname(), [
                 'data' => $clientes,
                 'language' => 'es',
