@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Lista</th>
+                                <th>Porcentaje</th>
                                 <th>Estado</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
@@ -61,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['Lista']) ?></td>
+                                    <td><?= Html::encode($model['Porcentaje']) ?></td>
                                     <td><?= Html::encode(ListasPrecio::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>

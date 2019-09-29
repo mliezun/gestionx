@@ -14,7 +14,7 @@ class GestorProveedores
      */
     public function Alta(Proveedores $Proveedor)
     {
-        $sql = "call xsp_alta_proveedor( :token, :idempresa, :proveedor, :IP, :userAgent, :app )";
+        $sql = "call xsp_alta_proveedor( :token, :idempresa, :proveedor, :descuento, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -23,7 +23,8 @@ class GestorProveedores
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':idempresa' => $Proveedor->IdEmpresa,
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':descuento' => $Proveedor->Descuento,
             ':proveedor' => $Proveedor->Proveedor
         ]);
 
@@ -57,7 +58,7 @@ class GestorProveedores
      */
     public function Modificar(Proveedores $Proveedor)
     {
-        $sql = "call xsp_modifica_proveedor( :token, :idproveedor, :proveedor , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_proveedor( :token, :idproveedor, :proveedor, :descuento, :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -67,6 +68,7 @@ class GestorProveedores
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idproveedor' => $Proveedor->IdProveedor,
+            ':descuento' => $Proveedor->Descuento,
             ':proveedor' => $Proveedor->Proveedor
         ]);
 

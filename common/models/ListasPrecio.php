@@ -9,6 +9,7 @@ class ListasPrecio extends Model
     public $IdListaPrecio;
     public $IdEmpresa;
     public $Lista;
+    public $Porcentaje;
     public $Estado;
     public $Observaciones;
     
@@ -24,9 +25,13 @@ class ListasPrecio extends Model
     public function rules()
     {
         return [
-            [['Lista'],
+            ['Lista', 'trim'],
+            ['Porcentaje', 'number'],
+            //Alta
+            [['Lista','Porcentaje'],
                 'required', 'on' => self::_ALTA],
-            [['IdListaPrecio', 'Lista'],
+            //Modifica
+            [['IdListaPrecio', 'Lista', 'Porcentaje'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];

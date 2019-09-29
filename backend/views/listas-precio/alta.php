@@ -28,6 +28,8 @@ use yii\web\View;
             <?= Html::activeHiddenInput($model, 'IdListaPrecio') ?>
             
             <?= $form->field($model, 'Lista') ?>
+
+            <?= $form->field($model, 'Porcentaje') ?>
             
             <?= $form->field($model, 'Observaciones') ?>
         </div>

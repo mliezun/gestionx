@@ -9,6 +9,7 @@ class Proveedores extends Model
     public $IdProveedor;
     public $IdEmpresa;
     public $Proveedor;
+    public $Descuento;
     public $Estado;
 
     const ESTADOS = [
@@ -28,8 +29,9 @@ class Proveedores extends Model
     {
         return [
             ['Proveedor', 'trim'],
+            ['Descuento', 'number'],
             // Alta
-            [['IdEmpresa', 'Proveedor'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdEmpresa', 'Proveedor', 'Descuento'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
             [['IdProveedor', 'Proveedor'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
