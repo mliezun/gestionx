@@ -29,6 +29,8 @@ use yii\web\View;
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
             
             <?= $form->field($model, 'Proveedor') ?>
+
+            <?= $form->field($model, 'Descuento') ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

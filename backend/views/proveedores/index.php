@@ -50,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Proveedor</th>
+                                <th>Descuento</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -58,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
+                                    <td><?= Html::encode($model['Descuento']) ?></td>
                                     <td><?= Html::encode(Proveedores::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
 
