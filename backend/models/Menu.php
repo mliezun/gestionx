@@ -73,6 +73,11 @@ class Menu
                     'name' => 'Parámetros',
                     'href' => '/empresa',
                     'permiso' => 'BuscarParametro'
+                ],
+                [
+                    'name' => 'Empresas',
+                    'href' => '/empresas',
+                    'permiso' => 'BuscarEmpresas'
                 ]
             ]
         ],

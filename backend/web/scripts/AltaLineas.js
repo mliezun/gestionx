@@ -4,7 +4,6 @@ var AltaLineas = {
     var id = model.IdIngreso ? model.IdIngreso : model.IdVenta;
     var idPadre = model.IdIngreso ? model.IdRemito : model.IdVenta;
     var idCliente = model.IdIngreso ? 0 : model.IdCliente;
-    Vue.component("v-select", VueSelect.VueSelect);
     new Vue({
       el: "#lineas",
       data: function() {
@@ -32,7 +31,7 @@ var AltaLineas = {
           $(this.$refs.articulo)
             .val(null)
             .trigger("change")
-            .select2('open');
+            .select2("open");
           this.cantidad = "";
           $(this.$refs.precio).val("");
         },
@@ -162,54 +161,67 @@ var AltaLineas = {
         configurarAjax: function() {
           var _this = this;
           $(this.$refs.precio).maskMoney(configMoney);
-          $(this.$refs.articulo).select2({
-            width: "100%",
-            minimumInputLength: 3,
-            language: "es",
-            ajax: {
-              url: "/articulos/listar",
-              dataType: "json",
-              data: function(params) {
-                var query = {
-                  id: idCliente,
-                  Cadena: params.term || ""
-                };
-                return query;
-              },
-              processResults: function(data) {
-                var items = [];
-                _this.options = data;
-                data.forEach(function(art) {
-                  items.push({
-                    id: art["IdArticulo"],
-                    text: art["Articulo"]
+          $(this.$refs.articulo)
+            .select2({
+              width: "100%",
+              minimumInputLength: 3,
+              language: "es",
+              ajax: {
+                url: "/articulos/listar",
+                dataType: "json",
+                data: function(params) {
+                  var query = {
+                    id: idCliente,
+                    Cadena: params.term || ""
+                  };
+                  return query;
+                },
+                processResults: function(data) {
+                  var items = [];
+                  _this.options = data;
+                  data.forEach(function(art) {
+                    items.push({
+                      id: art["IdArticulo"],
+                      text: art["Articulo"]
+                    });
                   });
-                });
-                return {
-                  results: items
-                };
-              }
-            },
-            language: {
-              noResults: function() {
-                return "No hay resultados";
+                  return {
+                    results: items
+                  };
+                }
               },
-              searching: function() {
-                return "Buscando...";
-              },
-              inputTooShort: function(args) {
-                var remainingChars = args.minimum - args.input.length;
+              language: {
+                noResults: function() {
+                  return "No hay resultados";
+                },
+                searching: function() {
+                  return "Buscando...";
+                },
+                inputTooShort: function(args) {
+                  var remainingChars = args.minimum - args.input.length;
 
-                var message =
-                  "Por favor, ingrese " + remainingChars + " o más caracteres";
+                  var message =
+                    "Por favor, ingrese " +
+                    remainingChars +
+                    " o más caracteres";
 
-                return message;
-              },
-              errorLoading: function() {
-                return "No se pudieron obtener resultados";
+                  return message;
+                },
+                errorLoading: function() {
+                  return "No se pudieron obtener resultados";
+                }
               }
-            }
-          });
+            })
+            .on("select2:select", function(e) {
+              for (var i = 0; i < _this.options.length; i++) {
+                if (
+                  String(_this.options[i].IdArticulo) === String(e.target.value)
+                ) {
+                  $(_this.$refs.precio).val(_this.options[i][tipoPrecio]);
+                  break;
+                }
+              }
+            });
         }
       }
     });

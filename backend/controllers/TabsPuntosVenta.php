@@ -108,7 +108,8 @@ class TabsPuntosVenta extends BaseController
             'models' => $remitos,
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
-            'puntoventa' => $puntoventa
+            'puntoventa' => $puntoventa,
+            'paginado' => $paginado
         ]);
     }
 
@@ -140,7 +141,8 @@ class TabsPuntosVenta extends BaseController
         return $this->renderAjax('usuarios', [
             'models' => $usuarios,
             'busqueda' => $busqueda,
-            'puntoventa' => $puntoventa
+            'puntoventa' => $puntoventa,
+            'paginado' => $paginado
         ]);
     }
 
@@ -182,7 +184,8 @@ class TabsPuntosVenta extends BaseController
             'busqueda' => $busqueda,
             'puntoventa' => $puntoventa,
             'clientes' => $clientes,
-            'anulable' => $anulable
+            'anulable' => $anulable,
+            'paginado' => $paginado
         ]);
     }
 
@@ -215,7 +218,8 @@ class TabsPuntosVenta extends BaseController
             'rectificaciones' => $rectificaciones,
             'models' => $existencias,
             'puntoventa' => $puntoventa,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 }

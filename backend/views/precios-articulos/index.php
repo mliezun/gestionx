@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -56,7 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td>
                                         <ul>
                                         <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
@@ -118,6 +118,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+        <div class="pull-right">
+            <?=
+            LinkPager::widget([
+                'pagination' => $paginado,
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>> ',
+                'nextPageLabel' => '>',
+                'prevPageLabel' => '<',
+                'pageCssClass' => 'page-link',
+                'activePageCssClass' => 'page-item-active',
+                'firstPageCssClass' => 'page-link',
+                'lastPageCssClass' => 'page-link',
+                'nextPageCssClass' => 'page-link',
+                'prevPageCssClass' => 'page-link',
+            ]);
+            ?>
+        </div>
+        <div class="clearfix"></div>
         <?php else: ?>
             <p><strong>No hay precios que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>

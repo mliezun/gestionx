@@ -36,3 +36,6 @@
 .lineas--total {
     margin-right: 10px;
 }
+.modal-open {
+    overflow: scroll;
+}

@@ -34,7 +34,8 @@ class ListasPrecioController extends BaseController
 
         return $this->render('index', [
             'models' => $listas,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

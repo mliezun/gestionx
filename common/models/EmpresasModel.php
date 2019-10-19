@@ -27,7 +27,6 @@ class EmpresasModel extends Model
     {
         return [
             ['Empresa', 'trim'],
-            ['URL', 'url'],
             // Alta
             [['Empresa', 'URL'], 'required', 'on' => self::SCENARIO_ALTA],
             // Safe
