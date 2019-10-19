@@ -30,7 +30,9 @@ use yii\web\View;
             
             <?= $form->field($model, 'Proveedor') ?>
 
-            <?= $form->field($model, 'Descuento') ?>
+            <?= $form->field($model, 'Descuento', [
+                'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
+            ]) ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

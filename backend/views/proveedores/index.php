@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
-                                    <td><?= Html::encode($model['Descuento']) ?></td>
+                                    <td>% <?= Html::encode($model['Descuento']) ?></td>
                                     <td><?= Html::encode(Proveedores::ESTADOS[$model['Estado']]) ?></td>
                                     <td>
 
