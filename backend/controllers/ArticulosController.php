@@ -205,6 +205,22 @@ class ArticulosController extends BaseController
 
         return parent::aplicarOperacionGestor($art, array(new GestorArticulos, 'Borrar'));
     }
+
+    public function actionHistorial($id)
+    {
+        PermisosHelper::verificarPermiso('ListarHistorialPreciosArticulo');
+
+        $articulo = new Articulos();
+        $articulo->IdArticulo = $id;
+        $articulo->Dame();
+
+        $historicos = $articulo->ListarHistorialPrecios();
+
+        return $this->renderAjax('historial', [
+            'models' => $historicos,
+            'articulo' => $articulo
+        ]);
+    }
 }
 
 ?>

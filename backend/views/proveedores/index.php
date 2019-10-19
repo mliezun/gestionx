@@ -88,6 +88,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ListarHistorialDescuentosProveedor')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['proveedores/historial', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-hint="Historial de Descuentos">
+                                                    <i class="fas fa-history" style="color: tomato"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarProveedor')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['proveedores/borrar', 'id' => $model['IdProveedor']]) ?>"

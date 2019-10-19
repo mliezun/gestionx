@@ -131,6 +131,22 @@ class ListasPrecioController extends BaseController
             return ['error' => $resultado];
         }
     }
+
+    public function actionHistorial($id)
+    {
+        PermisosHelper::verificarPermiso('ListarHistorialPorcentajesListaPrecio');
+
+        $lista = new ListasPrecio();
+        $lista->IdListaPrecio = $id;
+        $lista->Dame();
+
+        $historicos = $lista->ListarHistorialPorcentajes();
+
+        return $this->renderAjax('historial', [
+            'models' => $historicos,
+            'lista' => $lista
+        ]);
+    }
 }
 
 ?>

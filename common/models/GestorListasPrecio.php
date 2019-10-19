@@ -38,7 +38,7 @@ class GestorListasPrecio
      */
     public function Modificar(ListasPrecio $lista)
     {
-        $sql = "call xsp_modifica_lista_precio( :token, :idempresa, :idlista, :lista, :porcentaje, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_lista_precio( :token, :idlista, :lista, :porcentaje, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -48,7 +48,6 @@ class GestorListasPrecio
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idlista' => $lista->IdListaPrecio,
-            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':lista' => $lista->Lista,
             ':porcentaje' => $lista->Porcentaje,
             ':observaciones' => $lista->Observaciones,

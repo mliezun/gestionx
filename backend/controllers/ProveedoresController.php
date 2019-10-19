@@ -73,6 +73,22 @@ class ProveedoresController extends BaseController
 
         return parent::aplicarOperacionGestor($prov, array(new GestorProveedores, 'Borrar'));
     }
+
+    public function actionHistorial($id)
+    {
+        PermisosHelper::verificarPermiso('ListarHistorialDescuentosProveedor');
+
+        $proveedor = new Proveedores();
+        $proveedor->IdProveedor = $id;
+        $proveedor->Dame();
+
+        $historicos = $proveedor->ListarHistorialDescuentos();
+
+        return $this->renderAjax('historial', [
+            'models' => $historicos,
+            'proveedor' => $proveedor
+        ]);
+    }
 }
 
 ?>

@@ -74,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
                                 <th>Precio de compra</th>
-                                <th>Precios por Defecto</th>
                                 <th>Precios por Lista</th>
                                 <th>IVA</th>
                                 <th>Fecha de alta</th>
@@ -90,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td>
                                         <ul>
                                         <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
@@ -118,6 +116,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         data-hint="Listas de Precio">
                                                     <i class="fas fa-list-alt" style="color: green"></i>
                                                 </a>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ListarHistorialPreciosArticulo')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['articulos/historial', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-hint="Historial de Precios">
+                                                    <i class="fas fa-history" style="color: tomato"></i>
+                                                </button>
                                             <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
