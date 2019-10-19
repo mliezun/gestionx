@@ -40,7 +40,8 @@ class PuntosVentaController extends BaseController
 
         return $this->render('index', [
             'models' => $puntosventa,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

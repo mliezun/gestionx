@@ -36,7 +36,8 @@ class RolesController extends BaseController
 
         return $this->render('index', [
             'models' => $roles,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

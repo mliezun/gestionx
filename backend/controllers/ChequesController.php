@@ -50,6 +50,7 @@ class ChequesController extends BaseController
         return $this->render('index', [
             'models' => $cheques,
             'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

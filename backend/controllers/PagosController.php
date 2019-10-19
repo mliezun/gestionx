@@ -61,7 +61,8 @@ class PagosController extends BaseController
             'anterior' => $anterior,
             'titulo' => $titulo,
             'busqueda' => $busqueda,
-            'parcial' => $parcial
+            'parcial' => $parcial,
+            'paginado' => $paginado
         ]);
     }
     

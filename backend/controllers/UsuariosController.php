@@ -43,7 +43,8 @@ class UsuariosController extends BaseController
         return $this->render('index', [
             'models' => $usuarios,
             'busqueda' => $busqueda,
-            'roles' => $roles
+            'roles' => $roles,
+            'paginado' => $paginado
         ]);
     }
 
@@ -265,7 +266,8 @@ class UsuariosController extends BaseController
 
         return $this->render('sesiones', [
             'model' => $usuario,
-            'models' => $sesiones
+            'models' => $sesiones,
+            'paginado' => $paginado
         ]);
     }
 

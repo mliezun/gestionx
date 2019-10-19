@@ -39,7 +39,8 @@ class ClientesController extends Controller
 
         return $this->render('index', [
             'models' => $clientes,
-            'busqueda' => $busqueda
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 

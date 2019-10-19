@@ -46,6 +46,7 @@ class BancosController extends BaseController
         return $this->render('index', [
             'models' => $bancos,
             'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 
