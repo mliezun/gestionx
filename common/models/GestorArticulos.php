@@ -15,7 +15,7 @@ class GestorArticulos
     public function Alta(Articulos $Articulo)
     {
         $sql = "call xsp_alta_articulo( :token, :idprov, :idempresa, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :idiva, :idslistaprecio, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :idiva, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -30,9 +30,7 @@ class GestorArticulos
             ':codigo' => $Articulo->Codigo,
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
-            ':pventa' => $Articulo->PrecioVenta,
-            ':idiva' => $Articulo->IdTipoIVA,
-            ':idslistaprecio' => json_encode($Articulo->PreciosVenta),
+            ':idiva' => $Articulo->IdTipoIVA
         ]);
 
         return $query->queryScalar();
@@ -61,17 +59,6 @@ class GestorArticulos
         ]);
 
         return $query->queryAll();
-        // $res = $query->queryAll();
-
-        // foreach ($res as &$elemento) {
-        //     foreach (json_decode($elemento['PreciosVenta']) as $nombre => $valor){
-        //         if($nombre == 'Por Defecto'){
-        //             $elemento['PrecioVenta'] = $valor;
-        //         }
-        //     }
-        // }
-
-        // return $res;
     }
 
     /**
@@ -103,7 +90,7 @@ class GestorArticulos
     public function Modificar(Articulos $Articulo)
     {
         $sql = "call xsp_modifica_articulo( :token, :idarticulo, :articulo, "
-            . ":codigo, :desc, :pcosto, :pventa, :iva, :IP, :userAgent, :app )";
+            . ":codigo, :desc, :pcosto, :iva, :IP, :userAgent, :app )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -117,7 +104,6 @@ class GestorArticulos
             ':codigo' => $Articulo->Codigo,
             ':desc' => $Articulo->Descripcion,
             ':pcosto' => $Articulo->PrecioCosto,
-            ':pventa' => $Articulo->PrecioVenta,
             ':iva' => $Articulo->IdTipoIVA,
         ]);
 

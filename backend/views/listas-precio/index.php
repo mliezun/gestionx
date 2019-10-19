@@ -85,6 +85,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ListarHistorialPorcentajesListaPrecio')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['listas-precio/historial', 'id' => $model['IdListaPrecio']]) ?>"
+                                                        data-hint="Historial de Porcentajes">
+                                                    <i class="fas fa-history" style="color: tomato"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio') ) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['/listas-precio/borrar', 'id' => $model['IdListaPrecio']]) ?>"

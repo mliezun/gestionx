@@ -50,13 +50,7 @@ use kartik\money\MaskMoney;
 
             <?= $form->field($model, 'PrecioCosto')->widget(MaskMoney::classname()) ?>
 
-            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
-
             <?= $form->field($model, 'IdTipoIVA')->dropDownList(ArrayHelper::map($ivas, 'IdTipoIVA', 'TipoIVA'), ['prompt' => 'IVA']) ?>
-
-            <?php if (!isset($model['Articulo'])) : ?>
-                <?= $form->field($model, 'PreciosVenta')->checkboxList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista')) ?>
-            <?php endif; ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

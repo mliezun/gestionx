@@ -105,4 +105,19 @@ class Proveedores extends Model
         return $query->queryScalar();
     }
 
+    /*
+	* Permite listar el historial de descuentos de un proveedor.
+	*/
+    public function ListarHistorialDescuentos()
+    {
+        $sql = 'CALL xsp_listar_historial_proveedor( :id)';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdProveedor,
+        ]);
+        
+        return $query->queryAll();
+    }
 }

@@ -9,6 +9,7 @@ class ListasPrecio extends Model
     public $IdListaPrecio;
     public $IdEmpresa;
     public $Lista;
+    public $Porcentaje;
     public $Estado;
     public $Observaciones;
     
@@ -24,9 +25,13 @@ class ListasPrecio extends Model
     public function rules()
     {
         return [
-            [['Lista'],
+            ['Lista', 'trim'],
+            ['Porcentaje', 'number'],
+            //Alta
+            [['Lista','Porcentaje'],
                 'required', 'on' => self::_ALTA],
-            [['IdListaPrecio', 'Lista'],
+            //Modifica
+            [['IdListaPrecio', 'Lista', 'Porcentaje'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];
@@ -71,4 +76,19 @@ class ListasPrecio extends Model
         return $query->queryScalar();
     }
 
+    /*
+	* Permite listar el historial de porcentajes de una lista de precio.
+	*/
+    public function ListarHistorialPorcentajes()
+    {
+        $sql = 'CALL xsp_listar_historial_lista_precio( :id)';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdListaPrecio,
+        ]);
+        
+        return $query->queryAll();
+    }
 }

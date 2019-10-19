@@ -22,9 +22,6 @@ class Articulos extends Model
     public $TipoIVA;
     public $PreciosVenta;
 
-    // Precio por defecto
-    public $PrecioVenta;
-
     const ESTADOS = [
         'A' => 'Activo',
         'B' => 'Baja'
@@ -53,13 +50,12 @@ class Articulos extends Model
             ['Articulo', 'trim'],
             ['Codigo', 'trim'],
             ['Descripcion', 'trim'],
-            ['PrecioCosto', 'number'],
-            ['PrecioVenta', 'number'],
+            ['PrecioCosto', 'double'],
             // Alta
-            [['IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            [['IdProveedor', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto',
             'IdTipoIVA'], 'required', 'on' => self::SCENARIO_ALTA],
             // Editar
-            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto', 'PrecioVenta',
+            [['IdArticulo', 'Articulo', 'Codigo', 'Descripcion', 'PrecioCosto',
             'IdTipoIVA'], 'required', 'on' => self::SCENARIO_EDITAR],
             // Safe
             [$this->attributes(), 'safe'],
@@ -231,5 +227,22 @@ class Articulos extends Model
         ]);
 
         return $query->queryScalar();
+    }
+
+    /*
+	* Permite listar el historial de precios de un articulo.
+	*/
+    public function ListarHistorialPrecios()
+    {
+        $sql = 'CALL xsp_listar_historial_articulo( :id, :idempresa)';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdArticulo,
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+        ]);
+        
+        return $query->queryAll();
     }
 }

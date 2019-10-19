@@ -118,6 +118,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fas fa-list-alt" style="color: green"></i>
                                                 </a>
                                             <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ListarHistorialPreciosArticulo')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['articulos/historial', 'id' => $model['IdArticulo']]) ?>"
+                                                        data-hint="Historial de Precios">
+                                                    <i class="fas fa-history" style="color: tomato"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
                                                     <button type="button" class="btn btn-default"
