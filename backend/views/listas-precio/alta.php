@@ -28,6 +28,10 @@ use yii\web\View;
             <?= Html::activeHiddenInput($model, 'IdListaPrecio') ?>
             
             <?= $form->field($model, 'Lista') ?>
+
+            <?= $form->field($model, 'Porcentaje', [
+                'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
+            ]) ?>
             
             <?= $form->field($model, 'Observaciones') ?>
         </div>

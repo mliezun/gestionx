@@ -57,7 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <td><?= Html::encode($model['PrecioVenta']) ?></td>
                                     <td>
                                         <ul>
                                         <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>

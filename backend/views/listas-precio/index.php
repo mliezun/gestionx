@@ -8,7 +8,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -53,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="bg-light">
                             <tr class="border-0">
                                 <th>Lista</th>
+                                <th>Porcentaje</th>
                                 <th>Estado</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td><?= Html::encode($model['Lista']) ?></td>
+                                    <td>% <?= Html::encode($model['Porcentaje']) ?></td>
                                     <td><?= Html::encode(ListasPrecio::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['Observaciones']) ?></td>
                                     <td>
@@ -101,24 +102,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="pull-right">
-            <?=
-            LinkPager::widget([
-                'pagination' => $paginado,
-                'firstPageLabel' => '<<',
-                'lastPageLabel' => '>> ',
-                'nextPageLabel' => '>',
-                'prevPageLabel' => '<',
-                'pageCssClass' => 'page-link',
-                'activePageCssClass' => 'page-item-active',
-                'firstPageCssClass' => 'page-link',
-                'lastPageCssClass' => 'page-link',
-                'nextPageCssClass' => 'page-link',
-                'prevPageCssClass' => 'page-link',
-            ]);
-            ?>
-        </div>
-        <div class="clearfix"></div>
         <?php else: ?>
             <p><strong>No hay listas de precios que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>
