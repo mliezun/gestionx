@@ -10,6 +10,7 @@ class Cheques extends Model
     public $IdCheque;
     public $IdCliente;
     public $IdBanco;
+    public $IdDestinoCheque;
     public $NroCheque;
     public $Importe;
     public $FechaAlta;
@@ -19,11 +20,14 @@ class Cheques extends Model
 
     // Derivados
     public $Banco;
+    public $Destino;
     public $Descripcion;
     public $Tipo;
 
     const SCENARIO_ALTA = 'alta';
+    const SCENARIO_ALTA_PROPIO = 'altapropio';
     const SCENARIO_EDITAR = 'editar';
+    const SCENARIO_EDITAR_PROPIO = 'editarpropio';
 
     const ESTADOS = [
         'D' => 'Disponible',
@@ -35,7 +39,9 @@ class Cheques extends Model
     {
         return [
             'IdBanco' => 'Banco',
+            'IdDestinoCheque' => 'Destino',
             'IdCliente' => 'Cliente',
+            'FechaVencimiento' => 'Fecha de Vencimiento',
             'Obversaciones' => 'Observaciones'
         ];
     }
@@ -43,8 +49,11 @@ class Cheques extends Model
     public function rules()
     {
         return [
+            ['Importe', 'double'],
             [['IdBanco', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_ALTA],
+            [['IdBanco', 'IdDestinoCheque', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_ALTA_PROPIO],
             [['IdBanco', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_EDITAR],
+            [['IdBanco', 'IdDestinoCheque', 'NroCheque', 'Importe', 'FechaVencimiento'], 'required', 'on' => self::SCENARIO_EDITAR_PROPIO],
             [$this->attributes(), 'safe']
         ];
     }
