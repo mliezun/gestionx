@@ -1,8 +1,6 @@
 <?php
 
 use common\models\Cheques;
-use common\models\GestorBancos;
-use common\models\GestorClientes;
 use common\models\Clientes;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
@@ -10,19 +8,11 @@ use yii\helpers\ArrayHelper;
 use yii\web\View;
 use kartik\select2\Select2;
 use kartik\money\MaskMoney;
+use kartik\date\DatePicker;
 
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Cheques */
-
-$gestorBancos = new GestorBancos;
-$bancos = $gestorBancos->Buscar();
-
-$gestorClientes = new GestorClientes;
-$clientes = array();
-foreach ($gestorClientes->Buscar() as $cliente) {
-    $clientes[$cliente['IdCliente']] = Clientes::Nombre($cliente);
-}
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -64,9 +54,27 @@ foreach ($gestorClientes->Buscar() as $cliente) {
             }
             ?>
 
+            <?= $form->field($model, 'IdDestinoCheque')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($destinos, 'IdDestinoCheque', 'Destino'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Destino'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+            ?>
+
             <?= $form->field($model, 'Importe')->widget(MaskMoney::classname()) ?>
 
-            <?= $form->field($model, 'FechaVencimiento') ?>
+            <?= $form->field($model, 'FechaVencimiento')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha de Vencimiento'],
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy'
+                ]
+            ]) ?>
+
 
             <?= $form->field($model, 'Obversaciones')->textarea() ?>
         </div>

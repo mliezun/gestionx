@@ -70,6 +70,11 @@ class Menu
                     'permiso' => 'BuscarListasPrecio'
                 ],
                 [
+                    'name' => 'Destinos de cheques',
+                    'href' => '/destinos-cheque',
+                    'permiso' => 'BuscarDestinosCheque'
+                ],
+                [
                     'name' => 'Parámetros',
                     'href' => '/empresa',
                     'permiso' => 'BuscarParametro'
