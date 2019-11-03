@@ -14,7 +14,7 @@ class GestorCheques
      */
     public function Alta(Cheques $cheque)
     {
-        $sql = "call xsp_alta_cheque( :token, :idcliente, :idbanco, :nrocheque, :importe,
+        $sql = "call xsp_alta_cheque( :token, :idcliente, :idbanco, :iddestino, :nrocheque, :importe,
         :fechavenc, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -26,6 +26,7 @@ class GestorCheques
             ':app' => Yii::$app->id,
             ':idcliente' => $cheque->IdCliente,
             ':idbanco' => $cheque->IdBanco,
+            ':iddestino' => ($cheque->IdDestinoCheque == '') ? null : $cheque->IdDestinoCheque,
             ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
             ':fechavenc' => FechaHelper::formatearDateMysql($cheque->FechaVencimiento),
@@ -42,7 +43,7 @@ class GestorCheques
      */
     public function Modificar(Cheques $cheque)
     {
-        $sql = "call xsp_modifica_cheque( :token, :idcheque, :idcheque, :idbanco, :nrocheque, :importe,
+        $sql = "call xsp_modifica_cheque( :token, :idcheque, :idcliente, :idbanco, :iddestino, :nrocheque, :importe,
         :fechavenc, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -53,8 +54,9 @@ class GestorCheques
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idcheque' => $cheque->IdCheque,
-            ':idcheque' => $cheque->IdCheque,
+            ':idcliente' => $cheque->IdCliente,
             ':idbanco' => $cheque->IdBanco,
+            ':iddestino' => ($cheque->IdDestinoCheque == '') ? null : $cheque->IdDestinoCheque,
             ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
             ':fechavenc' => $cheque->FechaVencimiento,

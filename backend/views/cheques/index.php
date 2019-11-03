@@ -78,10 +78,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr class="border-0">
                                 <th>Descripcion</th>
                                 <th>Banco</th>
-                                <th>NroCheque</th>
+                                <th>Destino</th>
+                                <th>Nro de Cheque</th>
                                 <th>Importe</th>
-                                <th>FechaAlta</th>
-                                <th>FechaVencimiento</th>
+                                <th>Fecha de Alta</th>
+                                <th>Fecha de Vencimiento</th>
                                 <th>Estado</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
@@ -92,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['Banco']) ?></td>
+                                    <td><?= Html::encode($model['Destino']) ?></td>
                                     <td><?= Html::encode($model['NroCheque']) ?></td>
                                     <td><?= Html::encode($model['Importe']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
@@ -103,11 +105,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="btn-group" role="group" aria-label="...">
                             
                                             <?php if (PermisosHelper::tienePermiso('ModificarCheque')) : ?>
+                                                <?php if ($model['Descripcion'] == 'Cheque propio') : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['cheques/editar', 'id' => $model['IdCheque']]) ?>"
+                                                        data-modal="<?= Url::to(['cheques/editar', 'id' => $model['IdCheque'], 'Tipo' => 'Propio']) ?>"
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
+                                                <?php else : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['cheques/editar', 'id' => $model['IdCheque'], 'Tipo' => 'Cliente']) ?>"
+                                                        data-hint="Modificar">
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                                </button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('TODO:ActivarCheque')): ?>
