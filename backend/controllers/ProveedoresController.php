@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\GestorProveedores;
 use common\models\Proveedores;
 use common\components\PermisosHelper;
+use yii\web\UploadedFile;
 use Yii;
 
 class ProveedoresController extends BaseController
@@ -27,6 +28,62 @@ class ProveedoresController extends BaseController
         return parent::alta($prov, [$gestor, 'Alta'], function () use ($prov) {
             $prov->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
         });
+    }
+
+    public function actionAumento($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarProveedor');
+
+        $model = new Proveedores();
+        $model->setScenario(Proveedores::SCENARIO_AUMENTO);
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            Yii::$app->response->format = 'json';
+            $resultado = $model->AplicarAumento();
+
+            if (\substr($resultado, 0, 2) != 'OK') {
+                return ['error' => $resultado];
+            }
+
+            return ['error' => null];
+        }
+
+        $model->IdProveedor = $id;
+        $model->Dame();
+
+        return $this->renderAjax('alta', [
+            'model' => $model,
+            'tipo' => 'aumento'
+        ]);
+    }
+
+    public function actionCargar($id)
+    {
+        PermisosHelper::verificarPermiso('AltaArticulo');
+
+        $model = new Proveedores();
+        $model->IdProveedor = $id;
+
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = 'json';
+
+            $model->Archivo = UploadedFile::getInstance($model, 'Archivo');
+
+            $resultado = $model->CargarArticulos();
+
+            if (\substr($resultado, 0, 2) != 'OK') {
+                return ['error' => $resultado];
+            }
+
+            return ['error' => null];
+        }
+
+        $model->Dame();
+
+        return $this->renderAjax('alta', [
+            'model' => $model,
+            'tipo' => 'carga'
+        ]);
     }
 
     public function actionEditar($id)
@@ -90,5 +147,3 @@ class ProveedoresController extends BaseController
         ]);
     }
 }
-
-?>

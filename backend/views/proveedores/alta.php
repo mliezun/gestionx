@@ -26,13 +26,30 @@ use yii\web\View;
 
             <?= Html::activeHiddenInput($model, 'IdProveedor') ?>
 
-            <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
-            
-            <?= $form->field($model, 'Proveedor') ?>
-
-            <?= $form->field($model, 'Descuento', [
-                'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
-            ]) ?>
+            <?php if (isset($tipo) && $tipo === 'aumento'): ?>
+                <?= $form->field($model, 'Aumento', [
+                    'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
+                ]) ?>
+            <?php elseif (isset($tipo) && $tipo === 'carga'): ?>
+                <p>
+                    Debe subir un fichero en formato csv (sin cabecera), que use comas ',' como delimitadores de columna
+                    y saltos de línea como delimitadores de filas. Para desambiguación de cadenas debe usar
+                    comillas dobles ".
+                </p>
+                <p>
+                    Las columnas deben estar dispuestas de la siguiente manera:
+                    <br><strong>Articulo | Codigo | Descripcion | PrecioCosto | IVA</strong>
+                </p>
+                <p>
+                    <?= $form->field($model, 'Archivo')->fileInput() ?>
+                </p>
+            <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
+                <?= $form->field($model, 'Proveedor') ?>
+                <?= $form->field($model, 'Descuento', [
+                    'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
+                ]) ?>
+            <?php endif; ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

@@ -71,6 +71,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['proveedores/aumento', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-hint="Aumentar precios">
+                                                    <i class="fa fa-arrow-up" style="color: gray"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('AltaArticulo')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['proveedores/cargar', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-hint="Cargar artículos">
+                                                    <i class="fa fa-list" style="color: orange"></i>
+                                                </button>
                                             <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarProveedor')): ?>
