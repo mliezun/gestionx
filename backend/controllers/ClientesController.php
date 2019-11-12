@@ -72,6 +72,14 @@ class ClientesController extends Controller
             $listas = GestorListasPrecio::Buscar('S');
             $tiposdoc = GestorTiposDocAfip::Buscar();
 
+            if ($cliente->Tipo == 'F') {
+                // Para físicas -> DNI por defecto
+                $cliente->IdTipoDocAfip = 96;
+            } else {
+                // Para jurídicas -> CUIT por defecto
+                $cliente->IdTipoDocAfip = 80;
+            }
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',
                 'model' => $cliente,

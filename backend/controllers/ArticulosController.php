@@ -16,14 +16,13 @@ use yii\helpers\ArrayHelper;
 
 class ArticulosController extends BaseController
 {
-
-    public function actionListar($id,$Cadena)
+    public function actionListar($id, $Cadena)
     {
         Yii::$app->response->format = 'json';
 
         $gestor = new GestorArticulos();
 
-        return $gestor->BuscarPorCliente($id,$Cadena);
+        return $gestor->BuscarPorCliente($id, $Cadena);
     }
 
     public function actionIndex()
@@ -79,7 +78,7 @@ class ArticulosController extends BaseController
         $articulo = new Articulos();
         $articulo->setScenario(Articulos::SCENARIO_ALTA);
 
-        if($articulo->load(Yii::$app->request->post()) && $articulo->validate() ){
+        if ($articulo->load(Yii::$app->request->post()) && $articulo->validate()) {
             $resultado = (new GestorArticulos())->Alta($articulo);
             
             Yii::$app->response->format = 'json';
@@ -92,6 +91,9 @@ class ArticulosController extends BaseController
             $proveedores = GestorProveedores::Buscar();
             $listas = GestorListasPrecio::Buscar();
             $ivas = GestorTiposIVA::Buscar();
+
+            // 21% por defecto
+            $articulo->IdTipoIVA = 5;
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Articulo',
@@ -122,7 +124,7 @@ class ArticulosController extends BaseController
         $articulo = new Articulos();
         $articulo->setScenario(Articulos::SCENARIO_EDITAR);
 
-        if($articulo->load(Yii::$app->request->post()) && $articulo->validate() ){
+        if ($articulo->load(Yii::$app->request->post()) && $articulo->validate()) {
             $resultado = (new GestorArticulos())->Modificar($articulo);
 
             Yii::$app->response->format = 'json';
@@ -223,5 +225,3 @@ class ArticulosController extends BaseController
         ]);
     }
 }
-
-?>

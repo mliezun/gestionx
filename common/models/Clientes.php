@@ -26,6 +26,8 @@ class Clientes extends Model
     // DatosJSON
     public $CUIT;
     public $Telefono;
+    public $Provincia;
+    public $Localidad;
     public $Direccion;
     public $Documento;
     public $Email;
@@ -52,13 +54,13 @@ class Clientes extends Model
         return [
             ['Documento', 'trim'],
             ['Email', 'email'],
-            [['Nombres', 'Apellidos', 'Documento', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['Nombres', 'Apellidos', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_ALTA_FISICA],
-            [['RazonSocial', 'Documento','Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['RazonSocial','Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_ALTA_JURIDICA],
-            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'Documento', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_FISICA],
-            [['IdCliente','IdEmpresa','RazonSocial', 'Documento', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['IdCliente','IdEmpresa','RazonSocial', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_JURIDICA],
             [$this->attributes(), 'safe']
         ];
