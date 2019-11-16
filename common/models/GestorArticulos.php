@@ -43,7 +43,7 @@ class GestorArticulos
      * xsp_buscar_articulos
      * 
      */
-    public function Buscar($Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N')
+    public function Buscar($Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N', $IncluyeBajasLista = 'N')
     {
         $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
 
@@ -55,7 +55,7 @@ class GestorArticulos
             ':idlistaprecio' => $IdListaPrecio,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
-            ':iBajasListas' => 'S',
+            ':iBajasListas' => $IncluyeBajasLista,
         ]);
 
         return $query->queryAll();
