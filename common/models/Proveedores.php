@@ -98,6 +98,9 @@ class Proveedores extends Model
      */
     public function CargarArticulos()
     {
+        if (!\strpos($this->Archivo->type, 'csv') && !\strpos($this->Archivo->type, 'vnd.ms-excel')) {
+            return 'El archivo que intenta cargar no está en formato csv.';
+        }
         $archivo = file_get_contents($this->Archivo->tempName, 'r');
         $archivo = "Articulo,Codigo,Descripcion,PrecioCosto,IVA\n" . $archivo;
         file_put_contents($this->Archivo->tempName, $archivo);

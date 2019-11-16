@@ -63,6 +63,9 @@ $this->registerJs('Main.init()');
                                         <?= "$usuario->Nombres $usuario->Apellidos" ?>
                                     </h5>
                                 </div>
+                                <a class="dropdown-item" href="/usuarios/cambiar-password">
+                                    <i class="fas fa-key mr-2"></i>Cambiar Contraseña
+                                </a>
                                 <a class="dropdown-item" href="/usuarios/logout">
                                     <i class="fas fa-power-off mr-2"></i>Cerrar sesión
                                 </a>

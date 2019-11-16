@@ -35,3 +35,5 @@ phpunit.phar
 /.vagrant
 
 \.vscode/sftp\.json
+
+cmdserver/node_modules

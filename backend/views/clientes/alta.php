@@ -35,15 +35,21 @@ use kartik\select2\Select2;
                 <?= $form->field($model, 'Nombres') ?>
 
                 <?= $form->field($model, 'Apellidos') ?>
+
+                <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento']) ?>
             <?php else: ?>
                 <?= $form->field($model, 'RazonSocial') ?>
-            <?php endif; ?>
 
-            <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento']) ?>
+                <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento', 'disabled' => true]) ?>
+            <?php endif; ?>
 
             <?= $form->field($model, 'Documento') ?>
 
             <?= $form->field($model, 'Email') ?>
+
+            <?= $form->field($model, 'Provincia') ?>
+
+            <?= $form->field($model, 'Localidad') ?>
 
             <?= $form->field($model, 'Direccion') ?>
 

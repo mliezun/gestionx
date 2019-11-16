@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use GuzzleHttp\Client;
 use common\models\GestorEmpresas;
 use common\models\EmpresasModel;
 use common\components\PermisosHelper;
@@ -15,6 +16,13 @@ class EmpresasController extends BaseController
         return parent::index(new GestorEmpresas, ['Cadena', 'Check']);
     }
 
+    private function renderVHost($empresa)
+    {
+        return parent::renderPartial('@app/views/empresas/vhost.conf', [
+            'empresa' => $empresa
+        ]);
+    }
+
     public function actionAlta()
     {
         PermisosHelper::verificarPermiso('AltaEmpresa');
@@ -24,7 +32,44 @@ class EmpresasController extends BaseController
 
         $gestor = new GestorEmpresas();
 
-        return parent::alta($empresa, [$gestor, 'Alta'], function () {});
+        if ($empresa->load(Yii::$app->request->post()) && $empresa->validate()) {
+            Yii::$app->response->format = 'json';
+            $resultado = $gestor->Alta($empresa);
+
+            if (\substr($resultado, 0, 2) != 'OK') {
+                return ['error' => $resultado];
+            }
+
+            $vhost_conf = $this->renderVHost($empresa);
+
+            $vhost_name = strtolower($empresa->Empresa);
+
+            Yii::info($vhost_conf);
+            Yii::info($vhost_name);
+
+            $cmds = [
+                "echo \"$vhost_conf\" > /etc/apache2/sites-available/{$vhost_name}.conf",
+                "a2ensite $vhost_name",
+                "service apache2 reload"
+            ];
+
+            $client = new Client();
+            $response = $client->request('POST', 'http://127.0.0.1:3000/', [
+                'json' => [
+                    'cmds' => $cmds
+                ]
+            ]);
+
+            if ($response->getBody() != 'OK') {
+                return ['error' => 'Error al generar la configuración de apache.'];
+            }
+
+            return ['error' => null];
+        }
+
+        return $this->renderAjax('alta', [
+            'model' => $empresa
+        ]);
     }
 
     public function actionActivar($id)
@@ -47,5 +92,3 @@ class EmpresasController extends BaseController
         return parent::cambiarEstado($empresa, 'DarBaja');
     }
 }
-
-?>

@@ -138,8 +138,8 @@ class ComprobanteHelper
             'Articulos' => [
                 'items',
                 [
-                    'Articulo' => 'ds',
-                    'Codigo' => 'codigo',
+                    'Descripcion' => 'ds',
+                    'Articulo' => 'codigo',
                     'Cantidad' => 'qty',
                     'Precio' => 'precio',
                     'Subtotal' => 'importe',

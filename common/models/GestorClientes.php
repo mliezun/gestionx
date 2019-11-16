@@ -70,6 +70,8 @@ class GestorClientes
             ':datos' => json_encode([
                 'Email' => $cliente->Email,
                 'Telefono' => $cliente->Telefono,
+                'Provincia' => $cliente->Provincia,
+                'Localidad' => $cliente->Localidad,
                 'Direccion' => $cliente->Direccion,
             ]),
             ':tipo' => $cliente->Tipo,

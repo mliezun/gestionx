@@ -75,7 +75,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
                                 <th>Precio de compra</th>
-                                <th>Precios por Lista</th>
+                                <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
+                                    <th><?= Html::encode('Precio ' . $nombre) ?></th>
+                                <?php endforeach; ?>
                                 <th>IVA</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
@@ -90,13 +92,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <td>
-                                        <ul>
-                                        <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
-                                            <li><?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?></li>
-                                        <?php endforeach; ?>
-                                        </ul>
-                                    </td>
+                                    <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
+                                        <td><?= Html::encode($valor) ?></td>
+                                    <?php endforeach; ?>
                                     <td><?= Html::encode($model['TipoIVA']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
