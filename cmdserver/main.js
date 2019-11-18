@@ -20,12 +20,11 @@ app.post('/', function(req, res) {
     const child = spawnSync('sh', ['-c', cmd]);
     console.log('Executing', cmd);
     console.log('stdout ', child.stdout.toString());
-    if (child.error) {
-      console.log('error', child.error);
-      result = 'NOK';
-    }
     if (child.stderr.toString()) {
       console.log('stderr ', child.stderr.toString());
+    }
+    if (child.error) {
+      console.log('error', child.error);
       result = 'NOK';
     }
     if (result != 'OK') {
