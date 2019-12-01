@@ -54,6 +54,7 @@ class Clientes extends Model
         return [
             ['Documento', 'trim'],
             ['Email', 'email'],
+            ['Provincia', 'in', 'range' => Provincias::Nombres()],
             [['Nombres', 'Apellidos', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_ALTA_FISICA],
             [['RazonSocial','Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],

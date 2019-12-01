@@ -91,6 +91,31 @@ class Proveedores extends Model
         return $query->queryScalar();
     }
 
+    private function armarCsv($delimiter)
+    {
+        $archivo = file_get_contents($this->Archivo->tempName, 'r');
+        $archivo = "Articulo{$delimiter}Codigo{$delimiter}Descripcion{$delimiter}PrecioCosto{$delimiter}IVA\n" . $archivo;
+
+        $file = tmpfile();
+        $tmpath = stream_get_meta_data($file)['uri'];
+        file_put_contents($tmpath, $archivo);
+
+        $getcsv = function (string $input) use ($delimiter) {
+            return \str_getcsv($input, $delimiter);
+        };
+
+        $csv = array_map($getcsv, file($tmpath));
+
+        array_walk($csv, function (&$a) use ($csv) {
+            $a = array_combine($csv[0], $a);
+        });
+        array_shift($csv);
+
+        Yii::info($csv);
+
+        return $csv;
+    }
+
     /**
      * Permite hacer un alta/modifica masivo de artículos de un proveedor. Devuelve OK o el mensaje de error en Mensaje.
      * xsp_cargar_articulos_proveedor
@@ -101,15 +126,23 @@ class Proveedores extends Model
         if (!\strpos($this->Archivo->type, 'csv') && !\strpos($this->Archivo->type, 'vnd.ms-excel')) {
             return 'El archivo que intenta cargar no está en formato csv.';
         }
-        $archivo = file_get_contents($this->Archivo->tempName, 'r');
-        $archivo = "Articulo,Codigo,Descripcion,PrecioCosto,IVA\n" . $archivo;
-        file_put_contents($this->Archivo->tempName, $archivo);
 
-        $csv = array_map('str_getcsv', file($this->Archivo->tempName));
-        array_walk($csv, function (&$a) use ($csv) {
-            $a = array_combine($csv[0], $a);
-        });
-        array_shift($csv);
+        $delimiters = [',', ';'];
+
+        $csv = [];
+
+        foreach ($delimiters as $delimiter) {
+            try {
+                $csv = $this->armarCsv($delimiter);
+            } catch (\Exception $ex) {
+                Yii::error($ex);
+            }
+        }
+
+        if (count($csv) == 0) {
+            return 'El archivo está vacío o no tiene el formato correcto';
+        }
+
 
         $sql = "call xsp_cargar_articulos_proveedor( :token, :idproveedor, :articulos, :IP, :userAgent, :app)";
 
@@ -121,7 +154,7 @@ class Proveedores extends Model
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idproveedor' => $this->IdProveedor,
-            ':articulos' => json_encode($csv)
+            ':articulos' => json_encode($csv, JSON_INVALID_UTF8_IGNORE)
         ]);
 
         return $query->queryScalar();

@@ -61,8 +61,8 @@ var AltaLineas = {
           var idArticulo = $(this.$refs.articulo).val();
           var precio = $(this.$refs.precio)
             .val()
-            .replace(".", "")
-            .replace(",", ".");
+            //.replace(".", "")
+            //.replace(",", ".");
           $.post(urlBase + "/agregar-linea/" + id, {
             LineasForm: {
               IdArticulo: idArticulo,
@@ -160,7 +160,7 @@ var AltaLineas = {
         },
         configurarAjax: function() {
           var _this = this;
-          $(this.$refs.precio).maskMoney(configMoney);
+          // $(this.$refs.precio).maskMoney(configMoney);
           $(this.$refs.articulo)
             .select2({
               width: "100%",
