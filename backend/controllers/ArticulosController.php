@@ -10,6 +10,7 @@ use common\models\GestorListasPrecio;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\NinjaArrayHelper;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -57,6 +58,30 @@ class ArticulosController extends BaseController
             'listas' => $listas,
             'paginado' => $paginado
         ]);
+    }
+
+    public function actionAutocompletar($q = null, $id = null)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $out = ['results' => ['id' => '', 'text' => '']];
+
+        if (!is_null($q)) {
+            $gestor = new GestorArticulos();
+            $articulos = $gestor->Buscar($q);
+            $articulos = NinjaArrayHelper::renameKeys($articulos, [
+                'IdArticulo' => 'id',
+                'Articulo' => 'text'
+            ]);
+            $out['results'] = $articulos;
+        } elseif ($id > 0) {
+            $articulo = new Articulos();
+            $articulo->IdArticulo = $id;
+            $articulo->Dame();
+            $out['results'] = ['id' => $id, 'text' => $articulo->Articulo];
+        }
+
+        return $out;
     }
 
     public function actionAlta()
