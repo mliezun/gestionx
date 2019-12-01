@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo') && $precio['Lista']!= 'Por Defecto') : ?>
+                                            <?php if (PermisosHelper::tienePermiso('TODO:ModificarArticulo') && $precio['Lista']!= 'Por Defecto') : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['precios-articulos/borrar', 'idArt' => $precio['IdArticulo'], 'idLis' => $precio['IdListaPrecio']]) ?>"
                                                         data-hint="Borrar">

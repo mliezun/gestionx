@@ -9,8 +9,8 @@ use common\models\GestorClientes;
 use common\models\GestorListasPrecio;
 use common\models\GestorTiposDocAfip;
 use common\models\forms\BuscarForm;
-use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -20,6 +20,8 @@ class ClientesController extends Controller
 {
     public function actionIndex()
     {
+        PermisosHelper::verificarPermiso('BuscarClientes');
+
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
@@ -187,6 +189,48 @@ class ClientesController extends Controller
             return ['error' => $resultado];
         }
     }
-}
 
-?>
+    public function actionVentas($id = 0)
+    {
+        PermisosHelper::verificarPermiso('BuscarVentasClientes');
+
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
+
+        $gestor = new GestorClientes();
+
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $estado = $busqueda->Combo ? $busqueda->Combo : 'T';
+            $estadoVenta = $busqueda->Combo2 ? $busqueda->Combo2 : 'T';
+            $fechaInicio = $busqueda->FechaInicio;
+            $fechaFin = $busqueda->FechaFin;
+            $mora = $busqueda->Combo3 ? $busqueda->Combo3 : 'N';
+            $idCliente = $busqueda->Id ? $busqueda->Id : $id;
+            $clientes = $gestor->BuscarVentas($idCliente, $fechaInicio, $fechaFin, $estado, $estadoVenta, $mora);
+        } else {
+            $busqueda->FechaInicio = FechaHelper::formatearDateLocal(date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . "-1 year")));
+            $busqueda->FechaFin = FechaHelper::dateActualLocal();
+            $clientes = $gestor->BuscarVentas($id, $busqueda->FechaInicio, $busqueda->FechaFin);
+        }
+
+        $paginado->totalCount = count($clientes);
+        $clientes = array_slice($clientes, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        $cls = $gestor->Buscar();
+        $clsout = [];
+
+        foreach ($cls as $cl) {
+            $clsout[$cl['IdCliente']] = Clientes::Nombre($cl);
+        }
+
+        return $this->render('ventas', [
+            'models' => $clientes,
+            'busqueda' => $busqueda,
+            'paginado' => $paginado,
+            'clientes' => $clsout,
+            'ocultarId' => $id != 0
+        ]);
+    }
+}

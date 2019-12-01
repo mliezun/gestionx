@@ -69,6 +69,25 @@ class PermisosHelper
     }
 
     /**
+     * Retorna si el usuario tiene algún permiso que contenga la cadena indicada.
+     *
+     * @param string $cadena
+     * @return bool Algún permiso contiene la cadena
+     */
+    public static function algunPermisoContiene(string $cadena): bool
+    {
+        $permisos = Yii::$app->session->get('Permisos');
+
+        foreach ($permisos as $permiso) {
+            if (strpos($permiso, $cadena) !== FALSE) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Retorna si el usuario tiene alguno de los permisos.
      *
      * @param array $permisos Lista de permisos

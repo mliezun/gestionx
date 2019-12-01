@@ -2,7 +2,6 @@
 
 use backend\assets\RolesAsset;
 use common\components\PermisosHelper;
-use common\widgets\AuditoriaWidget;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -81,14 +80,6 @@ function arbol($permisos, $padre = null)
 
             </div><!-- /.box-body -->
             <div class="box-footer">
-                <?php if (PermisosHelper::tienePermiso('AsignarPermisosRol')): ?>
-                    <?=
-                    AuditoriaWidget::widget([
-                        'form' => $form,
-                        'model' => $auditoria,
-                    ]);
-                    ?>
-                <?php endif; ?>
                 <div class="pull-right">
 
                     <?php

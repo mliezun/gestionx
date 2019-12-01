@@ -1,8 +1,7 @@
 <?php
 
+use common\models\Clientes;
 use common\models\Ventas;
-use common\models\PuntosVenta;
-use common\models\Proveedores;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
 use yii\web\View;
@@ -16,14 +15,30 @@ use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-
-$proveedor = new Proveedores();
+$this->title = 'Ventas de clientes';
+$this->params['breadcrumbs'][] = [
+    'label' => 'Clientes',
+    'link' => '/clientes'
+];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="buscar--form">
             <?php $form = ActiveForm::begin(['layout' => 'inline']); ?>
+
+            <?php if (!$ocultarId): ?>
+            <?= $form->field($busqueda, 'Id')->widget(Select2::classname(), [
+                'data' => $clientes,
+                'language' => 'es',
+                'options' => ['placeholder' => 'Cliente'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ],
+            ]) ?>
+            <?php endif; ?>
 
             <?= $form->field($busqueda, 'FechaInicio')->widget(DatePicker::classname(), [
                 'options' => ['placeholder' => 'Fecha desde'],
@@ -43,36 +58,16 @@ $proveedor = new Proveedores();
                 ]
             ]) ?>
 
-            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
-                'data' => $clientes,
-                'language' => 'es',
-                'options' => ['placeholder' => 'Cliente'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'width' => '343px'
-                ],
-            ]) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(Clientes::ESTADOS, ['prompt' => 'Estado de cliente']) ?>
 
-            <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo', 'style' => 'margin-left: 10px']) ?>
+            <?= $form->field($busqueda, 'Combo2')->dropDownList(Ventas::ESTADOS, ['prompt' => 'Estado venta']) ?>
+
+            <?= $form->field($busqueda, 'Combo3')->dropDownList(['S' => 'En mora', 'N' => 'Todas'], ['prompt' => 'Mora']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
-            <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir dados de baja', 'value' => 'S', 'uncheck' => 'N')); ?>
-
-            <?= $form->field($busqueda, 'Check2')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir anulables', 'value' => 'S', 'uncheck' => 'N')); ?>
-
             <?php ActiveForm::end(); ?>
         </div>
-
-        <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
-            <div class="alta--button">
-                <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/ventas/alta','id' => $puntoventa['IdPuntoVenta']]) ?>"
-                        data-hint="Nueva Venta">
-                    Nueva Venta
-                </button>
-            </div>
-        <?php endif; ?>
 
         <div id="errores"> </div>
         
@@ -83,14 +78,13 @@ $proveedor = new Proveedores();
                     <table class="table">
                         <thead class="bg-light">
                             <tr class="border-0">
-                                <th>Cliente</th>
-                                <th>Usuario</th>
-                                <th>Monto</th>
-                                <th>Fecha de Alta</th>
-                                <th>Tipo</th>
-                                <th>Estado</th>
-                                <th>Tributo</th>
-                                <th>Comprobante</th>
+                                <th>Nombre</th>
+                                <th>Fecha de venta</th>
+                                <th>Tipo de venta</th>
+                                <th>Estado de venta</th>
+                                <th>Monto de venta</th>
+                                <th>Monto pagado</th>
+                                <th>Deuda</th>
                                 <th>Observaciones</th>
                                 <th>Acciones</th>
                             </tr>
@@ -98,19 +92,34 @@ $proveedor = new Proveedores();
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['Cliente'] . ($model['ObservacionesCliente'] ? " [{$model['ObservacionesCliente']}]" : '') ) ?></td>
-                                    <td><?= Html::encode($model['Usuario']) ?></td>
+                                    <td><?= Html::encode(Clientes::Nombre($model)) . ($model['Observaciones'] ? " [{$model['Observaciones']}]" : '') ?></td>
+                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAltaVenta'])) ?></td>
+                                    <td><?= Html::encode(Ventas::TIPOS[$model['TipoVenta']]) ?></td>
+                                    <td><?= Html::encode(Ventas::ESTADOS[$model['EstadoVenta']]) ?></td>
                                     <td><?= Html::encode($model['Monto']) ?></td>
-                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
-                                    <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
-                                    <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
-                                    <td><?= Html::encode($model['TipoTributo']) ?></td>
-                                    <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>
-                                    <td><?= Html::encode($model['Observaciones']) ?></td>
+                                    <td><?= Html::encode($model['MontoPagos']) ?></td>
+                                    <?php
+                                        $deuda = $model['Monto'] - $model['MontoPagos'];
+                                        $estilo = '';
+                                        if ($deuda > 0 && $model['EstadoVenta'] == 'A') {
+                                            $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
+                                        }
+                                        echo "<td $estilo>";
+                                        echo Html::encode($deuda);
+                                        echo '</td>';
+                                    ?>
+                                    <td><?= Html::encode($model['ObservacionesVenta']) ?></td>
                                     <td>
 
-                                        <div class="btn-group" role="group" aria-label="...">
-                                            <?php if ($model['Estado'] == 'E') :?>
+                                    <div class="btn-group" role="group" aria-label="...">
+                                            <?php if (PermisosHelper::tienePermiso('BuscarPuntosVenta')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['/puntos-venta/operaciones', 'id' => $model['IdPuntoVenta']]) ?>" 
+                                                        data-hint="Punto de venta">
+                                                    <i class="fas fa-store" style="color: gold"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            <?php if ($model['EstadoVenta'] == 'E') :?>
                                                 <?php if (PermisosHelper::tienePermiso('AltaLineaVenta')) : ?>
                                                     <a class="btn btn-default"
                                                             href="<?= Url::to(['/ventas/lineas', 'id' => $model['IdVenta']]) ?>" 
@@ -126,8 +135,8 @@ $proveedor = new Proveedores();
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] != 'B') : ?>
-                                                <?php if ($model['Estado'] == 'E') :?>
+                                            <?php if ($model['EstadoVenta'] != 'B') : ?>
+                                                <?php if ($model['EstadoVenta'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['ventas/activar', 'id' => $model['IdVenta']]) ?>"
@@ -135,16 +144,9 @@ $proveedor = new Proveedores();
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('BorrarVenta') && $anulable == 'S') : ?>
-                                                        <button type="button" class="btn btn-default"
-                                                                data-ajax="<?= Url::to(['/ventas/borrar', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Borrar">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    <?php endif; ?>
                                                 <?php endif; ?>
-                                                <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
-                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta') && $model['Estado'] == 'P') : ?>
+                                                <?php if ($model['EstadoVenta'] == 'A' || $model['EstadoVenta'] == 'P') :?>
+                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta') && $model['EstadoVenta'] == 'P') : ?>
                                                         <a class="btn btn-default"
                                                                 href="<?= Url::to(['/ventas/comprobante', 'id' => $model['IdVenta']]) ?>"
                                                                 target="_blank"
@@ -159,20 +161,6 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-money-bill-wave"></i>
                                                         </a>
                                                     <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>
-                                                        <button type="button" class="btn btn-default"
-                                                                data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Devolucion">
-                                                            <i class="fa fa-undo-alt"></i>
-                                                        </button>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaVenta') && $anulable == 'S') : ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-ajax="<?= Url::to(['ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
-                                                            data-hint="Dar baja">
-                                                        <i class="fa fa-minus-circle" style="color: red"></i>
-                                                    </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>   
                                         </div>
@@ -203,7 +191,7 @@ $proveedor = new Proveedores();
         </div>
         <div class="clearfix"></div>
         <?php else: ?>
-            <p><strong>No hay Ventas que coincidan con el criterio de búsqueda utilizado.</strong></p>
+            <p><strong>No hay clientes que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>
     </div>
 </div>

@@ -190,7 +190,7 @@ class Roles extends Model
      * @param Motivo    Motivo de auditor�a
      * @param Autoriza    Usuario que autoriza
      */
-    public function AsignarPermisos($listapermisos, $Motivo, $Autoriza)
+    public function AsignarPermisos($listapermisos)
     {
         $sql = "CALL xsp_asignar_permisos_rol ( :token, :id, :lista, :IP , :userAgent , :app, :motivo, :autoriza )";
 
@@ -203,8 +203,8 @@ class Roles extends Model
             ':app' => Yii::$app->id,
             ':id' => $this->IdRol,
             ':lista' => "[$listapermisos]",
-            ':motivo' => $Motivo,
-            ':autoriza' => $Autoriza,
+            ':motivo' => '',
+            ':autoriza' => '',
         ]);
 
         return $query->queryScalar();

@@ -6,7 +6,6 @@ use common\models\Usuarios;
 use common\models\ListasPrecio;
 use common\models\GestorListasPrecio;
 use common\models\forms\BuscarForm;
-use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;

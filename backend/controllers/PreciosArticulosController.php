@@ -63,7 +63,7 @@ class PreciosArticulosController extends BaseController
 
         $listas = GestorListasPrecio::Buscar();
 
-        if($precio->load(Yii::$app->request->post()) && $precio->validate() ){
+        if ($precio->load(Yii::$app->request->post()) && $precio->validate()) {
             $resultado = $articulo->AgregarPrecio($precio);
 
             Yii::$app->response->format = 'json';
@@ -95,7 +95,7 @@ class PreciosArticulosController extends BaseController
 
         $listas=0;
 
-        if($precio->load(Yii::$app->request->post()) && $precio->validate() ){
+        if ($precio->load(Yii::$app->request->post()) && $precio->validate()) {
             $resultado = $articulo->ModificarPrecio($precio);
 
             Yii::$app->response->format = 'json';
@@ -115,7 +115,7 @@ class PreciosArticulosController extends BaseController
 
     public function actionBorrar($idArt, $idLis)
     {
-        PermisosHelper::verificarPermiso('ModificarArticulo');
+        PermisosHelper::verificarPermiso('TODO:ModificarArticulo');
 
         Yii::$app->response->format = 'json';
         
@@ -135,7 +135,4 @@ class PreciosArticulosController extends BaseController
             return ['error' => $resultado];
         }
     }
-
 }
-
-?>

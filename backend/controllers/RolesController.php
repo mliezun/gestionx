@@ -6,7 +6,6 @@ use common\models\Usuarios;
 use common\models\Roles;
 use common\models\GestorRoles;
 use common\models\forms\BuscarForm;
-use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;
@@ -197,9 +196,7 @@ class RolesController extends BaseController
 
         $permisos = $rol->ListarPermisos();
 
-        $auditoria = new AuditoriaForm();
-
-        if (Yii::$app->request->getIsPost() && $auditoria->load(Yii::$app->request->post()) && $auditoria->validate()) {
+        if (Yii::$app->request->getIsPost()) {
             PermisosHelper::verificarPermiso('AsignarPermisosRol');
 
             $permisosHabilitados = Yii::$app->request->post('Permisos');
@@ -213,7 +210,7 @@ class RolesController extends BaseController
                 $listapermisos = substr($listapermisos, 0, -1);
             }
 
-            $resultado = $rol->AsignarPermisos($listapermisos, $auditoria->Motivo, $auditoria->Autoriza);
+            $resultado = $rol->AsignarPermisos($listapermisos);
 
             if ($resultado == 'OK') {
                 Yii::$app->session->setFlash('success', 'Permisos modificados correctamente');
@@ -225,7 +222,6 @@ class RolesController extends BaseController
             return $this->render('permisos', [
                         'model' => $rol,
                         'permisos' => $permisos,
-                        'auditoria' => $auditoria,
             ]);
         }
     }
