@@ -2,10 +2,10 @@
 
 namespace backend\controllers;
 
-use GuzzleHttp\Client;
 use common\models\GestorEmpresas;
 use common\models\EmpresasModel;
 use common\components\PermisosHelper;
+use common\components\CmdHelper;
 use Yii;
 
 class EmpresasController extends BaseController
@@ -42,7 +42,7 @@ class EmpresasController extends BaseController
 
             $vhost_conf = $this->renderVHost($empresa);
 
-            $vhost_name = strtolower($empresa->Empresa);
+            $vhost_name = $empresa->vhost();
 
             Yii::info($vhost_conf);
             Yii::info($vhost_name);
@@ -50,17 +50,15 @@ class EmpresasController extends BaseController
             $cmds = [
                 "echo \"$vhost_conf\" > /etc/apache2/sites-available/{$vhost_name}.conf",
                 "a2ensite $vhost_name",
-                "service apache2 reload"
+                "service apache2 reload",
+                "certbot --apache --non-interactive --redirect -d $empresa->URL"
             ];
 
-            $client = new Client();
-            $response = $client->request('POST', 'http://127.0.0.1:3000/', [
-                'json' => [
-                    'cmds' => $cmds
-                ]
-            ]);
+            Yii::info($cmds);
 
-            if ($response->getBody() != 'OK') {
+            $resultado = CmdHelper::exec($cmds);
+
+            if ($resultado != 'OK') {
                 return ['error' => 'Error al generar la configuración de apache.'];
             }
 
@@ -79,7 +77,33 @@ class EmpresasController extends BaseController
         $empresa = new EmpresasModel();
         $empresa->IdEmpresa = $id;
 
-        return parent::cambiarEstado($empresa, 'Activar');
+        Yii::$app->response->format = 'json';
+
+        $resultado = $empresa->Activar();
+
+        if ($resultado == 'OK') {
+
+            $empresa->Dame();
+            $vhost_name = $empresa->vhost();
+
+            Yii::info($vhost_name);
+
+            $cmds = [
+                "a2ensite $vhost_name",
+                "a2ensite {$vhost_name}-le-ssl",
+                "service apache2 reload"
+            ];
+
+            $resultado = CmdHelper::exec($cmds);
+
+            if ($resultado != 'OK') {
+                return ['error' => 'Error al generar la configuración de apache.'];
+            }
+
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
     }
 
     public function actionDarBaja($id)
@@ -89,6 +113,32 @@ class EmpresasController extends BaseController
         $empresa = new EmpresasModel();
         $empresa->IdEmpresa = $id;
 
-        return parent::cambiarEstado($empresa, 'DarBaja');
+        Yii::$app->response->format = 'json';
+
+        $resultado = $empresa->DarBaja();
+
+        if ($resultado == 'OK') {
+
+            $empresa->Dame();
+            $vhost_name = $empresa->vhost();
+
+            Yii::info($vhost_name);
+
+            $cmds = [
+                "a2dissite $vhost_name",
+                "a2dissite {$vhost_name}-le-ssl",
+                "service apache2 reload"
+            ];
+
+            $resultado = CmdHelper::exec($cmds);
+
+            if ($resultado != 'OK') {
+                return ['error' => 'Error al generar la configuración de apache.'];
+            }
+
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
     }
 }

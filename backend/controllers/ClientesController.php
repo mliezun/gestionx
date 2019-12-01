@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\models\Usuarios;
+use common\models\Provincias;
 use common\models\Clientes;
 use common\models\GestorClientes;
 use common\models\GestorListasPrecio;
@@ -79,6 +80,8 @@ class ClientesController extends Controller
                 // Para jurídicas -> CUIT por defecto
                 $cliente->IdTipoDocAfip = 80;
             }
+
+            $cliente->Provincia = Provincias::Dame(Yii::$app->session->get('Parametros')['PROVINCIA']);
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Cliente',

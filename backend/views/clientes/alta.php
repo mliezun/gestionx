@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Clientes;
+use common\models\Provincias;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
@@ -47,7 +48,7 @@ use kartik\select2\Select2;
 
             <?= $form->field($model, 'Email') ?>
 
-            <?= $form->field($model, 'Provincia') ?>
+            <?= $form->field($model, 'Provincia')->dropDownList(Provincias::Provincias(), ['prompt' => 'Provincia']) ?>
 
             <?= $form->field($model, 'Localidad') ?>
 
