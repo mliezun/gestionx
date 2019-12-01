@@ -70,6 +70,12 @@ class Menu
                     'permiso' => 'BuscarListasPrecio'
                 ],
                 [
+                    'name' => 'Canales',
+                    'icon' => 'fas fa-sliders-h',
+                    'href' => '/canales',
+                    'permiso' => 'BuscarCanales'
+                ],
+                [
                     'name' => 'Destinos de cheques',
                     'href' => '/destinos-cheque',
                     'permiso' => 'BuscarDestinosCheque'

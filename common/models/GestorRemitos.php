@@ -13,7 +13,7 @@ class GestorRemitos
      */
     public function Alta(Remitos $remito, $PuntoVenta)
     {
-        $sql = "call xsp_alta_remito( :token, :idempresa, :idproveedor, :idpuntoventa,
+        $sql = "call xsp_alta_remito( :token, :idempresa, :idproveedor, :idpuntoventa, :idcanal,
         :nroremito, :cai, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -25,6 +25,7 @@ class GestorRemitos
             ':app' => Yii::$app->id,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idproveedor' => $remito->IdProveedor,
+            ':idcanal' => $remito->IdCanal,
             ':idpuntoventa' => $PuntoVenta,
             ':nroremito' => $remito->NroRemito,
             ':cai' => $remito->CAI,
@@ -41,7 +42,7 @@ class GestorRemitos
      */
     public function Modificar($remito)
     {
-        $sql = "call xsp_modifica_remito( :token, :idremito, :idempresa, :idproveedor, :nroremito, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_remito( :token, :idremito, :idempresa, :idproveedor, :idcanal, :nroremito, :cai, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -53,7 +54,9 @@ class GestorRemitos
             ':idremito' => $remito->IdRemito,
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idproveedor' => $remito->IdProveedor,
+            ':idcanal' => $remito->IdCanal,
             ':nroremito' => $remito->NroRemito,
+            ':cai' => $remito->CAI,
             ':observaciones' => $remito->Observaciones,
         ]);
 

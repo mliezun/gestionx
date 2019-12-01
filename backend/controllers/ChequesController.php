@@ -29,7 +29,15 @@ class ChequesController extends BaseController
 
     public function actionIndex()
     {
-        PermisosHelper::verificarPermiso('BuscarCheques');
+        PermisosHelper::verificarAlgunPermiso(array('BuscarChequesClientes','BuscarChequesPropios'));
+
+        if (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios')) && PermisosHelper::tieneAlgunPermiso(array('BuscarChequesClientes'))){
+            $Tipo = 'T';
+        } elseif (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios'))){
+            $Tipo = 'P';
+        } else{
+            $Tipo = 'C';
+        }
 
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
@@ -40,9 +48,9 @@ class ChequesController extends BaseController
 
         if ($busqueda->load(Yii::$app->request->get()) && $busqueda->validate()) {
             $estado = $busqueda->Combo ? $busqueda->Combo : 'D';
-            $cheques = $gestor->Buscar($busqueda->Cadena, $busqueda->FechaInicio, $busqueda->FechaFin, $estado);
+            $cheques = $gestor->Buscar($Tipo, $busqueda->Cadena, $busqueda->FechaInicio, $busqueda->FechaFin, $estado);
         } else {
-            $cheques = $gestor->Buscar();
+            $cheques = $gestor->Buscar($Tipo);
         }
 
         $paginado->totalCount = count($cheques);

@@ -23,6 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
+            <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal', 'style' => 'margin-left: 10px']) ?>
+
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?>
 
              <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir sin stock', 'value' => 'S', 'uncheck' => 'N')); ?> 
@@ -121,7 +123,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
-                                <th>Precio de compra</th>
+                                <th>Canal</th>
+                                <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
+                                    <th>Precio de compra</th>
+                                <?php endif; ?>
                                 <th>Cantidad</th>
                             </tr>
                         </thead>
@@ -132,7 +137,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                    <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
+                                        <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                    <?php endif; ?>
                                     <td><?= Html::encode($model['Cantidad']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
