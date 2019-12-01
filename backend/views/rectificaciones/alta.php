@@ -6,6 +6,8 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
 use kartik\select2\Select2;
+use yii\web\JsExpression;
+
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -29,11 +31,19 @@ use kartik\select2\Select2;
             <?= Html::activeHiddenInput($model, 'IdRectificacionPV') ?>
 
             <?= $form->field($model, 'IdArticulo')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($articulos, 'IdArticulo', 'Articulo'),
                 'language' => 'es',
                 'options' => ['placeholder' => 'Articulo'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
+                    'minimumInputLength' => 3,
+                    'ajax' => [
+                        'url' => '/articulos/autocompletar',
+                        'dataType' => 'json',
+                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                    ],
+                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                    'templateResult' => new JsExpression('function(res) { return res.text; }'),
+                    'templateSelection' => new JsExpression('function (res) { return res.text; }'),
                 ],
             ]) ?>
 

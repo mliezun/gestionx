@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <a class="btn btn-default"
                                                         href="<?= Url::to(['/puntos-venta/operaciones', 'id' => $model['IdPuntoVenta']]) ?>" 
                                                         data-hint="Operaciones">
-                                                    <i class="fas fa-eye" style="color: orange"></i>
+                                                    <i class="fas fa-tools" style="color: orange"></i>
                                                 </a>
                                             <?php endif; ?>  
                                             <?php if (PermisosHelper::tienePermiso('ModificarPuntoVenta')) : ?>

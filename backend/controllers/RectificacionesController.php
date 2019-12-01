@@ -36,7 +36,6 @@ class RectificacionesController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            $articulos = GestorArticulos::Buscar();
             $puntosventa = GestorPuntosVenta::Buscar();
             $clave = array_search($id, $puntosventa);
             unset($puntosventa[$clave]);
@@ -44,7 +43,6 @@ class RectificacionesController extends BaseController
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta rectificación',
                 'model' => $rectificacionesPV,
-                'articulos' => $articulos,
                 'puntosventa' => $puntosventa
             ]);
         }
