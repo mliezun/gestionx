@@ -196,6 +196,7 @@ class PuntosVenta extends Model
         $query->bindValues([
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
+            ':canal' => $canal,
             ':sinStock' => $SinSotck
         ]);
         
@@ -211,7 +212,7 @@ class PuntosVenta extends Model
      */
     public function AltaRectificacion(RectificacionesPV $Rectificacion)
     {
-        $sql = "call xsp_alta_rectificacionpv( :token, :idempresa, :idorigen, :iddestino, :idarticulo, :cantidad".
+        $sql = "call xsp_alta_rectificacionpv( :token, :idempresa, :idorigen, :iddestino, :idarticulo, :idcanal, :cantidad".
         ", :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -225,6 +226,7 @@ class PuntosVenta extends Model
             ':idorigen' => $this->IdPuntoVenta,
             ':iddestino' => $Rectificacion->IdPuntoVentaDestino,
             ':idarticulo' => $Rectificacion->IdArticulo,
+            ':idcanal' => $Rectificacion->IdCanal,
             ':cantidad' => $Rectificacion->Cantidad,
             ':observaciones' => $Rectificacion->Observaciones,
         ]);
@@ -248,6 +250,7 @@ class PuntosVenta extends Model
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
             ':incluye' => $Incluye,
+            ':canal' => 0,
         ]);
         
         return $query->queryAll();

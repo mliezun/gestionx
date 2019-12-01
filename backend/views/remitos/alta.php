@@ -39,12 +39,21 @@ use kartik\select2\Select2;
                     'allowClear' => true
                 ],
             ]) ?>
+            
+            <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Canal'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
 
             <?= $form->field($model, 'NroRemito') ?>
 
             <?= $form->field($model, 'CAI') ?>
 
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'Observaciones')->textArea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

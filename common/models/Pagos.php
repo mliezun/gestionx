@@ -65,6 +65,7 @@ class Pagos extends Model
     public function rules()
     {
         return [
+            ['Monto', 'double'],
             [['IdVenta','IdMedioPago','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
             [['IdVenta','IdMedioPago','IdRemito','Monto'],
