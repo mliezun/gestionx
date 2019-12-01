@@ -10,11 +10,13 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\select2\Select2;
-use yii\widgets\LinkPager;
 
 /* @var $this View */
 /* @var $form ActiveForm */
+$this->title = 'Punto de Venta: '.$puntoventa->PuntoVenta.' - Remitos';
+$this->params['breadcrumbs'][] = $this->title;
+
+$proveedor = new Proveedores();
 ?>
 
 <div class="row">
@@ -24,17 +26,9 @@ use yii\widgets\LinkPager;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Proveedor'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'width' => '243px'
-                ],
-            ]) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'), ['prompt' => 'Proveedor']) ?>
 
-            <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado', 'style' => 'margin-left: 10px']) ?>
+            <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
@@ -63,7 +57,6 @@ use yii\widgets\LinkPager;
                                 <th>Nro de Remito</th>
                                 <th>Nro de Factura</th>
                                 <th>Proveedor</th>
-                                <th>Canal</th>
                                 <th>Fecha de Alta</th>
                                 <th>Fecha de Facturacion</th>
                                 <th>Estado</th>
@@ -74,10 +67,11 @@ use yii\widgets\LinkPager;
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
+                                    <?php $proveedor->IdProveedor=$model['IdProveedor'];
+                                    $proveedor->Dame(); ?>
                                     <td><?= Html::encode($model['NroRemito']) ?></td>
                                     <td><?= Html::encode($model['NroFactura']) ?></td>
-                                    <td><?= Html::encode($model['Proveedor']) ?></td>
-                                    <td><?= Html::encode($model['Canal']) ?></td>
+                                    <td><?= Html::encode($proveedor->Proveedor) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaFacturado'])) ?></td>
                                     <td><?= Html::encode(Remitos::ESTADOS[$model['Estado']]) ?></td>
@@ -136,24 +130,6 @@ use yii\widgets\LinkPager;
                 </div>
             </div>
         </div>
-        <div class="pull-right">
-            <?=
-            LinkPager::widget([
-                'pagination' => $paginado,
-                'firstPageLabel' => '<<',
-                'lastPageLabel' => '>> ',
-                'nextPageLabel' => '>',
-                'prevPageLabel' => '<',
-                'pageCssClass' => 'page-link',
-                'activePageCssClass' => 'page-item-active',
-                'firstPageCssClass' => 'page-link',
-                'lastPageCssClass' => 'page-link',
-                'nextPageCssClass' => 'page-link',
-                'prevPageCssClass' => 'page-link',
-            ]);
-            ?>
-        </div>
-        <div class="clearfix"></div>
         <?php else: ?>
             <p><strong>No hay remitos que coincidan con el criterio de búsqueda utilizado.</strong></p>
         <?php endif; ?>

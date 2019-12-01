@@ -187,15 +187,16 @@ class PuntosVenta extends Model
      * Procedimiento que sirve para listar las existencias de un punto venta desde la base de datos.
      * xsp_listar_existencias_puntosventa
      */
-    public function ListarExistencias($cadena = '', $SinSotck = 'N')
+    public function ListarExistencias($canal ,$cadena = '',$SinSotck = 'N')
     {
-        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock, 0 )';
+        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock, :canal )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
+            ':canal' => $canal,
             ':sinStock' => $SinSotck
         ]);
         
@@ -211,7 +212,7 @@ class PuntosVenta extends Model
      */
     public function AltaRectificacion(RectificacionesPV $Rectificacion)
     {
-        $sql = "call xsp_alta_rectificacionpv( :token, :idempresa, :idorigen, :iddestino, :idarticulo, :cantidad".
+        $sql = "call xsp_alta_rectificacionpv( :token, :idempresa, :idorigen, :iddestino, :idarticulo, :idcanal, :cantidad".
         ", :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -225,6 +226,7 @@ class PuntosVenta extends Model
             ':idorigen' => $this->IdPuntoVenta,
             ':iddestino' => $Rectificacion->IdPuntoVentaDestino,
             ':idarticulo' => $Rectificacion->IdArticulo,
+            ':idcanal' => $Rectificacion->IdCanal,
             ':cantidad' => $Rectificacion->Cantidad,
             ':observaciones' => $Rectificacion->Observaciones,
         ]);
@@ -239,7 +241,7 @@ class PuntosVenta extends Model
      */
     public function ListarRectificaciones($cadena = '',$Incluye = 'N')
     {
-        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, 0, :cadena, :incluye )';
+        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, :canal, :cadena, :incluye )';
         
         $query = Yii::$app->db->createCommand($sql);
     
@@ -248,6 +250,7 @@ class PuntosVenta extends Model
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
             ':incluye' => $Incluye,
+            ':canal' => 0,
         ]);
         
         return $query->queryAll();

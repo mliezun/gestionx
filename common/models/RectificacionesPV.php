@@ -12,6 +12,7 @@ class RectificacionesPV extends Model
     public $IdPuntoVentaDestino;
     public $IdEmpresa;
     public $IdUsuario;
+    public $IdCanal;
     public $Cantidad;
     public $FechaAlta;
     public $Estado;
@@ -21,6 +22,7 @@ class RectificacionesPV extends Model
     public $PuntoVentaOrigen;
     public $PuntoVentaDestino;
     public $Articulo;
+    public $Canal;
     
     const _ALTA = 'alta';
     
@@ -34,7 +36,7 @@ class RectificacionesPV extends Model
     public function rules()
     {
         return [
-            [['IdArticulo','Cantidad'],
+            [['IdArticulo','IdCanal','Cantidad'],
                 'required', 'on' => self::_ALTA],
             [$this->attributes(), 'safe']
         ];
@@ -44,6 +46,7 @@ class RectificacionesPV extends Model
     {
         return [
             'IdArticulo' => 'Articulo',
+            'IdCanal' => 'Canal',
             'IdPuntoVentaOrigen' => 'Punto de Venta de origen',
             'IdPuntoVentaDestino' => 'Punto de Venta de destino'
         ];

@@ -6,6 +6,7 @@ use common\models\Remitos;
 use common\models\PuntosVenta;
 use common\models\GestorRemitos;
 use common\models\GestorProveedores;
+use common\models\GestorCanales;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
@@ -37,9 +38,12 @@ class RemitosController extends BaseController
         } else {
             $proveedores = (new GestorProveedores())->Buscar();
 
+            $canales = GestorCanales::Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta remito',
                 'model' => $remito,
+                'canales' => $canales,
                 'proveedores' => $proveedores
             ]);
         }
@@ -65,12 +69,17 @@ class RemitosController extends BaseController
             }
         } else {
             $remito->IdRemito = $id;
-            
             $remito->Dame();
 
+            $proveedores = (new GestorProveedores())->Buscar();
+
+            $canales = GestorCanales::Buscar();
+
             return $this->renderAjax('alta', [
-                        'titulo' => 'Editar Remito',
-                        'model' => $remito
+                'titulo' => 'Editar Remito',
+                'model' => $remito,
+                'canales' => $canales,
+                'proveedores' => $proveedores
             ]);
         }
     }

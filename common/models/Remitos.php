@@ -17,6 +17,10 @@ class Remitos extends Model
     public $IdEmpresa;
     public $IdProveedor;
     public $IdCliente;
+    public $IdCanal;
+
+    // Derivados
+    public $Canal;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
@@ -31,14 +35,15 @@ class Remitos extends Model
     public function attributeLabels()
     {
         return [
-            'IdProveedor' => 'Proveedor'
+            'IdProveedor' => 'Proveedor',
+            'IdCanal' => 'Canal'
         ];
     }
 
     public function rules()
     {
         return [
-            [['IdEmpresa', 'IdProveedor','NroRemito','CAI'],
+            [['IdEmpresa', 'IdProveedor', 'IdCanal','NroRemito','CAI'],
                 'required', 'on' => self::_ALTA],
             [['IdRemito', 'NroRemito','CAI'],
                 'required', 'on' => self::_MODIFICAR],
