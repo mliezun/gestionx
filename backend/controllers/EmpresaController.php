@@ -4,7 +4,6 @@ namespace backend\controllers;
 
 use common\components\PermisosHelper;
 use common\models\Empresa;
-use common\models\forms\AuditoriaForm;
 use common\models\forms\BuscarForm;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -43,12 +42,9 @@ class EmpresaController extends BaseController
         $parametro = new Empresa();
         $parametro->setScenario(Empresa::SCENARIO_EDITAR);
 
-        $auditoria = new AuditoriaForm();
-
-        if ($parametro->load(Yii::$app->request->post()) && $parametro->validate() &&
-                $auditoria->load(Yii::$app->request->post()) && $auditoria->validate()) {
+        if ($parametro->load(Yii::$app->request->post()) && $parametro->validate()) {
             $gestor = new Empresa();
-            $resultado = $gestor->CambiarParametro($parametro->Parametro, $parametro->Valor, $auditoria->Motivo, $auditoria->Autoriza);
+            $resultado = $gestor->CambiarParametro($parametro->Parametro, $parametro->Valor);
 
             Yii::$app->response->format = 'json';
             if ($resultado == 'OK') {
@@ -63,8 +59,7 @@ class EmpresaController extends BaseController
             $parametro->DameParametro($id);
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar parámetro',
-                        'model' => $parametro,
-                        'auditoria' => $auditoria
+                        'model' => $parametro
             ]);
         }
     }

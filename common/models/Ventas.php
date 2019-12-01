@@ -31,8 +31,8 @@ class Ventas extends Model
     const _MODIFICAR = 'modificar';
     
     const ESTADOS = [
-        'A' => 'Activo',
-        'E' => 'Edicion',
+        'A' => 'Activa',
+        'E' => 'En Edición',
         'B' => 'Baja',
         'P' => 'Pagada',
         'T' => 'Todos'

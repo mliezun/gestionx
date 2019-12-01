@@ -107,7 +107,7 @@ class Empresa extends Model
     /**
      * 
      */
-    public function CambiarParametro($Parametro, $Valor, $Motivo, $Autoriza)
+    public function CambiarParametro($Parametro, $Valor)
     {
         $sql = "CALL xsp_cambiar_parametro ( :token, :parametro, :valor, :motivo, :autoriza, :IP, :userAgent, :app ) ";
 
@@ -120,8 +120,8 @@ class Empresa extends Model
             ':app' => Yii::$app->id,
             ':parametro' => $Parametro,
             ':valor' => $Valor,
-            ':motivo' => $Motivo,
-            ':autoriza' => $Autoriza
+            ':motivo' => '',
+            ':autoriza' => ''
         ]);
 
         return $query->queryScalar();

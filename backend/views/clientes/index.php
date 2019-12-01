@@ -32,18 +32,27 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php ActiveForm::end(); ?>
         </div>
 
-        <?php if (PermisosHelper::tienePermiso('AltaCliente')) : ?>
+        <?php if (PermisosHelper::tieneAlgunPermiso(['AltaCliente', 'BuscarVentasClientes'])) : ?>
             <div class="alta--button">
-                <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/clientes/alta?Tipo=F']) ?>"
-                        data-hint="Nuevo Cliente (Física)">
-                    Nuevo Cliente (Física)
-                </button>
-                <button type="button" class="btn btn-secondary"
-                        data-modal="<?= Url::to(['/clientes/alta?Tipo=J']) ?>"
-                        data-hint="Nuevo Cliente (Jurídica)">
-                    Nuevo Cliente (Jurídica)
-                </button>
+                <?php if (PermisosHelper::tienePermiso('AltaCliente')) : ?>
+                    <button type="button" class="btn btn-primary"
+                            data-modal="<?= Url::to(['/clientes/alta?Tipo=F']) ?>"
+                            data-hint="Nuevo Cliente (Física)">
+                        Nuevo Cliente (Física)
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            data-modal="<?= Url::to(['/clientes/alta?Tipo=J']) ?>"
+                            data-hint="Nuevo Cliente (Jurídica)">
+                        Nuevo Cliente (Jurídica)
+                    </button>
+                <?php endif; ?>
+                <?php if (PermisosHelper::tienePermiso('BuscarVentasClientes')) : ?>
+                    <a type="button" class="btn btn-default" style="float: right"
+                            href="<?= Url::to(['/clientes/ventas']) ?>"
+                            data-hint="Ventas de clientes">
+                        Ventas de clientes
+                    </a>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 
@@ -95,6 +104,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
+                                            <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('BuscarVentasClientes')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['clientes/ventas', 'id' => $model['IdCliente']]) ?>"
+                                                        data-hint="Ventas del cliente">
+                                                    <i class="fas fa-money-bill-alt" style="color: green"></i>
+                                                </a>
                                             <?php endif; ?>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarCliente')): ?>

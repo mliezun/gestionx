@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 
 class GestorClientes
@@ -86,7 +87,7 @@ class GestorClientes
      * y la opción si incluye o no los dados de baja [S|N] respectivamente.
      * Para listar todos, cadena vacía.
      * xsp_buscar_clientes
-     * 
+     *
      */
     public function Buscar($Cadena = '', $Tipo = 'T', $Estado = 'A')
     {
@@ -99,6 +100,31 @@ class GestorClientes
             ':cadena' => $Cadena,
             ':tipo' => $Tipo,
             ':estado' => $Estado,
+        ]);
+
+        return $query->queryAll();
+    }
+
+    /*
+     * Permite buscar entre todos los movimientos de un cliente, entre 2 fechas, permitiendo filtrar los
+     * clientes por su estado con pEstado y filtrar las ventas por su estado con pEstadoVenta.
+     * Permitiendo ver cuáles están en mora con pMora [S|N].
+     * xsp_buscar_ventas_clientes
+     * 
+     */
+    public function BuscarVentas($IdCliente = 0, $FechaInicio = null, $FechaFin = null, $Estado = 'T', $EstadoVenta = 'T', $Mora = 'N')
+    {
+        $sql = "call xsp_buscar_ventas_clientes( :idcliente, :fechaInicio, :fechaFin, :estado, :estadoVenta, :mora )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idcliente' => $IdCliente,
+            ':fechaInicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechaFin' => FechaHelper::formatearDateMysql($FechaFin),
+            ':estado' => $Estado,
+            ':estadoVenta' => $EstadoVenta,
+            ':mora' => $Mora
         ]);
 
         return $query->queryAll();
@@ -134,7 +160,7 @@ class GestorClientes
     {
         $clientes = array();
 
-        foreach($this->Buscar() as $cliente) {
+        foreach ($this->Buscar() as $cliente) {
             $clientes[$cliente['IdCliente']] = Clientes::Nombre($cliente);
         }
 
