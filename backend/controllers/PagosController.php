@@ -25,7 +25,7 @@ class PagosController extends BaseController
 {
     public function actionIndex($id)
     {
-        PermisosHelper::verificarPermiso('PagarVenta');
+        // PermisosHelper::verificarPermiso('PagarVenta');
 
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
@@ -68,7 +68,7 @@ class PagosController extends BaseController
     
     public function actionAlta($id)
     {
-        PermisosHelper::verificarPermiso('PagarVenta');
+        // PermisosHelper::verificarPermiso('PagarVenta');
 
         $venta = new Ventas();
         $venta->IdVenta = $id;
@@ -137,7 +137,7 @@ class PagosController extends BaseController
 
     public function actionEleccion($id)
     {
-        PermisosHelper::verificarPermiso('PagarVenta');
+        // PermisosHelper::verificarPermiso('PagarVenta');
 
         $venta = new Ventas();
         $venta->IdVenta = $id;
@@ -185,7 +185,7 @@ class PagosController extends BaseController
 
     public function actionEditar($id)
     {
-        PermisosHelper::verificarPermiso('PagarVenta');
+        // PermisosHelper::verificarPermiso('PagarVenta');
 
         $pago = new Pagos();
         $pago->IdPago = $id;
