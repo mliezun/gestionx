@@ -74,6 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
+                                <th>Precio de lista</th>
                                 <th>Precio de compra</th>
                                 <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
                                     <th><?= Html::encode('Precio ' . $nombre) ?></th>
@@ -92,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                    <td><?= Html::encode($model['PrecioCompra']) ?></td>
                                     <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
                                         <td><?= Html::encode($valor) ?></td>
                                     <?php endforeach; ?>

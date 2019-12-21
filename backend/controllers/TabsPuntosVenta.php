@@ -34,6 +34,7 @@ class TabsPuntosVenta extends BaseController
             [
                 'Permiso' => 'BuscarRemitos',
                 'Nombre' => 'Remitos',
+                'Label' => 'Compras',
                 'Render' => function () {
                     return $this->Remitos();
                 }

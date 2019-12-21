@@ -187,9 +187,9 @@ class PuntosVenta extends Model
      * Procedimiento que sirve para listar las existencias de un punto venta desde la base de datos.
      * xsp_listar_existencias_puntosventa
      */
-    public function ListarExistencias($cadena = '',$SinSotck = 'N')
+    public function ListarExistencias($cadena = '', $SinSotck = 'N')
     {
-        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock )';
+        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock, 0 )';
         
         $query = Yii::$app->db->createCommand($sql);
     
@@ -239,7 +239,7 @@ class PuntosVenta extends Model
      */
     public function ListarRectificaciones($cadena = '',$Incluye = 'N')
     {
-        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, :cadena, :incluye )';
+        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, 0, :cadena, :incluye )';
         
         $query = Yii::$app->db->createCommand($sql);
     

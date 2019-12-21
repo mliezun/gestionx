@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php ActiveForm::end(); ?>
         </div>
-        <?php if (PermisosHelper::tienePermiso('PagarVenta') && $model['Estado'] != 'P') : ?>
+        <?php if (/* PermisosHelper::tienePermiso('PagarVenta') && */ $model['Estado'] != 'P') : ?>
             <div class="alta--button">
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
                     <button type="button" class="btn btn-primary"
