@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
+use kartik\select2\Select2;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -23,9 +24,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal', 'style' => 'margin-left: 10px']) ?>
+            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Canal'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ],
+            ]) ?>
 
-            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?>
+            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button', 'style' => 'margin-left: 10px']) ?>
 
              <?= $form->field($busqueda, 'Check')->checkbox(array('class' => 'check--buscar-form', 'label' => 'Incluir sin stock', 'value' => 'S', 'uncheck' => 'N')); ?> 
 
@@ -56,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Destino</th>
                                 <th>Articulo</th>
                                 <th>Cantidad</th>
+                                <th>Canal</th>
                                 <th>Estado</th>
                                 <th>Fecha de Alta</th>
                                 <th>Observaciones</th>
@@ -69,6 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($recti['PuntoVentaDestino']) ?></td>
                                     <td><?= Html::encode($recti['Articulo']) ?></td>
                                     <td><?= Html::encode($recti['Cantidad']) ?></td>
+                                    <td><?= Html::encode($recti['Canal']) ?></td>
                                     <td><?= Html::encode(RectificacionesPV::ESTADOS[$recti['Estado']]) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($recti['FechaAlta'])) ?></td>
                                     <td><?= Html::encode($recti['Observaciones']) ?></td>
