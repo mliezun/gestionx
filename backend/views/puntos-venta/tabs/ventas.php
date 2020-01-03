@@ -88,6 +88,7 @@ $proveedor = new Proveedores();
                                 <th>Monto</th>
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
+                                <th>Canal</th>
                                 <th>Estado</th>
                                 <th>Tributo</th>
                                 <th>Comprobante</th>
@@ -103,6 +104,7 @@ $proveedor = new Proveedores();
                                     <td><?= Html::encode($model['Monto']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
+                                    <td><?= Html::encode($model['Canal']) ?></td>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['TipoTributo']) ?></td>
                                     <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>
@@ -152,7 +154,7 @@ $proveedor = new Proveedores();
                                                             <i class="fas fa-print"></i>
                                                         </a>
                                                     <?php endif; ?>
-                                                    <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
+                                                    <?php if (PermisosHelper::algunPermisoContiene('PagarVenta')) : ?>
                                                         <a class="btn btn-default"
                                                                 href="<?= Url::to(['/pagos', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Pagos">

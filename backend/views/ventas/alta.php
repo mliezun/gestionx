@@ -29,7 +29,7 @@ use kartik\select2\Select2;
             <div id="errores-modal"> </div>
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
-
+            
             <?= $form->field($model, 'IdCliente')->widget(Select2::classname(), [
                 'data' => $clientes,
                 'language' => 'es',
@@ -42,6 +42,8 @@ use kartik\select2\Select2;
             <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
 
             <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo'), ['prompt' => 'Tipo de Tributo']) ?>
+
+            <?= $form->field($model, 'IdCanal')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal']) ?>
 
             <?php if (!isset($model['IdVenta'])): ?>
                 <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
