@@ -9,7 +9,7 @@ use Yii;
 
 class ComprobanteHelper
 {
-    public static function ImprimirComprobante($params, $datos, $esAfip = true)
+    public static function ImprimirComprobante($params, $datos, $esAfip = true, $esProd = false)
     {
         // Normalizo los datos de la venta para enviar a AFIP
         $datosAfip = self::datosAfip($datos);
@@ -18,13 +18,13 @@ class ComprobanteHelper
         if ($esAfip) {
             $resultado = self::altaComprobante([
                 'CUIT' => $params['CUIT'],
-                'cert' => $params['AFIPCERT'],
+                'cert' => $esProd ? $params['AFIPCERT'] : $params['AFIPCERTHOMO'],
                 'key' => $params['AFIPKEY'],
                 'Comprobante' => $datosAfip
-            ]);
+            ], $esProd);
             $resultado = self::datosResultado($resultado);
         } else {
-            $idempresa = "" . Yii::$app->user->identity->IdEmpresa;
+            $idempresa = Yii::$app->user->identity->IdEmpresa;
             $cae = $idempresa . str_pad("{$datos['IdVenta']}", 16 - strlen($idempresa), '0', STR_PAD_LEFT);
             $resultado = ['cae' => $cae];
         }
@@ -110,8 +110,8 @@ class ComprobanteHelper
             foreach ($ivas as $id => $iva) {
                 $datosAfip['Iva'][] = $iva;
             }
-            $datosAfip['ImpNeto'] = number_format($datosAfip['ImpNeto'] - $importeIVA, 2);
-            $datosAfip['ImpIVA'] = number_format($importeIVA, 2);
+            $datosAfip['ImpNeto'] = number_format($datosAfip['ImpNeto'] - $importeIVA, 2, '.', '');
+            $datosAfip['ImpIVA'] = number_format($importeIVA, 2, '.', '');
         }
 
         return $datosAfip;
@@ -233,7 +233,7 @@ class ComprobanteHelper
     /**
      * Alta idempotente de comprobante de AFIP.
      */
-    private static function altaComprobante($datos)
+    private static function altaComprobante($datos, $esProd = false)
     {
         $tmp_cert = tmpfile();
         $meta_data = stream_get_meta_data($tmp_cert);
@@ -259,7 +259,8 @@ class ComprobanteHelper
             'cert' => $tmp_cert_file,
             'key' => $tmp_key_file,
             'res_folder' => $tmp_folder,
-            'ta_folder' => '/var/www/certs/'
+            'ta_folder' => '/var/www/certs/',
+            'production' => $esProd
         ]);
 
         // Yii::info(json_encode($afip->ElectronicBilling->GetVoucherTypes()));
