@@ -30,21 +30,18 @@ class ArticulosController extends BaseController
     {
         PermisosHelper::verificarPermiso('BuscarArticulos');
 
-        $paginado = new Pagination();
+        $gestor = new GestorArticulos();
+
+        $paginado = new Pagination(['totalCount' => $gestor->DameCantidad()]);
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
         $busqueda = new BuscarForm();
 
-        $gestor = new GestorArticulos();
-
         if ($busqueda->load(Yii::$app->request->get()) && $busqueda->validate()) {
-            $articulos = $gestor->Buscar($busqueda->Cadena, $busqueda->Combo, $busqueda->Combo2, $busqueda->Check);
+            $articulos = $gestor->Buscar($paginado->offset, $paginado->limit, $busqueda->Cadena, $busqueda->Combo, $busqueda->Combo2, $busqueda->Check);
         } else {
-            $articulos = $gestor->Buscar();
+            $articulos = $gestor->Buscar($paginado->offset, $paginado->limit);
         }
-
-        $paginado->totalCount = count($articulos);
-        $articulos = array_slice($articulos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
 
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();

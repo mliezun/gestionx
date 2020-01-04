@@ -11,7 +11,12 @@ $config = [
     'name' => 'GestionX Frontend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'frontend\controllers',
-    'bootstrap' => ['log'],
+    'bootstrap' => ['frontend\modules\api\Bootstrap', 'log'],
+    'modules' => [
+        'api' => [
+            'class' => 'frontend\modules\api\Api',
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => 'front_csrf',

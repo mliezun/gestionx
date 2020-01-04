@@ -37,15 +37,32 @@ class GestorArticulos
     }
 
     /**
+     * Permite obtener la cantidad de artículos de una empresa.
+     * xsp_dame_cantidad_articulos
+     */
+    public function DameCantidad()
+    {
+        $sql = "call xsp_dame_cantidad_articulos( :idempresa )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
      * Permite buscar articulos dentro de un proveedor de una empresa, indicando una
      * cadena de búsqueda y si se incluyen bajas. Si pIdProveedor = 0 lista para todos
      * los proveedores activos de una empresa.
      * xsp_buscar_articulos
      * 
      */
-    public function Buscar($Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N', $IncluyeBajasLista = 'N')
+    public function Buscar($Offset = 0, $Limit = 25, $Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N', $IncluyeBajasLista = 'N')
     {
-        $sql = "call xsp_buscar_articulos( :idempresa, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
+        $sql = "call xsp_buscar_articulos( :idempresa, :offset, :limit, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -56,6 +73,8 @@ class GestorArticulos
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
             ':iBajasListas' => $IncluyeBajasLista,
+            ':offset' => $Offset,
+            ':limit' => $Limit
         ]);
 
         return $query->queryAll();
