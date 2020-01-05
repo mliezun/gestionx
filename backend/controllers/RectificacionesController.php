@@ -6,6 +6,7 @@ use common\models\RectificacionesPV;
 use common\models\PuntosVenta;
 use common\models\GestorPuntosVenta;
 use common\models\GestorArticulos;
+use common\models\GestorCanales;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use Yii;
@@ -40,9 +41,12 @@ class RectificacionesController extends BaseController
             $clave = array_search($id, $puntosventa);
             unset($puntosventa[$clave]);
 
+            $canales = GestorCanales::Buscar();
+
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta rectificación',
                 'model' => $rectificacionesPV,
+                'canales' => $canales,
                 'puntosventa' => $puntosventa
             ]);
         }

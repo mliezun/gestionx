@@ -68,9 +68,9 @@ class GestorRemitos
      * Para listar todos, cadena vacía.
      * xsp_buscar_remito
      */
-    public function Buscar($PuntoVenta = 0, $Cadena = '', $Estado = 'E', $Proveedor = 0, $IncluyeUtilizados = 'S')
+    public function Buscar($PuntoVenta = 0, $Cadena = '', $Estado = 'E', $Proveedor = 0, $Canal = 0, $IncluyeUtilizados = 'S')
     {
-        $sql = "call xsp_buscar_remitos( :idempresa, :cadena, :estado , :proveedor, :puntoventa , :incluye)";
+        $sql = "call xsp_buscar_remitos( :idempresa, :cadena, :estado , :proveedor, :puntoventa, :canal , :incluye)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -80,6 +80,7 @@ class GestorRemitos
             ':estado' => $Estado,
             ':proveedor' => $Proveedor,
             ':puntoventa' => $PuntoVenta,
+            ':canal' => $Canal,
             ':incluye' => $IncluyeUtilizados,
         ]);
 

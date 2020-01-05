@@ -187,17 +187,17 @@ class PuntosVenta extends Model
      * Procedimiento que sirve para listar las existencias de un punto venta desde la base de datos.
      * xsp_listar_existencias_puntosventa
      */
-    public function ListarExistencias($cadena = '', $SinSotck = 'N')
+    public function ListarExistencias($cadena = '', $SinSotck = 'N', $idCanal = 0)
     {
-        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock, 0 )';
+        $sql = 'CALL xsp_listar_existencias_puntosventa( :cadena, :idPuntoVenta, :sinStock, :idCanal )';
         
         $query = Yii::$app->db->createCommand($sql);
     
         $query->bindValues([
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
-            ':canal' => $canal,
-            ':sinStock' => $SinSotck
+            ':sinStock' => $SinSotck,
+            ':idCanal' => $idCanal,
         ]);
         
         return $query->queryAll();
@@ -239,9 +239,9 @@ class PuntosVenta extends Model
      * y si se incluyen bajas. Si pIdPuntoVenta = 0 lista todas las rectficaciones activos de una empresa.
      * xsp_buscar_rectificacionespv
      */
-    public function ListarRectificaciones($cadena = '',$Incluye = 'N')
+    public function ListarRectificaciones($cadena = '',$Incluye = 'N', $idCanal = 0)
     {
-        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, 0, :cadena, :incluye )';
+        $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, :idCanal, :cadena, :incluye )';
         
         $query = Yii::$app->db->createCommand($sql);
     
@@ -249,6 +249,7 @@ class PuntosVenta extends Model
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
+            ':idCanal' => $idCanal,
             ':incluye' => $Incluye,
             ':canal' => 0,
         ]);

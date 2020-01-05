@@ -7,6 +7,7 @@ use common\models\Clientes;
 use common\models\PuntosVenta;
 use common\models\GestorVentas;
 use common\models\GestorClientes;
+use common\models\GestorCanales;
 use common\models\GestorTiposComprobantesAfip;
 use common\models\GestorTiposTributos;
 use common\models\forms\BuscarForm;
@@ -43,13 +44,15 @@ class VentasController extends BaseController
             $clientes = (new GestorClientes())->Listar();
             $comprobantes = GestorTiposComprobantesAfip::Buscar();
             $tributos = GestorTiposTributos::Buscar();
+            $canales = GestorCanales::Buscar();
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',
                 'model' => $venta,
                 'clientes' => $clientes,
                 'comprobantes' => $comprobantes,
-                'tributos' => $tributos
+                'tributos' => $tributos,
+                'canales' => $canales
             ]);
         }
     }

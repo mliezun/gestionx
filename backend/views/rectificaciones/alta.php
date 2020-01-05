@@ -56,6 +56,15 @@ use yii\web\JsExpression;
                 ],
             ]) ?>
 
+            <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Canal de venta'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]) ?>
+
             <?= $form->field($model, 'Cantidad') ?>
 
             <?= $form->field($model, 'Observaciones') ?>

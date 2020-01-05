@@ -34,6 +34,16 @@ use yii\widgets\LinkPager;
                 ],
             ]) ?>
 
+            <?= $form->field($busqueda, 'Combo3')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Canal'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '243px'
+                ],
+            ]) ?>
+
             <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado', 'style' => 'margin-left: 10px']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
