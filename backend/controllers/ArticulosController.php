@@ -10,6 +10,7 @@ use common\models\GestorListasPrecio;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\NinjaArrayHelper;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -29,21 +30,18 @@ class ArticulosController extends BaseController
     {
         PermisosHelper::verificarPermiso('BuscarArticulos');
 
-        $paginado = new Pagination();
+        $gestor = new GestorArticulos();
+
+        $paginado = new Pagination(['totalCount' => $gestor->DameCantidad()]);
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
         $busqueda = new BuscarForm();
 
-        $gestor = new GestorArticulos();
-
         if ($busqueda->load(Yii::$app->request->get()) && $busqueda->validate()) {
-            $articulos = $gestor->Buscar($busqueda->Cadena, $busqueda->Combo, $busqueda->Combo2, $busqueda->Check);
+            $articulos = $gestor->Buscar($paginado->offset, $paginado->limit, $busqueda->Cadena, $busqueda->Combo, $busqueda->Combo2, $busqueda->Check);
         } else {
-            $articulos = $gestor->Buscar();
+            $articulos = $gestor->Buscar($paginado->offset, $paginado->limit);
         }
-
-        $paginado->totalCount = count($articulos);
-        $articulos = array_slice($articulos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
 
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
@@ -57,6 +55,30 @@ class ArticulosController extends BaseController
             'listas' => $listas,
             'paginado' => $paginado
         ]);
+    }
+
+    public function actionAutocompletar($q = null, $id = null)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $out = ['results' => ['id' => '', 'text' => '']];
+
+        if (!is_null($q)) {
+            $gestor = new GestorArticulos();
+            $articulos = $gestor->BuscarAutocompletado($q);
+            $articulos = NinjaArrayHelper::renameKeys($articulos, [
+                'IdArticulo' => 'id',
+                'Articulo' => 'text'
+            ]);
+            $out['results'] = $articulos;
+        } elseif ($id > 0) {
+            $articulo = new Articulos();
+            $articulo->IdArticulo = $id;
+            $articulo->Dame();
+            $out['results'] = ['id' => $id, 'text' => $articulo->Articulo];
+        }
+
+        return $out;
     }
 
     public function actionAlta()
