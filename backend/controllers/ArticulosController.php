@@ -65,7 +65,7 @@ class ArticulosController extends BaseController
 
         if (!is_null($q)) {
             $gestor = new GestorArticulos();
-            $articulos = $gestor->Buscar($q);
+            $articulos = $gestor->BuscarAutocompletado($q);
             $articulos = NinjaArrayHelper::renameKeys($articulos, [
                 'IdArticulo' => 'id',
                 'Articulo' => 'text'

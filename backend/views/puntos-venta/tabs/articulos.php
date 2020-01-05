@@ -134,10 +134,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
-                                <th>Canal</th>
                                 <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
                                     <th>Precio de compra</th>
                                 <?php endif; ?>
+                                <th>Canal</th>
                                 <th>Cantidad</th>
                             </tr>
                         </thead>
@@ -148,10 +148,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <td><?= Html::encode($model['Canal']) ?></td>
                                     <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
                                         <td><?= Html::encode($model['PrecioCosto']) ?></td>
                                     <?php endif; ?>
+                                    <td><?= Html::encode($model['Canal']) ?></td>
                                     <td><?= Html::encode($model['Cantidad']) ?></td>
                                 </tr>
                             <?php endforeach; ?>

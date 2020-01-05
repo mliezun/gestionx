@@ -91,7 +91,8 @@ class TabsPuntosVenta extends BaseController
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
             $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
-            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor, 'S');
+            $canal = $busqueda->Combo3 ? $busqueda->Combo3 : 0;
+            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor, $canal, 'S');
         } else {
             $remitos = $gestor->Buscar(0);
         }
@@ -102,6 +103,8 @@ class TabsPuntosVenta extends BaseController
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
 
+        $canales = GestorCanales::Buscar();
+
         $puntoventa = new PuntosVenta();
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
@@ -111,6 +114,7 @@ class TabsPuntosVenta extends BaseController
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
             'puntoventa' => $puntoventa,
+            'canales' => $canales,
             'paginado' => $paginado
         ]);
     }
@@ -180,6 +184,8 @@ class TabsPuntosVenta extends BaseController
 
         $gclientes = new GestorClientes();
         $clientes = $gclientes->Listar();
+
+        $canales = GestorCanales::Buscar();
         
         return $this->renderAjax('ventas', [
             'models' => $ventas,
@@ -187,6 +193,7 @@ class TabsPuntosVenta extends BaseController
             'puntoventa' => $puntoventa,
             'clientes' => $clientes,
             'anulable' => $anulable,
+            'canales' => $canales,
             'paginado' => $paginado
         ]);
     }
