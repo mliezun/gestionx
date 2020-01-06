@@ -15,6 +15,7 @@ use common\models\GestorClientes;
 use common\models\GestorCanales;
 use common\models\Ventas;
 use common\models\GestorVentas;
+use common\models\GestorCanales;
 use Yii;
 
 class TabsPuntosVenta extends BaseController
@@ -209,6 +210,8 @@ class TabsPuntosVenta extends BaseController
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
 
+        $canales = GestorCanales::Buscar();
+
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $pSinStock = $busqueda->Check ? $busqueda->Check : 'N';
             $nopendientes = $busqueda->Check2 ? $busqueda->Check2 : 'N';
@@ -217,7 +220,7 @@ class TabsPuntosVenta extends BaseController
             $existencias = $puntoventa->ListarExistencias($cadena, $pSinStock, $canal);
             $rectificaciones = $puntoventa->ListarRectificaciones($cadena, $nopendientes, $canal);
         } else {
-            $existencias = $puntoventa->ListarExistencias();
+            $existencias = $puntoventa->ListarExistencias(0);
             $rectificaciones = $puntoventa->ListarRectificaciones();
         }
         

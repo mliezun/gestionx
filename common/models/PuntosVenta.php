@@ -251,6 +251,7 @@ class PuntosVenta extends Model
             ':idPuntoVenta' => $this->IdPuntoVenta,
             ':idCanal' => $idCanal,
             ':incluye' => $Incluye,
+            ':canal' => 0,
         ]);
         
         return $query->queryAll();
