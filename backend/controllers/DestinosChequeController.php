@@ -3,16 +3,17 @@
 namespace backend\controllers;
 
 use common\models\Usuarios;
-use common\models\ListasPrecio;
-use common\models\GestorListasPrecio;
+use common\models\DestinosCheque;
+use common\models\GestorDestinosCheque;
 use common\models\forms\BuscarForm;
+use common\models\forms\AuditoriaForm;
 use common\components\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
-class ListasPrecioController extends BaseController
+class DestinosChequeController extends BaseController
 {
     public function actionIndex()
     {
@@ -22,18 +23,19 @@ class ListasPrecioController extends BaseController
         $busqueda = new BuscarForm();
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
-            $estado = $busqueda->Check ? $busqueda->Check : 'N';
-            $listas = GestorListasPrecio::Buscar('S',$busqueda->Cadena, $estado);
+            $estado = $busqueda->Combo ? $busqueda->Combo : 'A';
+            $destinos = GestorDestinosCheque::Buscar($busqueda->Cadena, $estado);
         } else {
-            $listas = GestorListasPrecio::Buscar('S');
+            $destinos = GestorDestinosCheque::Buscar();
         }
 
-        $paginado->totalCount = count($listas);
-        $listas = array_slice($listas, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+        $paginado->totalCount = count($destinos);
+        $destinos = array_slice($destinos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
 
         return $this->render('index', [
-            'models' => $listas,
-            'busqueda' => $busqueda
+            'models' => $destinos,
+            'busqueda' => $busqueda,
+            'paginado' => $paginado
         ]);
     }
 
@@ -41,13 +43,12 @@ class ListasPrecioController extends BaseController
     {
         PermisosHelper::verificarPermiso('AltaListaPrecio');
 
-        $lista = new ListasPrecio();
+        $destino = new DestinosCheque();
 
-        $lista->setScenario(ListasPrecio::_ALTA);
+        $destino->setScenario(DestinosCheque::SCENARIO_ALTA);
 
-        if($lista->load(Yii::$app->request->post()) && $lista->validate()){
-            $gestor = new GestorListasPrecio();
-            $resultado = $gestor->Alta($lista);
+        if($destino->load(Yii::$app->request->post()) && $destino->validate()){
+            $resultado = GestorDestinosCheque::Alta($destino);
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
@@ -57,8 +58,8 @@ class ListasPrecioController extends BaseController
             }
         }else {
             return $this->renderAjax('alta', [
-                'titulo' => 'Alta Lista de Precios',
-                'model' => $lista
+                'titulo' => 'Alta Destino de Cheque',
+                'model' => $destino
             ]);
         }
     }
@@ -67,13 +68,12 @@ class ListasPrecioController extends BaseController
     {
         PermisosHelper::verificarPermiso('ModificarListaPrecio');
         
-        $lista = new ListasPrecio();
+        $destino = new DestinosCheque();
 
-        $lista->setScenario(ListasPrecio::_MODIFICAR);
+        $destino->setScenario(DestinosCheque::SCENARIO_MODIFICAR);
 
-        if ($lista->load(Yii::$app->request->post())) {
-            $gestor = new GestorListasPrecio();
-            $resultado = $gestor->Modificar($lista);
+        if ($destino->load(Yii::$app->request->post()) && $destino->validate() ) {
+            $resultado = GestorDestinosCheque::Modificar($destino);
 
             Yii::$app->response->format = 'json';
             if ($resultado == 'OK') {
@@ -82,13 +82,13 @@ class ListasPrecioController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            $lista->IdListaPrecio = $id;
+            $destino->IdDestinoCheque = $id;
             
-            $lista->Dame();
+            $destino->Dame();
 
             return $this->renderAjax('alta', [
-                        'titulo' => 'Editar Lista de Precios',
-                        'model' => $lista
+                'titulo' => 'Editar Destino de Cheque',
+                'model' => $destino
             ]);
         }
     }
@@ -99,12 +99,10 @@ class ListasPrecioController extends BaseController
 
         Yii::$app->response->format = 'json';
         
-        $lista = new ListasPrecio();
-        $lista->IdListaPrecio = $id;
+        $destino = new DestinosCheque();
+        $destino->IdDestinoCheque = $id;
 
-        $gestor = new GestorListasPrecio();
-
-        $resultado = $gestor->Borrar($lista);
+        $resultado = GestorDestinosCheque::Borrar($destino);
 
         if ($resultado == 'OK') {
             return ['error' => null];
@@ -119,10 +117,10 @@ class ListasPrecioController extends BaseController
 
         Yii::$app->response->format = 'json';
         
-        $lista = new ListasPrecio();
-        $lista->IdListaPrecio = $id;
+        $destino = new DestinosCheque();
+        $destino->IdDestinoCheque = $id;
 
-        $resultado = $lista->Activa();
+        $resultado = $destino->Activa();
 
         if ($resultado == 'OK') {
             return ['error' => null];
@@ -131,20 +129,22 @@ class ListasPrecioController extends BaseController
         }
     }
 
-    public function actionHistorial($id)
+    public function actionDarBaja($id)
     {
-        PermisosHelper::verificarPermiso('ListarHistorialPorcentajesListaPrecio');
+        PermisosHelper::verificarPermiso('ActivarListaPrecio');
 
-        $lista = new ListasPrecio();
-        $lista->IdListaPrecio = $id;
-        $lista->Dame();
+        Yii::$app->response->format = 'json';
+        
+        $destino = new DestinosCheque();
+        $destino->IdDestinoCheque = $id;
 
-        $historicos = $lista->ListarHistorialPorcentajes();
+        $resultado = $destino->DarBaja();
 
-        return $this->renderAjax('historial', [
-            'models' => $historicos,
-            'lista' => $lista
-        ]);
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
     }
 }
 

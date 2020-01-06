@@ -12,8 +12,10 @@ use common\models\GestorProveedores;
 use common\models\GestorRemitos;
 use common\models\GestorRoles;
 use common\models\GestorClientes;
+use common\models\GestorCanales;
 use common\models\Ventas;
 use common\models\GestorVentas;
+use common\models\GestorCanales;
 use Yii;
 
 class TabsPuntosVenta extends BaseController
@@ -90,7 +92,8 @@ class TabsPuntosVenta extends BaseController
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
             $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
-            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor, 'S');
+            $canal = $busqueda->Combo3 ? $busqueda->Combo3 : 0;
+            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor, $canal, 'S');
         } else {
             $remitos = $gestor->Buscar(0);
         }
@@ -101,6 +104,8 @@ class TabsPuntosVenta extends BaseController
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
 
+        $canales = GestorCanales::Buscar();
+
         $puntoventa = new PuntosVenta();
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
@@ -110,6 +115,7 @@ class TabsPuntosVenta extends BaseController
             'busqueda' => $busqueda,
             'proveedores' => $proveedores,
             'puntoventa' => $puntoventa,
+            'canales' => $canales,
             'paginado' => $paginado
         ]);
     }
@@ -179,6 +185,8 @@ class TabsPuntosVenta extends BaseController
 
         $gclientes = new GestorClientes();
         $clientes = $gclientes->Listar();
+
+        $canales = GestorCanales::Buscar();
         
         return $this->renderAjax('ventas', [
             'models' => $ventas,
@@ -186,6 +194,7 @@ class TabsPuntosVenta extends BaseController
             'puntoventa' => $puntoventa,
             'clientes' => $clientes,
             'anulable' => $anulable,
+            'canales' => $canales,
             'paginado' => $paginado
         ]);
     }
@@ -201,26 +210,31 @@ class TabsPuntosVenta extends BaseController
         $puntoventa->IdPuntoVenta = $this->IdPuntoVenta;
         $puntoventa->Dame();
 
+        $canales = GestorCanales::Buscar();
+
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $pSinStock = $busqueda->Check ? $busqueda->Check : 'N';
             $nopendientes = $busqueda->Check2 ? $busqueda->Check2 : 'N';
             $cadena = $busqueda->Cadena ? $busqueda->Cadena : '';
-            $existencias = $puntoventa->ListarExistencias($cadena,$pSinStock);
-            $rectificaciones = $puntoventa->ListarRectificaciones($cadena,$nopendientes);
+            $canal = $busqueda->Combo ? $busqueda->Combo : 0;
+            $existencias = $puntoventa->ListarExistencias($cadena, $pSinStock, $canal);
+            $rectificaciones = $puntoventa->ListarRectificaciones($cadena, $nopendientes, $canal);
         } else {
-            $existencias = $puntoventa->ListarExistencias();
+            $existencias = $puntoventa->ListarExistencias(0);
             $rectificaciones = $puntoventa->ListarRectificaciones();
         }
         
         $paginado->totalCount = count($existencias);
         $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
+        $canales = GestorCanales::Buscar();
 
         return $this->renderAjax('articulos', [
             'rectificaciones' => $rectificaciones,
             'models' => $existencias,
             'puntoventa' => $puntoventa,
             'busqueda' => $busqueda,
-            'paginado' => $paginado
+            'paginado' => $paginado,
+            'canales' => $canales
         ]);
     }
 }

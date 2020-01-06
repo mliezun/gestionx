@@ -14,6 +14,7 @@ class Ventas extends Model
     public $IdUsuario;
     public $IdTipoComprobanteAfip;
     public $IdTipoTributo;
+    public $IdCanal;
     public $Monto;
     public $FechaAlta;
     public $Tipo;
@@ -21,6 +22,7 @@ class Ventas extends Model
     public $Observaciones;
 
     // Derivados
+    public $Canal;
     public $MontoPagado;
     public $TipoComprobanteAfip;
     public $TipoTributo;
@@ -58,14 +60,15 @@ class Ventas extends Model
         return [
             'IdCliente' => 'Cliente',
             'IdTipoComprobanteAfip' => 'Tipo de Comprobante',
-            'IdTipoTributo' => 'Impuestos adicionales'
+            'IdTipoTributo' => 'Impuestos adicionales',
+            'IdCanal' => 'Canal de venta',
         ];
     }
  
     public function rules()
     {
         return [
-            [['IdCliente','Tipo'],
+            [['IdCliente','Tipo','IdCanal'],
                 'required', 'on' => self::_ALTA],
             [['IdVenta','IdCliente','Tipo'],
                 'required', 'on' => self::_MODIFICAR],

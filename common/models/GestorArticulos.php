@@ -101,6 +101,26 @@ class GestorArticulos
     }
 
     /**
+     * Permite buscar articulos dentro de una empresa, indicando una
+     * cadena de búsqueda.
+     * xsp_buscar_articulos_autocompletado
+     * 
+     */
+    public function BuscarAutocompletado($Cadena)
+    {
+        $sql = "call xsp_buscar_articulos_autocompletado( :idempresa, :cadena)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':cadena' => $Cadena
+        ]);
+
+        return $query->queryAll();
+    }
+
+    /**
      * Permite cambiar el nombre, el código, la descripción, el precio y el IVA de un articulo,
      * verificando que no exista uno igual dentro del mismo proveedor.
      * Devuelve OK o el mensaje de error en Mensaje.

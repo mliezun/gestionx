@@ -53,6 +53,16 @@ $proveedor = new Proveedores();
                 ],
             ]) ?>
 
+            <?= $form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Canal'],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'width' => '124px'
+                ],
+            ]) ?>
+
             <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo', 'style' => 'margin-left: 10px']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
@@ -88,6 +98,7 @@ $proveedor = new Proveedores();
                                 <th>Monto</th>
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
+                                <th>Canal</th>
                                 <th>Estado</th>
                                 <th>Tributo</th>
                                 <th>Comprobante</th>
@@ -103,6 +114,7 @@ $proveedor = new Proveedores();
                                     <td><?= Html::encode($model['Monto']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
+                                    <td><?= Html::encode($model['Canal']) ?></td>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
                                     <td><?= Html::encode($model['TipoTributo']) ?></td>
                                     <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>
