@@ -153,6 +153,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 Total de la Venta: <?= Html::encode($model['Monto']) ?>
             </div>
             <div class="lineas--total">
+                Restante: <?= Html::encode($model['Monto'] - $model['MontoPagado']) ?>
+            </div>
+            <div class="lineas--total">
                 Total de los Pagos: <?= Html::encode($model['MontoPagado']) ?>
             </div>
         </div>

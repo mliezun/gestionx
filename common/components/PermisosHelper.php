@@ -88,6 +88,18 @@ class PermisosHelper
     }
 
     /**
+     * Tira una excepción si el usuario no tiene algún permiso que contenga la cadena indicada.
+     *
+     * @param string $cadena
+     */
+    public static function verificaAlgunPermisoContiene(string $cadena)
+    {
+        if (!self::algunPermisoContiene($cadena)) {
+            self::tirarExcepcion();
+        }
+    }
+
+    /**
      * Retorna si el usuario tiene alguno de los permisos.
      *
      * @param array $permisos Lista de permisos

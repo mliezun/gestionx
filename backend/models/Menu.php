@@ -100,7 +100,7 @@ class Menu
     public static function renderiza($el)
     {
         if (array_key_exists('permiso', $el)) {
-            return PermisosHelper::tienePermiso($el['permiso']);
+            return PermisosHelper::algunPermisoContiene($el['permiso']);
         }
         if (array_key_exists('submenu', $el)) {
             return PermisosHelper::tieneAlgunPermiso(ArrayHelper::map($el['submenu'], 'permiso', 'permiso'));
