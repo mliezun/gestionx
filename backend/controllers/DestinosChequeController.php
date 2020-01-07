@@ -70,7 +70,7 @@ class DestinosChequeController extends BaseController
         
         $destino = new DestinosCheque();
 
-        $destino->setScenario(DestinosCheque::SCENARIO_MODIFICAR);
+        $destino->setScenario(DestinosCheque::SCENARIO_EDITAR);
 
         if ($destino->load(Yii::$app->request->post()) && $destino->validate() ) {
             $resultado = GestorDestinosCheque::Modificar($destino);
@@ -120,7 +120,7 @@ class DestinosChequeController extends BaseController
         $destino = new DestinosCheque();
         $destino->IdDestinoCheque = $id;
 
-        $resultado = $destino->Activa();
+        $resultado = $destino->Activar();
 
         if ($resultado == 'OK') {
             return ['error' => null];

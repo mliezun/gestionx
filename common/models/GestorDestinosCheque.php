@@ -45,7 +45,7 @@ class GestorDestinosCheque
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':iddestino' => $destino->IdDstinoCheque,
+            ':iddestino' => $destino->IdDestinoCheque,
             ':destino' => $destino->Destino,
         ]);
 
@@ -88,7 +88,7 @@ class GestorDestinosCheque
             ':IP' => Yii::$app->request->userIP,
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
-            ':iddestino' => $destino->IdDestinoCheque,
+            ':idestno' => $destino->IdDestinoCheque,
         ]);
 
         return $query->queryScalar();
