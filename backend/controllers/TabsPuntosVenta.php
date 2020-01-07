@@ -219,7 +219,7 @@ class TabsPuntosVenta extends BaseController
             $existencias = $puntoventa->ListarExistencias($cadena, $pSinStock, $canal);
             $rectificaciones = $puntoventa->ListarRectificaciones($cadena, $nopendientes, $canal);
         } else {
-            $existencias = $puntoventa->ListarExistencias(0);
+            $existencias = $puntoventa->ListarExistencias();
             $rectificaciones = $puntoventa->ListarRectificaciones();
         }
         
