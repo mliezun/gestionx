@@ -15,7 +15,6 @@ use common\models\GestorClientes;
 use common\models\GestorCanales;
 use common\models\Ventas;
 use common\models\GestorVentas;
-use common\models\GestorCanales;
 use Yii;
 
 class TabsPuntosVenta extends BaseController
