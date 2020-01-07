@@ -66,16 +66,16 @@ class GestorCheques
         return $query->queryScalar();
     }
 
-    /**
-     * Permite buscar los cheques dada una cadena de búsqueda, el tipo de cheque (T para listar todas)
-     * y la opción si incluye o no los dados de baja [S|N] respectivamente.
+    /*
+     * Permite buscar los cheques dada una cadena de búsqueda, el tipo de cheque (T: para listar todas, C: clientes, P: propios),
+     * el estado y una fecha de inicio y fin.
      * Para listar todos, cadena vacía.
      * xsp_buscar_cheques
      * 
      */
-    public function Buscar($Cadena = '', $FechaInicio = '', $FechaFin = '', $Estado = 'D')
+    public function Buscar($Cadena = '', $FechaInicio = '', $FechaFin = '', $Estado = 'D', $Tipo = 'T', $IdCliente = null)
     {
-        $sql = "call xsp_buscar_cheques( :idempresa, :cadena, :fi, :ff, :estado )";
+        $sql = "call xsp_buscar_cheques( :idempresa, :cadena, :fi, :ff, :estado, :tipo, :IdCliente )";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -85,6 +85,8 @@ class GestorCheques
             ':fi' => FechaHelper::formatearDateMysql($FechaInicio),
             ':ff' => FechaHelper::formatearDateMysql($FechaFin),
             ':estado' => $Estado,
+            ':tipo' => $Tipo,
+            ':IdCliente' => $IdCliente,
         ]);
 
         return $query->queryAll();

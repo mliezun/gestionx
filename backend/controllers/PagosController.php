@@ -72,6 +72,7 @@ class PagosController extends BaseController
 
         $venta = new Ventas();
         $venta->IdVenta = $id;
+        $venta->Dame();
 
         $pago = new Pagos();
         $remitos=0;
@@ -98,7 +99,7 @@ class PagosController extends BaseController
                 PermisosHelper::verificarPermiso('PagarVentaCheque');
                 $pago->setScenario(Pagos::_ALTA_CHEQUE);
                 $pago->MedioPago = 'Cheque';
-                $cheques = (new GestorCheques())->Buscar();
+                $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $venta->IdCliente);
                 break;
         }
         $pago->DameMedioPago();

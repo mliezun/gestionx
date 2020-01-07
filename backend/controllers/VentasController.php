@@ -14,6 +14,7 @@ use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
 use common\components\ComprobanteHelper;
+use common\components\EmailHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -42,9 +43,9 @@ class VentasController extends BaseController
             }
         } else {
             $clientes = (new GestorClientes())->Listar();
-            $comprobantes = GestorTiposComprobantesAfip::Buscar();
-            $tributos = GestorTiposTributos::Buscar();
-            $canales = GestorCanales::Buscar();
+            $comprobantes = (new GestorTiposComprobantesAfip)->Buscar();
+            $tributos = (new GestorTiposTributos)->Buscar();
+            $canales = (new GestorCanales)->Buscar();
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',
@@ -79,15 +80,17 @@ class VentasController extends BaseController
             $venta->IdVenta = $id;
             $venta->Dame();
             $clientes = (new GestorClientes())->Listar();
-            $comprobantes = GestorTiposComprobantesAfip::Buscar();
-            $tributos = GestorTiposTributos::Buscar();
+            $comprobantes = (new GestorTiposComprobantesAfip)->Buscar();
+            $tributos = (new GestorTiposTributos)->Buscar();
+            $canales = (new GestorCanales)->Buscar();
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Editar Venta',
                 'model' => $venta,
                 'clientes' => $clientes,
                 'comprobantes' => $comprobantes,
-                'tributos' => $tributos
+                'tributos' => $tributos,
+                'canales' => $canales
             ]);
         }
     }
@@ -258,5 +261,35 @@ class VentasController extends BaseController
             'inline' => true,
             'mimeType' => 'application/pdf'
         ]);
+    }
+
+    public function actionEnviarComprobante($id)
+    {
+        Yii::$app->response->format = 'json';
+
+        $venta = new Ventas;
+        $venta->IdVenta = $id;
+        $venta->Dame();
+        $comprobante = $venta->GenerarComprobante();
+
+        $params = Yii::$app->session->get('Parametros');
+
+        $res = ComprobanteHelper::ImprimirComprobante($params, $comprobante, $venta->Tipo === 'V');
+
+        $datosCliente = json_decode($comprobante['Datos'], true);
+
+        if (array_key_exists('Email', $datosCliente) && isset($datosCliente['Email']) && $datosCliente['Email'] != '') {
+            $from = "{$params['EMPRESA']} <{$params['CORREONOTIFICACIONES']}>";
+            $tempFile = tempnam(sys_get_temp_dir(), 'Factura') . '.pdf';
+            $fileHandle = fopen($tempFile, 'w');
+            fwrite($fileHandle, $res);
+            EmailHelper::enviarEmail($from, $datosCliente['Email'], 'Factura de tu compra en ' . $params['EMPRESA'], 'factura', [], $tempFile);
+            fclose($fileHandle);
+            unlink($tempFile);
+        } else {
+            return ['error' => 'El cliente no tiene un email cargado'];
+        }
+
+        return ['error' => null];
     }
 }

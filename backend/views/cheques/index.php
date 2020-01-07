@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         <div class="btn-group" role="group" aria-label="...">
                             
-                                            <?php if (PermisosHelper::tienePermiso('ModificarCheque')) : ?>
+                                            <?php if (PermisosHelper::algunPermisoContiene('ModificarCheque')) : ?>
                                                 <?php if ($model['Descripcion'] == 'Cheque propio') : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['cheques/editar', 'id' => $model['IdCheque'], 'Tipo' => 'Propio']) ?>"
@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarCheque')) : ?>
+                                            <?php if (PermisosHelper::algunPermisoContiene('BorrarCheque')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['cheques/borrar', 'id' => $model['IdCheque']]) ?>"
                                                         data-hint="Borrar">

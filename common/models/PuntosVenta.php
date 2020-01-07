@@ -247,11 +247,10 @@ class PuntosVenta extends Model
     
         $query->bindValues([
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
-            ':cadena' => $cadena,
             ':idPuntoVenta' => $this->IdPuntoVenta,
             ':idCanal' => $idCanal,
-            ':incluye' => $Incluye,
-            ':canal' => 0,
+            ':cadena' => $cadena,
+            ':incluye' => $Incluye
         ]);
         
         return $query->queryAll();

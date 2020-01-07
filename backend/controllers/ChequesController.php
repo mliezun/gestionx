@@ -48,9 +48,9 @@ class ChequesController extends BaseController
 
         if ($busqueda->load(Yii::$app->request->get()) && $busqueda->validate()) {
             $estado = $busqueda->Combo ? $busqueda->Combo : 'D';
-            $cheques = $gestor->Buscar($Tipo, $busqueda->Cadena, $busqueda->FechaInicio, $busqueda->FechaFin, $estado);
+            $cheques = $gestor->Buscar($busqueda->Cadena, $busqueda->FechaInicio, $busqueda->FechaFin, $estado, $Tipo);
         } else {
-            $cheques = $gestor->Buscar($Tipo);
+            $cheques = $gestor->Buscar('', '', '', 'D', $Tipo);
         }
 
         $paginado->totalCount = count($cheques);
@@ -124,7 +124,7 @@ class ChequesController extends BaseController
         // });
 
 
-        PermisosHelper::verificarPermiso('ModificarCheque');
+        PermisosHelper::verificaAlgunPermisoContiene('ModificarCheque');
 
         $cheque = new Cheques();
         if ($Tipo == 'Propio'){
@@ -191,7 +191,7 @@ class ChequesController extends BaseController
 
     public function actionBorrar($id)
     {
-        PermisosHelper::verificarPermiso('BorrarCheque');
+        PermisosHelper::verificaAlgunPermisoContiene('BorrarCheque');
 
         $cheque = new Cheques();
         $cheque->IdCheque = $id;

@@ -9,10 +9,12 @@ use Yii;
 
 class ComprobanteHelper
 {
-    public static function ImprimirComprobante($params, $datos, $esAfip = true, $esProd = false)
+    public static function ImprimirComprobante($params, $datos, $esAfip = true)
     {
         // Normalizo los datos de la venta para enviar a AFIP
         $datosAfip = self::datosAfip($datos);
+
+        $esProd = $params['AFIPMODOHOMO'] == 'N';
 
         // Envío los datos de la venta a AFIP
         if ($esAfip) {
