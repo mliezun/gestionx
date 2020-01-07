@@ -85,6 +85,7 @@ class GestorCheques
             ':fi' => FechaHelper::formatearDateMysql($FechaInicio),
             ':ff' => FechaHelper::formatearDateMysql($FechaFin),
             ':estado' => $Estado,
+            ':tipo' => $Tipo,
         ]);
 
         return $query->queryAll();
