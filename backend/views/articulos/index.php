@@ -80,6 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
                                     <th><?= Html::encode('Precio ' . $nombre) ?></th>
                                 <?php endforeach; ?>
+                                <th>Existencias</th>
                                 <th>IVA</th>
                                 <th>Fecha de alta</th>
                                 <th>Estado</th>
@@ -99,6 +100,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
                                         <td><?= Html::encode($valor) ?></td>
                                     <?php endforeach; ?>
+                                    <td>
+                                    <?php foreach(json_decode($model['Existencias'], true) as $existencias): ?>
+                                    <div>
+                                        <strong><?= Html::encode("{$existencias['PuntoVenta']}") ?>:</strong>
+                                            <?= Html::encode("{$existencias['Cantidad']}") ?>
+                                            </div>
+                                    <?php endforeach; ?>
+                                    </td>
                                     <td><?= Html::encode($model['TipoIVA']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
