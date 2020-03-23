@@ -224,7 +224,7 @@ class PuntosVenta extends Model
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idorigen' => $this->IdPuntoVenta,
-            ':iddestino' => $Rectificacion->IdPuntoVentaDestino,
+            ':iddestino' => intval($Rectificacion->IdPuntoVentaDestino),
             ':idarticulo' => $Rectificacion->IdArticulo,
             ':idcanal' => $Rectificacion->IdCanal,
             ':cantidad' => $Rectificacion->Cantidad,

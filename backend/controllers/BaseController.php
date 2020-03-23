@@ -20,6 +20,9 @@ class BaseController extends Controller
                 'ingresos',
                 'remitos',
                 'ventas',
+                'cheques',
+                'articulos',
+                'pagos',
                 'usuarios/logout',
                 'usuarios/cambiar-password',
                 'articulos/listar'

@@ -43,6 +43,10 @@ class ArticulosController extends BaseController
             $articulos = $gestor->Buscar($paginado->offset, $paginado->limit);
         }
 
+        if (count($articulos) < $paginado->limit) {
+            $paginado->totalCount = count($articulos);
+        }
+
         $gestorProv = new GestorProveedores();
         $proveedores = $gestorProv->Buscar();
 
@@ -68,7 +72,7 @@ class ArticulosController extends BaseController
             $articulos = $gestor->BuscarAutocompletado($q);
             $articulos = NinjaArrayHelper::renameKeys($articulos, [
                 'IdArticulo' => 'id',
-                'Articulo' => 'text'
+                'NombreArticulo' => 'text'
             ]);
             $out['results'] = $articulos;
         } elseif ($id > 0) {

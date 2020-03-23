@@ -107,7 +107,7 @@ class ComprobanteHelper
         }
 
         // Si es Factura 'A' o 'M' agrego IVA
-        if ($datos['IdTipoComprobanteAfip'] == 1 || $datos['IdTipoComprobanteAfip'] == 51) {
+        if ($datos['IdTipoComprobanteAfip'] == 1 || $datos['IdTipoComprobanteAfip'] == 51 || $datos['IdTipoComprobanteAfip'] == 6) {
             $datosAfip['Iva'] = array();
             foreach ($ivas as $id => $iva) {
                 $datosAfip['Iva'][] = $iva;

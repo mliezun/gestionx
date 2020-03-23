@@ -176,7 +176,7 @@ class Ventas extends Model
             ':idart' => $linea->IdArticulo,
             ':cant' => $linea->Cantidad,
             ':precio' => $linea->Precio,
-            ':consumestock' => ($this->Tipo == 'P') ? 'N' : 'S'
+            ':consumestock' => ($this->Tipo == 'C') ? 'N' : 'S'
         ]);
 
         return $query->queryScalar();
