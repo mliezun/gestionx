@@ -67,56 +67,9 @@ $config = [
              */
             [
                 'allow' => true,
-                'actions' => ['login', 'error'],
                 'roles' => ['?'],
             ],
-            /**
-             *  Debug
-             */
-            [
-                'allow' => true,
-                'controllers' => ['debug', 'default', 'debug/default'],
-            ],
-            /**
-             *  Usuarios logueados que deben cambiar contraseña
-             */
-            [
-                'allow' => true,
-                'actions' => ['cambiar-password', 'logout',],
-                'roles' => ['@'],
-            ],
-            /**
-             *  Usuarios logueados que no deben cambiar contraseña, están activos
-             *  y tienen Token bueno
-             */
-            [
-                'allow' => true,
-                'roles' => ['@'],
-                'matchCallback' => function () {
-                    $usuario = Yii::$app->user->identity;
-                    $token = Yii::$app->session->get('Token');
-                    Yii::info('match callback');
-                    return $usuario->DebeCambiarPass == 'N' && $usuario->Estado == 'A' && $usuario->Token == $token;
-                },
-            ],
         ],
-        // Función que se ejecuta cuando el request es denegado.
-        'denyCallback' => function ($rule, $action) {
-            Yii::info('deny callback');
-            if (!Yii::$app->user->isGuest) {
-                if (Yii::$app->user->identity->DebeCambiarPass == 'S') {
-                    //Redirect
-                    Yii::$app->user->returnUrl = Yii::$app->request->referrer;
-                    return $action->controller->redirect('/usuarios/cambiar-password');
-                } else {
-                    Yii::$app->user->logout();
-                    Yii::$app->session->setFlash('danger', 'Ocurrió un problema con su sesión.');
-                    Yii::$app->user->returnUrl = Yii::$app->request->referrer;
-                    return $action->controller->redirect(Yii::$app->user->loginUrl);
-                }
-            }
-            return $action->controller->redirect(Yii::$app->user->loginUrl);
-        },
     ],
     'params' => $params,
 ];

@@ -4,19 +4,17 @@ namespace frontend\assets;
 
 use yii\web\AssetBundle;
 
-/**
- * Main frontend application asset bundle.
- */
-class AppAsset extends AssetBundle
+class GestionxAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css'
     ];
     public $js = [
+        'scripts/Gestionx.js'
     ];
     public $depends = [
-        'yii\web\YiiAsset'
+        'common\assets\BowerAsset',
+        'macgyer\yii2materializecss\assets\MaterializeAsset'
     ];
 }

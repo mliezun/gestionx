@@ -292,3 +292,5 @@ p {
 		padding-left: 12px;
 	}
 }
+
+[v-cloak] {display: none}

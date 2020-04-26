@@ -30,7 +30,8 @@
         "afipsdk/afip.php": "^0.6.0",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "kartik-v/yii2-widget-select2": "@dev",
-        "kartik-v/yii2-money": "@dev"
+        "kartik-v/yii2-money": "@dev",
+        "macgyer/yii2-materializecss": "3.0.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbecd3a3bd09441820209c2d86eb3d1a",
+    "content-hash": "85a8fe5d0b41ef81f55d08e59e6e4bb5",
     "packages": [
         {
             "name": "afipsdk/afip.php",
@@ -58,7 +58,7 @@
             "version": "3.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/lipis/flag-icon-css.git",
+                "url": "git@github.com:lipis/flag-icon-css.git",
                 "reference": "b35a579e58c7fdc7c7358d1c4daade7887dc91eb"
             },
             "dist": {
@@ -73,7 +73,7 @@
             "version": "5.9.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                "url": "git@github.com:FortAwesome/Font-Awesome.git",
                 "reference": "ba907eaec40fab01d410c3023a5572b2cb46cea6"
             },
             "dist": {
@@ -142,6 +142,21 @@
             ]
         },
         {
+            "name": "bower-asset/materialize",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Dogfalo/materialize.git",
+                "reference": "80e8ed370487aaf1e2185b028f7deda40da94eb9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dogfalo/materialize/zipball/80e8ed370487aaf1e2185b028f7deda40da94eb9",
+                "reference": "80e8ed370487aaf1e2185b028f7deda40da94eb9"
+            },
+            "type": "bower-asset"
+        },
+        {
             "name": "bower-asset/punycode",
             "version": "v1.3.2",
             "source": {
@@ -161,7 +176,7 @@
             "version": "v1.3.8",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rochal/jQuery-slimScroll.git",
+                "url": "git@github.com:rochal/jQuery-slimScroll.git",
                 "reference": "cf39d364e777ef95574c30c42d3b85cb2bf325d3"
             },
             "dist": {
@@ -176,7 +191,7 @@
             "version": "v2.6.10",
             "source": {
                 "type": "git",
-                "url": "git@github.com:vuejs/vue.git",
+                "url": "https://github.com/vuejs/vue.git",
                 "reference": "e90cc60c4718a69e2c919275a999b7370141f3bf"
             },
             "dist": {
@@ -191,7 +206,7 @@
             "version": "2.0.7.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:yiisoft/jquery-pjax.git",
+                "url": "https://github.com/yiisoft/jquery-pjax.git",
                 "reference": "aef7b953107264f00234902a3880eb50dafc48be"
             },
             "dist": {
@@ -945,6 +960,52 @@
                 "jwt"
             ],
             "time": "2018-11-11T12:22:26+00:00"
+        },
+        {
+            "name": "macgyer/yii2-materializecss",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MacGyer/yii2-materializecss.git",
+                "reference": "3fb85450e72ad0458c60e7f46a9a8e42989e90af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MacGyer/yii2-materializecss/zipball/3fb85450e72ad0458c60e7f46a9a8e42989e90af",
+                "reference": "3fb85450e72ad0458c60e7f46a9a8e42989e90af",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/materialize": "1.0.0",
+                "php": ">=5.6.0",
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "macgyer\\yii2materializecss\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Erdmann",
+                    "homepage": "https://www.matero.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Materialize CSS implementation for Yii2",
+            "homepage": "http://macgyer.github.io/yii2-materializecss",
+            "keywords": [
+                "material design",
+                "materialize",
+                "widgets",
+                "yii2"
+            ],
+            "time": "2018-11-16T17:13:57+00:00"
         },
         {
             "name": "mailgun/mailgun-php",
@@ -5158,5 +5219,6 @@
     "platform": {
         "php": ">=5.4.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

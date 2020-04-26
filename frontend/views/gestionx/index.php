@@ -1,13 +1,17 @@
 <?php
+use frontend\assets\GestionxAsset;
 
-$this->title = "Numio - Software para Argentina";
+$this->title = "GestionX - Administrá tu negocio";
+
+GestionxAsset::register($this);
+$this->registerJs("Gestionx.init();");
 ?>
 
 <header class="container">
 	<div class="responsive intro-container">
 		<div class="app-icon">
-			<img alt="Logo" src="img/app-icon.png">
-			<p>Numio</p>
+			<img alt="Logo" src="img/logo-gestionx.svg">
+			<p>GestionX</p>
 		</div>
 		<div class="intro">
 			<h2><strong>GestionX</strong></h2>
@@ -15,7 +19,6 @@ $this->title = "Numio - Software para Argentina";
 			facturación electrónica de AFIP, que te permite
 			administrar tu negocio.
 		</div>
-		<a class="primary-btn" href="/gestionx">Conocer más</a>
 	</div>
 	<div class="responsive iphone">
 		<div class="iphone-screenshot">
@@ -25,6 +28,13 @@ $this->title = "Numio - Software para Argentina";
 	</div>
 </header>
 <section class="container">
+<h4>Suscribirse al servicio</h4>
+<div id="gestionx" v-cloak>
+    <div v-for="plan in planes">
+        <div>{{ plan.Plan }}</div>
+        <div>{{ plan.Precio }} USD</div>
+    </div>
+</div>
 </section>
 <!--footer class="container footer">
 	<div class="sep"></div>
