@@ -43,3 +43,5 @@ afip/logo.png
 afip/__pycache__
 afip/*.pdf
 
+
+\.vagrant
