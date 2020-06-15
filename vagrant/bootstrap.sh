@@ -3,7 +3,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
-apt-get install -y apache2 gnupg2 python3-pip npm php php-redis php-curl php-mbstring php-xml composer redis-server
+apt-get install -y apache2 gnupg2 python3-pip npm php php-xdebug php-intl php-redis php-curl php-mbstring php-xml composer redis-server
 npm -g install pm2
 wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb
 dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb
