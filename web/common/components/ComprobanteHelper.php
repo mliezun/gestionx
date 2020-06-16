@@ -172,6 +172,14 @@ class ComprobanteHelper
                     'BaseImp' => 'base_imp',
                     'Importe' => 'importe'
                 ]
+            ],
+            'CbtesAsoc' => [
+                'comprobantes_asociados',
+                [
+                    'Tipo' => 'tipo',
+                    'PtoVta' => 'pto_vta',
+                    'Nro' => 'nro'
+                ]
             ]
         ]);
     }
