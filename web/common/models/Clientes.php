@@ -25,6 +25,9 @@ class Clientes extends Model
 
     // DatosJSON
     public $CUIT;
+    public $CUIL;
+    public $Pasaporte;
+    public $DNI;
     public $Telefono;
     public $Provincia;
     public $Localidad;
@@ -55,9 +58,9 @@ class Clientes extends Model
             ['Documento', 'trim'],
             ['Email', 'email'],
             ['Provincia', 'in', 'range' => Provincias::Nombres()],
-            [['Nombres', 'Apellidos', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['Nombres', 'Apellidos', 'Tipo', 'IdListaPrecio', 'IdTipoDocAfip', 'Documento'],
                 'required', 'on' => self::_ALTA_FISICA],
-            [['RazonSocial','Tipo', 'IdListaPrecio', 'IdTipoDocAfip'],
+            [['RazonSocial','Tipo', 'IdListaPrecio', 'IdTipoDocAfip', 'Documento'],
                 'required', 'on' => self::_ALTA_JURIDICA],
             [['IdCliente','IdEmpresa','Nombres', 'Apellidos', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_FISICA],

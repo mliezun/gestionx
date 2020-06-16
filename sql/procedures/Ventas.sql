@@ -743,7 +743,10 @@ SALIR: BEGIN
         -- SHOW ERRORS;
 		SELECT 'Error en la transacción. Contáctese con el administrador.' Mensaje;
         ROLLBACK;
+        SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 	END;
+
+    SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
     DROP TEMPORARY TABLE IF EXISTS tmp_comprobante;
 
@@ -752,8 +755,8 @@ SALIR: BEGIN
 	            v.IdTipoTributo, v.IdCanal,	v.Monto, v.FechaAlta, v.Tipo,
 	            v.Estado, v.Observaciones, c.IdListaPrecio, c.IdTipoDocAfip,
 	            c.Nombres, c.Apellidos, c.RazonSocial, c.Documento, c.Datos,
-	            c.FechaAlta FechaAltaCliente, c.Tipo TipoCliente, c.Estado EstadoCliente,
-                c.Observaciones ObservacionesCliente,
+	            c.FechaAlta FechaAltaCliente, c.Tipo TipoCliente,
+                c.Observaciones ObservacionesCliente, c.Estado EstadoCliente,
                 JSON_ARRAYAGG(JSON_OBJECT(
                         'Articulo', a.Articulo,
                         'Codigo', a.Codigo,
@@ -785,7 +788,12 @@ SALIR: BEGIN
                     LIMIT   1),
                     -- ELSE
                     NULL
-                ) ComprobanteAfipOriginal
+                ) ComprobanteAfipOriginal,
+                (
+                    SELECT  JSON_OBJECTAGG(IdTipoDocAfip, TipoDocAfip)
+                    FROM    TiposDocAfip
+                    WHERE   FechaHasta IS NULL
+                ) TiposDocAfip
     FROM        Ventas v
     INNER JOIN  Clientes c USING(IdCliente)
     INNER JOIN  LineasVenta lv USING(IdVenta)
@@ -808,6 +816,8 @@ SALIR: BEGIN
     COMMIT;
 
     SELECT * FROM tmp_comprobante;
+
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
     DROP TEMPORARY TABLE IF EXISTS tmp_comprobante;
 END$$
