@@ -107,11 +107,11 @@ class Clientes extends Model
         
         $this->attributes = $query->queryOne();
 
-        // foreach(json_decode($this['Datos'], true) as $dato => $valor){
-        //     if (isset($valor) && $valor != ''){
-        //         $this->attributes = $valor;
-        //     }
-        // }
+        foreach (json_decode($this['Datos'], true) as $dato => $valor) {
+            if (isset($valor) && $valor != '') {
+                $this->$dato = $valor;
+            }
+        }
     }
 
 
