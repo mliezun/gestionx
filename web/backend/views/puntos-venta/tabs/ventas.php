@@ -53,7 +53,7 @@ $proveedor = new Proveedores();
                 ],
             ]) ?>
 
-            <?= $form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
+            <?php /*$form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
                 'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
                 'language' => 'es',
                 'options' => ['placeholder' => 'Canal'],
@@ -61,7 +61,7 @@ $proveedor = new Proveedores();
                     'allowClear' => true,
                     'width' => '124px'
                 ],
-            ]) ?>
+            ]) */?>
 
             <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo', 'style' => 'margin-left: 10px']) ?>
 
