@@ -134,4 +134,9 @@ class FechaHelper
     {
         return strtotime(str_replace('/', '-', $fecha));
     }
+
+    public static function fechaAfip($fecha)
+    {
+        return intval(str_replace('-', '', explode(' ', $fecha)[0]));
+    }
 }

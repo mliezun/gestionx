@@ -12,6 +12,33 @@ use kartik\select2\Select2;
 /* @var $model Ventas */
 /* @var $comprobantes TiposComprobantesAfip */
 /* @var $tributos TiposTributos */
+
+$this->registerJs('
+(function() {
+    function controlarTipoVenta() {
+        if ($("#ventas-tipo").val() === "V") {
+            $(".field-ventas-idtipocomprobanteafip").show();
+            return true;
+        }
+        $("#ventas-idtipocomprobanteafip").val(0);
+        $(".field-ventas-idtipocomprobanteafip").hide();
+        return false;
+    };
+
+    $("#ventas-tipo").change(function() {
+        controlarTipoVenta();
+        $("#w0").yiiActiveForm("validateAttribute", "ventas-idtipocomprobanteafip");
+    });
+
+    $("#ventas-tipo").keyup(function() {
+        controlarTipoVenta();
+        $("#w0").yiiActiveForm("validateAttribute", "ventas-idtipocomprobanteafip");
+    });
+
+    controlarTipoVenta();
+})();
+');
+
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -39,15 +66,18 @@ use kartik\select2\Select2;
                 ],
             ]) ?>
 
-            <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
-
-            <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo'), ['prompt' => 'Tipo de Tributo']) ?>
-
-            <?= $form->field($model, 'IdCanal')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal']) ?>
-
             <?php if (!isset($model['IdVenta'])): ?>
                 <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
+
+                <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
             <?php endif; ?>
+
+            <?php 
+            //TODO: implementar variables de empresa para canales y tributos
+            //echo $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo'), ['prompt' => 'Tipo de Tributo'])
+            //echo $form->field($model, 'IdCanal')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal']);
+            echo Html::activeHiddenInput($model, 'IdCanal');
+            ?>
 
             <?= $form->field($model, 'Observaciones') ?>
         </div>

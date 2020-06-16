@@ -37,6 +37,7 @@ class Ventas extends Model
         'E' => 'En Edición',
         'B' => 'Baja',
         'P' => 'Pagada',
+        'D' => 'Devuelta',
         'T' => 'Todos'
     ];
 
@@ -70,6 +71,11 @@ class Ventas extends Model
         return [
             [['IdCliente','Tipo','IdCanal'],
                 'required', 'on' => self::_ALTA],
+            ['IdTipoComprobanteAfip', 'required', 'when' => function ($model) {
+                return $model->Tipo === 'V';
+            }, 'whenClient' => "function (attribute, value) { 
+                return $('ventas-tipo').val() === 'V';
+            }"],
             [['IdVenta','IdCliente','Tipo'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']

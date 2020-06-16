@@ -316,7 +316,7 @@ BEGIN
             AND (v.Tipo = pTipo OR pTipo = 'T')
             AND (v.Estado != 'B' OR pIncluyeBajas = 'S')
             AND (v.FechaAlta BETWEEN pFechaDesde AND pFechaHasta)
-    ORDER BY v.Estado;
+    ORDER BY v.FechaAlta DESC, v.Estado;
 END$$
 DELIMITER ;
 
@@ -682,10 +682,6 @@ SALIR:BEGIN
 		SELECT 'La venta está dada de baja.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF EXISTS(SELECT IdPago FROM Pagos WHERE IdVenta = pIdVenta) THEN
-		SELECT 'La venta no se puede devolver, tiene pagos asosiados.' Mensaje;
-        LEAVE SALIR;
-	END IF;
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
         SET pIdPuntoVenta = (SELECT IdPuntoVenta FROM Ventas WHERE IdVenta = pIdVenta);
@@ -722,7 +718,7 @@ SALIR:BEGIN
 		SELECT 0,NOW(),CONCAT(pIdUsuario,'@',pUsuario),pIP,pUserAgent,pAplicacion,'DEVOLUCION','A',
         Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
 		-- Da de baja la venta
-		UPDATE Ventas SET Estado = 'B' WHERE IdVenta = pIdVenta;
+		UPDATE Ventas SET Estado = 'D' WHERE IdVenta = pIdVenta;
 		-- Audito la Venta despues de darla de baja
 		INSERT INTO aud_Ventas
 		SELECT 0,NOW(),CONCAT(pIdUsuario,'@',pUsuario),pIP,pUserAgent,pAplicacion,'DEVOLUCION','D',
@@ -741,7 +737,24 @@ SALIR: BEGIN
     /*
 	* Permite obtener los datos para generar un comprobante de Venta.
 	*/
-	SELECT      v.*, c.*, JSON_ARRAYAGG(JSON_OBJECT(
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- SHOW ERRORS;
+		SELECT 'Error en la transacción. Contáctese con el administrador.' Mensaje;
+        ROLLBACK;
+	END;
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_comprobante;
+
+    CREATE TEMPORARY TABLE tmp_comprobante ENGINE=MEMORY
+	SELECT      v.IdVenta, v.IdPuntoVenta, v.IdEmpresa, v.IdCliente, v.IdUsuario,	
+	            v.IdTipoTributo, v.IdCanal,	v.Monto, v.FechaAlta, v.Tipo,
+	            v.Estado, v.Observaciones, c.IdListaPrecio, c.IdTipoDocAfip,
+	            c.Nombres, c.Apellidos, c.RazonSocial, c.Documento, c.Datos,
+	            c.FechaAlta FechaAltaCliente, c.Tipo TipoCliente, c.Estado EstadoCliente,
+                c.Observaciones ObservacionesCliente,
+                JSON_ARRAYAGG(JSON_OBJECT(
                         'Articulo', a.Articulo,
                         'Codigo', a.Codigo,
                         'Cantidad', lv.Cantidad,
@@ -749,14 +762,53 @@ SALIR: BEGIN
                         'Subtotal', CAST(lv.Cantidad * lv.Precio AS DECIMAL(12, 2)),
                         'ImporteIVA', CAST(CAST(lv.Cantidad * lv.Precio AS DECIMAL(12, 2)) * (SELECT 1-1/(1+Porcentaje/100) FROM TiposIVA WHERE IdTipoIVA = a.IdTipoIVA) AS DECIMAL(12, 2)),
                         'IdTipoIVA', a.IdTipoIVA,
+                        -- Tipo de Unidad (u)
                         'Unidad', 7
                     )) Articulos, CAST(SUM(lv.Precio * lv.Cantidad) AS DECIMAL(12, 2)) Total,
-                IF(c.Tipo = 'F', CONCAT(c.Apellidos, ', ', c.Nombres), c.RazonSocial) NombreCliente
+                IF(c.Tipo = 'F', CONCAT(c.Apellidos, ', ', c.Nombres), c.RazonSocial) NombreCliente,
+                IF(v.Estado = 'D', 
+                    -- THEN
+                    v.IdTipoComprobanteAfip+2,
+                    -- ELSE
+                    v.IdTipoComprobanteAfip
+                ) IdTipoComprobanteAfip, 0 IdComprobanteAfip, NOW() FechaGenerado,
+                IF(v.Estado = 'D', 
+                    -- THEN
+                    (SELECT JSON_OBJECT(
+                                'IdComprobanteAfip', IdComprobanteAfip,
+                                'IdTipoComprobanteAfip', IdTipoComprobanteAfip,
+                                'FechaGenerado', FechaGenerado
+                            )
+                    FROM    ComprobantesAfip
+                    WHERE   IdVenta = v.IdVenta
+                            AND IdTipoComprobanteAfip = v.IdTipoComprobanteAfip
+                    LIMIT   1),
+                    -- ELSE
+                    NULL
+                ) ComprobanteAfipOriginal
     FROM        Ventas v
     INNER JOIN  Clientes c USING(IdCliente)
     INNER JOIN  LineasVenta lv USING(IdVenta)
     INNER JOIN  Articulos a USING(IdArticulo)
-    WHERE       v.IdVenta = pIdVenta AND v.Estado = 'P'
+    WHERE       v.IdVenta = pIdVenta AND v.Estado IN ('P', 'D')
     GROUP BY    v.IdVenta;
+
+    START TRANSACTION;
+        IF EXISTS (SELECT 1 FROM ComprobantesAfip INNER JOIN tmp_comprobante USING(IdVenta,IdTipoComprobanteAfip)) THEN
+            UPDATE      tmp_comprobante t
+            INNER JOIN  ComprobantesAfip c USING(IdVenta,IdTipoComprobanteAfip)
+            SET         t.IdComprobanteAfip = c.IdComprobanteAfip, t.FechaGenerado = c.FechaGenerado;
+        ELSE
+            INSERT INTO ComprobantesAfip
+            SELECT      0, IdVenta, IdTipoComprobanteAfip, FechaGenerado
+            FROM        tmp_comprobante;
+
+            UPDATE tmp_comprobante SET IdComprobanteAfip = LAST_INSERT_ID();
+        END IF;
+    COMMIT;
+
+    SELECT * FROM tmp_comprobante;
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_comprobante;
 END$$
 DELIMITER ;

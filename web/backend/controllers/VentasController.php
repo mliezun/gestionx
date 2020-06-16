@@ -30,6 +30,8 @@ class VentasController extends BaseController
         $venta = new Ventas();
         $venta->setScenario(Ventas::_ALTA);
 
+        Yii::info($venta->IdCanal, 'IdCanal');
+
         if ($venta->load(Yii::$app->request->post()) && $venta->validate()) {
             $venta->IdPuntoVenta = $id;
             $gestor = new GestorVentas();
@@ -43,9 +45,13 @@ class VentasController extends BaseController
             }
         } else {
             $clientes = (new GestorClientes())->Listar();
-            $comprobantes = (new GestorTiposComprobantesAfip)->Buscar();
+            $comprobantes = (new GestorTiposComprobantesAfip)->Buscar('factura');
             $tributos = (new GestorTiposTributos)->Buscar();
             $canales = (new GestorCanales)->Buscar();
+
+            $venta->IdCanal = $canales[0]['IdCanal'];
+
+            Yii::info($venta->IdCanal, 'IdCanal');
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',

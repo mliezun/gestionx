@@ -119,6 +119,25 @@ CREATE TABLE Comprobantes(
 ;
 
 
+-- 
+-- TABLE: ComprobantesAfip
+--
+
+CREATE TABLE ComprobantesAfip(
+    IdComprobanteAfip        BIGINT      AUTO_INCREMENT,
+    IdVenta                  BIGINT      NOT NULL,
+    IdTipoComprobanteAfip    SMALLINT    NOT NULL,
+    FechaGenerado            DATETIME    NOT NULL,
+    PRIMARY KEY(IdComprobanteAfip)
+)ENGINE=INNODB
+;
+
+ALTER TABLE `ComprobantesAfip` 
+ADD UNIQUE INDEX `UI_IdVentaIdTipoComprobanteAfip` (`IdVenta` ASC, `IdTipoComprobanteAfip` ASC) VISIBLE;
+;
+
+
+
 
 -- 
 -- TABLE: DestinoCheque 

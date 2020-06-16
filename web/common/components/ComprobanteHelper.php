@@ -61,11 +61,11 @@ class ComprobanteHelper
             // Número de documento del comprador (0 consumidor final)
             'DocNro' 	=> $datos['Documento'],
             // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
-            'CbteDesde' 	=> $datos['IdVenta'],
+            'CbteDesde' 	=> $datos['IdComprobanteAfip'],
             // Número de comprobante o numero del último comprobante en caso de ser mas de uno
-            'CbteHasta' 	=> $datos['IdVenta'],
+            'CbteHasta' 	=> $datos['IdComprobanteAfip'],
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
-            'CbteFch' 	=> intval(date('Ymd')),
+            'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
             // Importe total del comprobante
             'ImpTotal' 	=> $datos['Total'],
             // Importe neto no gravado
@@ -83,6 +83,19 @@ class ComprobanteHelper
             // Cotización de la moneda usada (1 para pesos argentinos)
             'MonCotiz' 	=> 1
         ];
+
+        // Devuelta
+        if ($datos['Estado'] === 'D') {
+            $comprobanteOrig = json_decode($datos['ComprobanteAfipOriginal'], true);
+            $datosAfip['CbtesAsoc'] = [
+                [
+                    'Tipo' => $comprobanteOrig['IdTipoComprobanteAfip'],
+                    'PtoVta' => $datos['IdPuntoVenta'],
+                    'Nro' => $comprobanteOrig['IdComprobanteAfip'],
+                    'CbteFch' => FechaHelper::fechaAfip($comprobanteOrig['FechaGenerado']),
+                ]
+            ];
+        }
 
         $articulos = json_decode($datos['Articulos'], true);
 
@@ -106,8 +119,10 @@ class ComprobanteHelper
             $importeIVA += $articulo['ImporteIVA'];
         }
 
-        // Si es Factura 'A' o 'M' agrego IVA
-        if ($datos['IdTipoComprobanteAfip'] == 1 || $datos['IdTipoComprobanteAfip'] == 51 || $datos['IdTipoComprobanteAfip'] == 6) {
+        // Agrego IVA en los siguientes casos
+        // Factura A (1), B (6) o M (51)
+        // Nota de Crédito A (3), B (8), M (53)
+        if (\in_array($datos['IdTipoComprobanteAfip'], [1, 6, 51, 3, 8, 53])) {
             $datosAfip['Iva'] = array();
             foreach ($ivas as $id => $iva) {
                 $datosAfip['Iva'][] = $iva;
