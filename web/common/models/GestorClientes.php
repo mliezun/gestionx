@@ -124,11 +124,12 @@ class GestorClientes
      */
     public function BuscarVentas($IdCliente = 0, $FechaInicio = null, $FechaFin = null, $Estado = 'T', $EstadoVenta = 'T', $Mora = 'N')
     {
-        $sql = "call xsp_buscar_ventas_clientes( :idcliente, :fechaInicio, :fechaFin, :estado, :estadoVenta, :mora )";
+        $sql = "call xsp_buscar_ventas_clientes( :idempresa, :idcliente, :fechaInicio, :fechaFin, :estado, :estadoVenta, :mora )";
 
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idcliente' => $IdCliente,
             ':fechaInicio' => FechaHelper::formatearDateMysql($FechaInicio),
             ':fechaFin' => FechaHelper::formatearDateMysql($FechaFin),

@@ -134,6 +134,46 @@ class ClientesController extends Controller
         }
     }
 
+    public function actionDocumentos($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarCliente');
+        
+        $cliente = new Clientes();
+        $cliente->IdCliente = $id;
+        $cliente->Dame();
+
+        // $clienteAux = new Clientes();
+        // $clienteAux->IdCliente = $id;
+        // $clienteAux->Dame();
+        if ($cliente->Tipo == 'F') {
+            $cliente->setScenario(Clientes::_MODIFICAR_FISICA);
+        } else {
+            $cliente->setScenario(Clientes::_MODIFICAR_JURIDICA);
+        }
+        
+        if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
+            $gestor = new GestorClientes();
+            $resultado = $gestor->Modificar($cliente);
+
+            Yii::$app->response->format = 'json';
+            if ($resultado == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $listas = GestorListasPrecio::Buscar('S');
+            $tiposdoc = GestorTiposDocAfip::Buscar();
+
+            return $this->renderAjax('documentos', [
+                        'titulo' => 'Documentos Cliente',
+                        'model' => $cliente,
+                        'listas' => $listas,
+                        'tiposdoc' => $tiposdoc
+            ]);
+        }
+    }
+
     public function actionBorrar($id)
     {
         PermisosHelper::verificarPermiso('BorrarCliente');

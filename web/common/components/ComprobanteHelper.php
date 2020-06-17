@@ -84,6 +84,13 @@ class ComprobanteHelper
             'MonCotiz' 	=> 1
         ];
 
+        $datosCliente = json_decode($datos['Datos'], true);
+
+        if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT'])) {
+            $datosAfip['DocTipo'] = 80;
+            $datosAfip['DocNro'] = $datosCliente['CUIT'];
+        }
+
         // Devuelta
         if ($datos['Estado'] === 'D') {
             $comprobanteOrig = json_decode($datos['ComprobanteAfipOriginal'], true);

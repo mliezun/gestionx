@@ -165,6 +165,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 PAGADO
             </div>
         </div>
+        <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
+            <button type="button" class="btn btn-primary"
+                    data-ajax="<?= Url::to(['/ventas/enviar-comprobante', 'id' => $model['IdVenta']]) ?>"
+                    data-hint="Enviar Factura">
+                ENVIAR
+            </button>
+            <a class="btn btn-secondary"
+                    href="<?= Url::to(['/ventas/comprobante', 'id' => $model['IdVenta']]) ?>"
+                    target="_blank"
+                    data-hint="Imprimir Factura">
+                IMPRIMIR
+            </a>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>

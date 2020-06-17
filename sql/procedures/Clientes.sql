@@ -415,7 +415,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `xsp_buscar_ventas_clientes`;
 DELIMITER $$
-CREATE PROCEDURE `xsp_buscar_ventas_clientes`(pIdCliente bigint, pFechaInicio date, pFechaFin date, pEstado char(1), pEstadoVenta char(1), pMora char(1))
+CREATE PROCEDURE `xsp_buscar_ventas_clientes`(pIdEmpresa int, pIdCliente bigint, pFechaInicio date, pFechaFin date, pEstado char(1), pEstadoVenta char(1), pMora char(1))
 BEGIN
 	/*
     Permite buscar entre todos los movimientos de un cliente, entre 2 fechas, permitiendo filtrar los
@@ -447,11 +447,12 @@ BEGIN
     FROM        Clientes c
     INNER JOIN  Ventas v USING(IdCliente)
     INNER JOIN  Pagos p USING(IdVenta)
-    WHERE       (pIdCliente = 0 OR c.IdCliente = pIdCliente)
+    WHERE       v.IdEmpresa = pIdEmpresa AND (pIdCliente = 0 OR c.IdCliente = pIdCliente)
                 AND (c.Estado = pEstado OR pEstado = 'T')
                 AND (v.Estado = pEstadoVenta OR pEstadoVenta = 'T')
                 AND (v.FechaAlta BETWEEN pFechaInicio AND (pFechaFin + INTERVAL 1 DAY))
     GROUP BY    c.IdCliente, v.IdVenta
-    HAVING      pMora = 'N' OR (v.Monto > SUM(p.Monto)); -- pMora = 'S' => (MontoVenta < SUM(MontoPago))
+    HAVING      pMora = 'N' OR (v.Estado = 'A' AND v.Monto > SUM(p.Monto))
+    ORDER BY    v.FechaAlta DESC; -- pMora = 'S' => (MontoVenta < SUM(MontoPago))
 END$$
 DELIMITER ;

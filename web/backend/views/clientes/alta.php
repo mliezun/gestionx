@@ -32,23 +32,19 @@ use kartik\select2\Select2;
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
 
-            <?= Html::activeHiddenInput($model, 'IdTipoDocAfip') ?>
-
             <?php if ($model->Tipo == 'F'): ?>
                 <?= $form->field($model, 'Nombres') ?>
 
                 <?= $form->field($model, 'Apellidos') ?>
+
+                <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento']) ?>
             <?php else: ?>
                 <?= $form->field($model, 'RazonSocial') ?>
+
+                <?= $form->field($model, 'IdTipoDocAfip')->dropDownList(ArrayHelper::map($tiposdoc, 'IdTipoDocAfip', 'TipoDocAfip'), ['prompt' => 'Tipo de Documento', 'disabled' => true]) ?>
             <?php endif; ?>
 
-            <?php foreach ($tiposdoc as $tipodoc): ?>
-                <?php if ($tipodoc['IdTipoDocAfip'] === $model->IdTipoDocAfip): ?>
-                    <?= $form->field($model, 'Documento')->textInput()->label($tipodoc['TipoDocAfip']) ?>
-                <?php else: ?>
-                    <?= $form->field($model, $tipodoc['TipoDocAfip']) ?>
-                <?php endif; ?>
-            <?php endforeach; ?>
+            <?= $form->field($model, 'Documento') ?>
 
             <?= $form->field($model, 'Email') ?>
 

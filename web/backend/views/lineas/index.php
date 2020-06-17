@@ -87,9 +87,9 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
             <div class="lineas--bottom">
                 <button  type="button" class="btn btn-secondary"
                     @click="completar"
-                    data-hint="Completar"
+                    data-hint="Agregar pagos"
                 >
-                    Completar
+                    Agregar pagos
                 </button>
                 <div class="lineas--total">
                     Total: ${{ total }}

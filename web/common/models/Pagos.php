@@ -66,7 +66,7 @@ class Pagos extends Model
     {
         return [
             ['Monto', 'double'],
-            [['IdVenta','IdMedioPago','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
+            [['IdVenta','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
             [['IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
@@ -76,7 +76,7 @@ class Pagos extends Model
             'required', 'on' => self::_ALTA_CHEQUE],
             [['IdVenta','IdMedioPago'],
             'required', 'on' => self::_ELECCION],
-            [['IdPago','IdVenta','IdMedioPago','NroTarjeta','MesVencimiento','AnioVencimiento','CCV','Monto'],
+            [['IdPago','IdVenta','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_MODIFICAR_TARJETA],
             [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_MODIFICAR_EFECTIVO],

@@ -334,6 +334,7 @@ SALIR:BEGIN
         SELECT 'Debe indicar la medio de pago.' Mensaje;
         LEAVE SALIR;
 	END IF;
+    /*
     IF (pNroTarjeta IS NULL OR CHAR_LENGTH(pNroTarjeta) != 16) THEN
         SELECT 'Debe indicar el numero de la tarjeta.' Mensaje;
         LEAVE SALIR;
@@ -348,6 +349,11 @@ SALIR:BEGIN
 	END IF;
     IF (pCCV IS NULL OR CHAR_LENGTH(pCCV) != 3) THEN
         SELECT 'Debe indicar el codigo de verificacion de la tarjeta.' Mensaje;
+        LEAVE SALIR;
+	END IF;
+    */
+    IF (pNroTarjeta IS NULL) THEN
+        SELECT 'Debe indicar el numero de la tarjeta.' Mensaje;
         LEAVE SALIR;
 	END IF;
     IF (pMontoPago IS NULL OR pMontoPago <= 0) THEN

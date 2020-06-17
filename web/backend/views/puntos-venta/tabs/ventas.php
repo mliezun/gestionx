@@ -162,7 +162,7 @@ $proveedor = new Proveedores();
                                                                 data-hint="Imprimir Comprobante">
                                                             <i class="fas fa-print"></i>
                                                         </a>
-                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
                                                     <?php if (PermisosHelper::tienePermiso('AltaVenta') && $model['Estado'] == 'P') : ?>
                                                         <button type="button" class="btn btn-default"

@@ -123,20 +123,14 @@ CREATE TABLE Comprobantes(
 -- TABLE: ComprobantesAfip
 --
 
-CREATE TABLE ComprobantesAfip(
-    IdComprobanteAfip        BIGINT      AUTO_INCREMENT,
-    IdVenta                  BIGINT      NOT NULL,
-    IdTipoComprobanteAfip    SMALLINT    NOT NULL,
-    FechaGenerado            DATETIME    NOT NULL,
-    PRIMARY KEY(IdComprobanteAfip)
-)ENGINE=INNODB
-;
-
-ALTER TABLE `ComprobantesAfip` 
-ADD UNIQUE INDEX `UI_IdVentaIdTipoComprobanteAfip` (`IdVenta` ASC, `IdTipoComprobanteAfip` ASC) VISIBLE;
-;
-
-
+CREATE TABLE `ComprobantesAfip` (
+  `IdComprobanteAfip` bigint(20) NOT NULL AUTO_INCREMENT,
+  `IdVenta` bigint(20) NOT NULL,
+  `IdTipoComprobanteAfip` smallint(6) DEFAULT NULL,
+  `FechaGenerado` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`IdComprobanteAfip`),
+  UNIQUE KEY `UI_IdVentaIdTipoComprobanteAfip` (`IdVenta`,`IdTipoComprobanteAfip`)
+) ENGINE=InnoDB;
 
 
 -- 

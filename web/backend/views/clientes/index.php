@@ -104,6 +104,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['clientes/documentos', 'id' => $model['IdCliente']]) ?>"
+                                                        data-hint="Documentos">
+                                                    <i class="fas fa-id-card"></i>
+                                                </button>
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BuscarVentasClientes')) : ?>
                                                 <a class="btn btn-default"
