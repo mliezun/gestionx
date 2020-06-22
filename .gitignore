@@ -1,7 +1,7 @@
 # yii console commands
-/yii
-/yii_test
-/yii_test.bat
+web/yii
+web/yii_test
+web/yii_test.bat
 
 # phpstorm project files
 .idea
@@ -18,10 +18,10 @@ nbproject
 Thumbs.db
 
 # composer vendor dir
-/vendor
+web/vendor
 
 # composer itself is not needed
-composer.phar
+web/composer.phar
 
 # Mac DS_Store Files
 .DS_Store
@@ -36,4 +36,12 @@ phpunit.phar
 
 \.vscode/sftp\.json
 
-cmdserver/node_modules
+cmder/node_modules
+
+afip/myenv
+afip/logo.png
+afip/__pycache__
+afip/*.pdf
+
+
+\.vagrant
