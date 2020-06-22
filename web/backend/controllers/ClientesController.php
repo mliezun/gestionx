@@ -59,6 +59,7 @@ class ClientesController extends Controller
             $cliente->setScenario(Clientes::_ALTA_FISICA);
         } else {
             $cliente->setScenario(Clientes::_ALTA_JURIDICA);
+            $cliente->IdTipoDocAfip = 80;
         }
 
         if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {

@@ -37,12 +37,11 @@ class VentasController extends BaseController
             $gestor = new GestorVentas();
             $resultado = $gestor->Alta($venta);
 
-            Yii::$app->response->format = 'json';
-            if (substr($resultado, 0, 2) == 'OK') {
-                return ['error' => null];
-            } else {
+            if (substr($resultado, 0, 2) !== 'OK') {
+                Yii::$app->response->format = 'json';
                 return ['error' => $resultado];
             }
+            return $this->redirect(Url::to(['/ventas/lineas', 'id' => substr($resultado, 2)]));
         } else {
             $clientes = (new GestorClientes())->Listar();
             $comprobantes = (new GestorTiposComprobantesAfip)->Buscar('factura');
