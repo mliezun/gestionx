@@ -26,7 +26,8 @@ class GestorPuntosVenta
             ':puntoventa' => $puntoventa->PuntoVenta,
             ':datos' => json_encode([
                 'Telefono' => $puntoventa->Telefono,
-                'Direccion' => $puntoventa->Direccion
+                'Direccion' => $puntoventa->Direccion,
+                'NroPuntoVenta' => $puntoventa->NroPuntoVenta
             ]),
             ':observaciones' => $puntoventa->Observaciones,
         ]);
@@ -75,7 +76,8 @@ class GestorPuntosVenta
             ':puntoventa' => $puntoventa->PuntoVenta,
             ':datos' => json_encode([
                 'Telefono' => $puntoventa->Telefono,
-                'Direccion' => $puntoventa->Direccion
+                'Direccion' => $puntoventa->Direccion,
+                'NroPuntoVenta' => $puntoventa->NroPuntoVenta
             ]),
             ':observaciones' => $puntoventa->Observaciones,
         ]);

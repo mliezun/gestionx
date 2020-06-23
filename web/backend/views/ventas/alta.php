@@ -72,13 +72,6 @@ $this->registerJs('
                 <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
             <?php endif; ?>
 
-            <?php 
-            //TODO: implementar variables de empresa para canales y tributos
-            //echo $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo'), ['prompt' => 'Tipo de Tributo'])
-            //echo $form->field($model, 'IdCanal')->dropDownList(ArrayHelper::map($canales, 'IdCanal', 'Canal'), ['prompt' => 'Canal']);
-            echo Html::activeHiddenInput($model, 'IdCanal');
-            ?>
-
             <?= $form->field($model, 'Observaciones') ?>
         </div>
         <div class="modal-footer">

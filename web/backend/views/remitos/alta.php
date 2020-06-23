@@ -40,14 +40,16 @@ use kartik\select2\Select2;
                 ],
             ]) ?>
             
-            <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Canal'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]) ?>
+            <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Canal'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
+            <?php endif; ?>
 
             <?= $form->field($model, 'NroRemito') ?>
 

@@ -14,6 +14,8 @@ use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
+use common\models\GestorCanales;
+
 class UsuariosController extends BaseController
 {
     public function actionIndex()
@@ -73,6 +75,12 @@ class UsuariosController extends BaseController
                 Yii::$app->session->set('Parametros', ArrayHelper::map($empresa->DameDatos(), 'Parametro', 'Valor'));
 
                 PermisosHelper::guardarPermisosSesion($usuario->DamePermisos());
+
+                // Yapada
+                $usuario->Dame();
+                $canales = GestorCanales::Buscar('Por Defecto', 'N', $usuario->IdEmpresa);
+                $idListaPorDefecto = $canales[0]['IdCanal'] ?? 0;
+                Yii::$app->session->set('IDCANALPORDEFECTO', $idListaPorDefecto);
 
                 // El usuario debe modificar el password
                 if ($usuario->DebeCambiarPass == 'S') {

@@ -53,15 +53,18 @@ $proveedor = new Proveedores();
                 ],
             ]) ?>
 
-            <?php /*$form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Canal'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'width' => '124px'
-                ],
-            ]) */?>
+            <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                <?php $form->field($busqueda, 'Combo2')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Canal'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'width' => '124px'
+                    ],
+                ]) ?>
+            <?php endif; ?>
+
 
             <?= $form->field($busqueda, 'Combo3')->dropDownList(Ventas::TIPOS, ['prompt' => 'Tipo', 'style' => 'margin-left: 10px']) ?>
 
@@ -98,7 +101,9 @@ $proveedor = new Proveedores();
                                 <th>Monto</th>
                                 <th>Fecha de Alta</th>
                                 <th>Tipo</th>
-                                <!--th>Canal</th -->
+                                <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                    <th>Canal</th>
+                                <?php endif; ?>
                                 <th>Estado</th>
                                 <!--th>Tributo</th -->
                                 <th>Comprobante</th>
@@ -114,7 +119,9 @@ $proveedor = new Proveedores();
                                     <td><?= Html::encode($model['Monto']) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
-                                    <!-- td><?= Html::encode($model['Canal']) ?></td -->
+                                    <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                        <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php endif; ?>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['Estado']]) ?></td>
                                     <!-- td><?= Html::encode($model['TipoTributo']) ?></td -->
                                     <td><?= Html::encode($model['TipoComprobanteAfip']) ?></td>

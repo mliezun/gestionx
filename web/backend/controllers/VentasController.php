@@ -30,10 +30,11 @@ class VentasController extends BaseController
         $venta = new Ventas();
         $venta->setScenario(Ventas::_ALTA);
 
-        Yii::info($venta->IdCanal, 'IdCanal');
-
         if ($venta->load(Yii::$app->request->post()) && $venta->validate()) {
             $venta->IdPuntoVenta = $id;
+            $venta->IdCanal = $venta->IdCanal ?? Yii::$app->session->get('IDCANALPORDEFECTO');
+            Yii::info('IdCanal');
+            Yii::info($venta->IdCanal);
             $gestor = new GestorVentas();
             $resultado = $gestor->Alta($venta);
 
@@ -48,9 +49,9 @@ class VentasController extends BaseController
             $tributos = (new GestorTiposTributos)->Buscar();
             $canales = (new GestorCanales)->Buscar();
 
-            $venta->IdCanal = $canales[0]['IdCanal'];
+            // $venta->IdCanal = $canales[0]['IdCanal'];
 
-            Yii::info($venta->IdCanal, 'IdCanal');
+            // Yii::info($venta->IdCanal, 'IdCanal');
 
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Venta',

@@ -82,14 +82,14 @@ class GestorCanales
      * y si se incluyen bajas.
      * xsp_buscar_canales
      */
-    public function Buscar($Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar($Cadena = '', $IncluyeBajas = 'N', $IdEmpresa = null)
     {
         $sql = "call xsp_buscar_canales( :idempresa, :cadena, :iBajas)";
 
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
-            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':idempresa' => $IdEmpresa ?? Yii::$app->user->identity->IdEmpresa,
             ':cadena' => $Cadena,
             ':iBajas' => $IncluyeBajas,
         ]);

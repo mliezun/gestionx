@@ -93,6 +93,10 @@ class PuntosVentaController extends BaseController
             $puntoventa->IdPuntoVenta = $id;
             
             $puntoventa->Dame();
+            $subDatos = json_decode($puntoventa->Datos);
+            $puntoventa->Telefono = $subDatos->Telefono ?? '';
+            $puntoventa->Direccion = $subDatos->Direccion ?? '';
+            $puntoventa->NroPuntoVenta = $subDatos->NroPuntoVenta ?? '';
 
             return $this->renderAjax('alta', [
                         'titulo' => 'Editar punto de venta',

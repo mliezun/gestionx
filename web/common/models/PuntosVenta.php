@@ -9,7 +9,8 @@ class PuntosVenta extends Model
 {
     public $IdPuntoVenta;
     public $PuntoVenta;
-    // public $Datos;
+    public $NroPuntoVenta;
+    public $Datos;
     public $Estado;
     public $Observaciones;
     public $IdEmpresa;
@@ -30,11 +31,18 @@ class PuntosVenta extends Model
     public function rules()
     {
         return [
-            [['PuntoVenta','Direccion','Telefono'],
+            [['PuntoVenta','Direccion','Telefono','NroPuntoVenta'],
                 'required', 'on' => self::_ALTA],
             [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'NroPuntoVenta' => 'Numero del Punto de Venta'
         ];
     }
 

@@ -34,15 +34,18 @@ use yii\widgets\LinkPager;
                 ],
             ]) ?>
 
-            <?= $form->field($busqueda, 'Combo3')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Canal'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'width' => '243px'
-                ],
-            ]) ?>
+            <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                <?= $form->field($busqueda, 'Combo3')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Canal'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'width' => '243px'
+                    ],
+                ]) ?>
+            <?php endif; ?>
+
 
             <?= $form->field($busqueda, 'Combo2')->dropDownList(Remitos::ESTADOS, ['prompt' => 'Estado', 'style' => 'margin-left: 10px']) ?>
 
@@ -73,7 +76,9 @@ use yii\widgets\LinkPager;
                                 <th>Nro de Remito</th>
                                 <th>Nro de Factura</th>
                                 <th>Proveedor</th>
-                                <th>Canal</th>
+                                <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                    <th>Canal</th>
+                                <?php endif; ?>
                                 <th>Fecha de Alta</th>
                                 <th>Fecha de Facturacion</th>
                                 <th>Estado</th>
@@ -87,7 +92,9 @@ use yii\widgets\LinkPager;
                                     <td><?= Html::encode($model['NroRemito']) ?></td>
                                     <td><?= Html::encode($model['NroFactura']) ?></td>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
-                                    <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                        <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php endif; ?>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaFacturado'])) ?></td>
                                     <td><?= Html::encode(Remitos::ESTADOS[$model['Estado']]) ?></td>

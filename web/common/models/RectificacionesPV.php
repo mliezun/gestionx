@@ -36,7 +36,7 @@ class RectificacionesPV extends Model
     public function rules()
     {
         return [
-            [['IdArticulo','IdCanal','Cantidad'],
+            [['IdArticulo','Cantidad'],
                 'required', 'on' => self::_ALTA],
             [$this->attributes(), 'safe']
         ];

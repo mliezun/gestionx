@@ -34,7 +34,9 @@ use yii\web\View;
 
             <?= $form->field($model, 'Direccion') ?>
 
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'NroPuntoVenta') ?>
+
+            <?= $form->field($model, 'Observaciones')->textArea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>
