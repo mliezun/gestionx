@@ -18,13 +18,17 @@ class ComprobanteHelper
 
         // Envío los datos de la venta a AFIP
         if ($esAfip) {
-            $resultado = self::altaComprobante([
-                'CUIT' => $params['CUIT'],
-                'cert' => $esProd ? $params['AFIPCERT'] : $params['AFIPCERTHOMO'],
-                'key' => $params['AFIPKEY'],
-                'Comprobante' => $datosAfip
-            ], $esProd);
-            $resultado = self::datosResultado($resultado);
+            $cacheKey = serialize(['comprobante-afip', $datos['IdComprobanteAfip']]);
+            $funcionObtener = function () use ($params, $esProd, $datosAfip) {
+                $resultado = self::altaComprobante([
+                    'CUIT' => $params['CUIT'],
+                    'cert' => $esProd ? $params['AFIPCERT'] : $params['AFIPCERTHOMO'],
+                    'key' => $params['AFIPKEY'],
+                    'Comprobante' => $datosAfip
+                ], $esProd);
+                return self::datosResultado($resultado);
+            };
+            $resultado = Yii::$app->cache->getOrSet($cacheKey, $funcionObtener);
         } else {
             $idempresa = Yii::$app->user->identity->IdEmpresa;
             $cae = $idempresa . str_pad("{$datos['IdVenta']}", 16 - strlen($idempresa), '0', STR_PAD_LEFT);
@@ -83,6 +87,13 @@ class ComprobanteHelper
             // Cotización de la moneda usada (1 para pesos argentinos)
             'MonCotiz' 	=> 1
         ];
+
+        if ($datosAfip['PtoVta'] == 3) {
+            $datosAfip['PtoVta'] = 5;
+        }
+        if ($datosAfip['PtoVta'] == 5) {
+            $datosAfip['PtoVta'] = 4;
+        }
 
         $datosCliente = json_decode($datos['Datos'], true);
 
@@ -216,7 +227,6 @@ class ComprobanteHelper
 
     /**
      * Generación de comprobante de AFIP.
-     * Referencia: https://github.com/mliezun/eratospdf
      */
     private static function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
     {
@@ -299,12 +309,16 @@ class ComprobanteHelper
 
         $comprobante = $datos['Comprobante'];
 
+        Yii::info($comprobante, 'Comprobante AFIP');
+
         $cbteAfip = $afip->ElectronicBilling->GetVoucherInfo($comprobante['CbteDesde'], $comprobante['PtoVta'], $comprobante['CbteTipo']);
 
         if (!isset($cbteAfip)) {
             $res = $afip->ElectronicBilling->CreateNextVoucher($comprobante);
+            Yii::info($res, 'Nuevo Comprobante AFIP');
         } else {
             $res = $cbteAfip;
+            Yii::info($res, 'Comprobante Almacenado AFIP');
         }
 
         // Borra los archivos temporales
