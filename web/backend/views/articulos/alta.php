@@ -48,7 +48,9 @@ use kartik\money\MaskMoney;
 
             <?= $form->field($model, 'Descripcion') ?>
 
-            <?= $form->field($model, 'PrecioCosto')->widget(MaskMoney::classname()) ?>
+            <?php // $form->field($model, 'PrecioCosto')->widget(MaskMoney::classname()) ?>
+
+            <?= $form->field($model, 'PrecioCosto') ?>
 
             <?= $form->field($model, 'IdTipoIVA')->dropDownList(ArrayHelper::map($ivas, 'IdTipoIVA', 'TipoIVA'), ['prompt' => 'IVA']) ?>
         </div>
