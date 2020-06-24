@@ -25,8 +25,9 @@ class RectificacionesController extends BaseController
 
         $puntoventa = new PuntosVenta();
         $puntoventa->IdPuntoVenta = $id;
-
+        
         if ($rectificacionesPV->load(Yii::$app->request->post()) && $rectificacionesPV->validate()) {
+            $rectificacionesPV->IdCanal = $rectificacionesPV->IdCanal ?? Yii::$app->session->get('Parametros')['CANALPORDEFECTO'];
 
             $resultado = $puntoventa->AltaRectificacion($rectificacionesPV);
 

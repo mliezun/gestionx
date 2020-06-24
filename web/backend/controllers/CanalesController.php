@@ -11,11 +11,16 @@ use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
+use yii\web\HttpException;
 
 class CanalesController extends BaseController
 {
     public function actionIndex()
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+
         PermisosHelper::verificarPermiso('BuscarCanales');
 
         $paginado = new Pagination();
@@ -43,6 +48,10 @@ class CanalesController extends BaseController
 
     public function actionAlta()
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+
         PermisosHelper::verificarPermiso('AltaCanal');
 
         $canal = new Canales();
@@ -68,6 +77,10 @@ class CanalesController extends BaseController
 
     public function actionEditar($id)
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+
         PermisosHelper::verificarPermiso('ModificarCanal');
         
         $canal = new Canales();
@@ -97,6 +110,10 @@ class CanalesController extends BaseController
 
     public function actionBorrar($id)
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+
         PermisosHelper::verificarPermiso('BorrarCanal');
 
         Yii::$app->response->format = 'json';
@@ -115,6 +132,10 @@ class CanalesController extends BaseController
 
     public function actionActivar($id)
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+
         PermisosHelper::verificarPermiso('ActivarCanal');
 
         Yii::$app->response->format = 'json';
@@ -133,6 +154,10 @@ class CanalesController extends BaseController
 
     public function actionDarBaja($id)
     {
+        if (Yii::$app->session->get('Parametros')['CANTCANALES'] == 1) {
+            throw new HttpException('403', 'No se tienen los permisos necesarios para ver la página solicitada.');
+        }
+        
         PermisosHelper::verificarPermiso('DarBajaCanal');
 
         Yii::$app->response->format = 'json';

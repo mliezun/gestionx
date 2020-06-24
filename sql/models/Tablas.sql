@@ -730,6 +730,7 @@ CREATE TABLE Ventas(
     IdTipoComprobanteAfip    SMALLINT          NOT NULL,
     IdTipoTributo            TINYINT           NOT NULL,
     IdCanal                  BIGINT            NOT NULL,
+    NroVenta                 INT               NOT NULL,
     Monto                    DECIMAL(12, 2),
     FechaAlta                DATETIME          NOT NULL,
     Estado                   CHAR(1)           NOT NULL,

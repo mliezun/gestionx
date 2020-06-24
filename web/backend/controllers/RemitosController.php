@@ -27,6 +27,8 @@ class RemitosController extends BaseController
         if($remito->load(Yii::$app->request->post())){
             $gestor = new GestorRemitos();
             $remito->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+            $remito->IdCanal = $remito->IdCanal ?? Yii::$app->session->get('Parametros')['CANALPORDEFECTO'];
+
             $resultado = $gestor->Alta($remito,$id);
 
             Yii::$app->response->format = 'json';

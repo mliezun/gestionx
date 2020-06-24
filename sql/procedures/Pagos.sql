@@ -455,7 +455,7 @@ DROP PROCEDURE IF EXISTS `xsp_pagar_venta_mercaderia`;
 DELIMITER $$
 CREATE PROCEDURE `xsp_pagar_venta_mercaderia`(pToken varchar(500), pIdVenta bigint, pIdMedioPago smallint,
 pFechaDebe datetime, pFechaPago datetime, pIdRemito bigint, pObservacionesPago text,
-pIdTipoComprobante smallint, pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50))
+pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50))
 SALIR:BEGIN
 	/*
     * Permite dar de alta un nuevo pago de una venta, utilizando mercaderia asosiada a un Remito.

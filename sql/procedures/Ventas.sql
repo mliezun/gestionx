@@ -11,6 +11,7 @@ SALIR:BEGIN
     */
     DECLARE pIdUsuario bigint;
     DECLARE pIdVenta bigint;
+    DECLARE pNroVenta int;
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
     -- Manejo de error en la transacción    
@@ -90,14 +91,21 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
+        SET pNroVenta = (SELECT Valor FROM ParametroEmpresa WHERE IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROVENTA' FOR UPDATE);
         INSERT INTO Ventas 
         SELECT 0, pIdPuntoVenta, pIdEmpresa, pIdCliente, pIdUsuario,
-        pIdTipoComprobanteAfip, pIdTipoTributo, pIdCanal, 0, NOW(), pTipo, 'E', pObservaciones;
+        pIdTipoComprobanteAfip, pIdTipoTributo, pIdCanal, pNroVenta, 0, NOW(), pTipo, 'E', pObservaciones;
         SET pIdVenta = LAST_INSERT_ID();
+
 		-- Audita
 		INSERT INTO aud_Ventas
 		SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
+
+        -- Actulizo el parametro empresa
+        UPDATE	ParametroEmpresa
+        SET		Valor = pNroVenta + 1
+        WHERE   IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROVENTA';
         
         SELECT CONCAT('OK', pIdVenta) Mensaje;
 	COMMIT;

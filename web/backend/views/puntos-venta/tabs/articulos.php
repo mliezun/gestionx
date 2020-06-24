@@ -24,15 +24,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'Cadena')->input('text', ['placeholder' => 'Búsqueda']) ?>
 
-            <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Canal'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'width' => '243px'
-                ],
-            ]) ?>
+            <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                <?= $form->field($busqueda, 'Combo')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                    'language' => 'es',
+                    'options' => ['placeholder' => 'Canal'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'width' => '243px'
+                    ],
+                ]) ?>
+            <?php endif; ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button', 'style' => 'margin-left: 10px']) ?>
 
@@ -65,7 +67,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Destino</th>
                                 <th>Articulo</th>
                                 <th>Cantidad</th>
-                                <th>Canal</th>
+                                <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                    <th>Canal</th>
+                                <?php endif; ?>
                                 <th>Estado</th>
                                 <th>Fecha de Alta</th>
                                 <th>Observaciones</th>
@@ -79,7 +83,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($recti['PuntoVentaDestino']) ?></td>
                                     <td><?= Html::encode($recti['Articulo']) ?></td>
                                     <td><?= Html::encode($recti['Cantidad']) ?></td>
-                                    <td><?= Html::encode($recti['Canal']) ?></td>
+                                    <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                        <td><?= Html::encode($recti['Canal']) ?></td>
+                                    <?php endif; ?>
                                     <td><?= Html::encode(RectificacionesPV::ESTADOS[$recti['Estado']]) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($recti['FechaAlta'])) ?></td>
                                     <td><?= Html::encode($recti['Observaciones']) ?></td>
@@ -137,7 +143,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
                                     <th>Precio de compra</th>
                                 <?php endif; ?>
-                                <th>Canal</th>
+                                <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                    <th>Canal</th>
+                                <?php endif; ?>
                                 <th>Cantidad</th>
                             </tr>
                         </thead>
@@ -151,7 +159,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
                                         <td><?= Html::encode($model['PrecioCosto']) ?></td>
                                     <?php endif; ?>
-                                    <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                                        <td><?= Html::encode($model['Canal']) ?></td>
+                                    <?php endif; ?>
                                     <td><?= Html::encode($model['Cantidad']) ?></td>
                                 </tr>
                             <?php endforeach; ?>

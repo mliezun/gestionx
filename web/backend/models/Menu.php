@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\components\PermisosHelper;
 use yii\helpers\ArrayHelper;
+use Yii;
 
 class Menu
 {
@@ -99,6 +100,9 @@ class Menu
      */
     public static function renderiza($el)
     {
+        if($el['name'] == 'Canales') {
+            return Yii::$app->session->get('Parametros')['CANTCANALES'] > 1;
+        }
         if (array_key_exists('permiso', $el)) {
             return PermisosHelper::algunPermisoContiene($el['permiso']);
         }

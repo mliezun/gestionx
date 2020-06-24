@@ -69,7 +69,7 @@ class Ventas extends Model
     public function rules()
     {
         return [
-            [['IdCliente','Tipo','IdCanal'],
+            [['IdCliente','Tipo'],
                 'required', 'on' => self::_ALTA],
             ['IdTipoComprobanteAfip', 'required', 'when' => function ($model) {
                 return $model->Tipo === 'V';

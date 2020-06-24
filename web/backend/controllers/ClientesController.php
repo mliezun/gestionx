@@ -76,6 +76,8 @@ class ClientesController extends Controller
             $listas = GestorListasPrecio::Buscar('S');
             $tiposdoc = GestorTiposDocAfip::Buscar();
 
+            $cliente->IdListaPrecio = $listas[0]['IdListaPrecio'];
+
             if ($cliente->Tipo == 'F') {
                 // Para físicas -> DNI por defecto
                 $cliente->IdTipoDocAfip = 96;
