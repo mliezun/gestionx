@@ -77,10 +77,10 @@ class UsuariosController extends BaseController
                 PermisosHelper::guardarPermisosSesion($usuario->DamePermisos());
 
                 // Yapada
-                $usuario->Dame();
-                $canales = GestorCanales::Buscar('Por Defecto', 'N', $usuario->IdEmpresa);
-                $idListaPorDefecto = $canales[0]['IdCanal'] ?? 0;
-                Yii::$app->session->set('IDCANALPORDEFECTO', $idListaPorDefecto);
+                // $usuario->Dame();
+                // $canales = GestorCanales::Buscar('Por Defecto', 'N', $usuario->IdEmpresa);
+                // $idListaPorDefecto = $canales[0]['IdCanal'] ?? 0;
+                // Yii::$app->session->set('IDCANALPORDEFECTO', $idListaPorDefecto);
 
                 // El usuario debe modificar el password
                 if ($usuario->DebeCambiarPass == 'S') {
