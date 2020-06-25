@@ -52,7 +52,7 @@ class Menu
         ],
         [
             'name' => 'Informes',
-            'icon' => 'fas fa-cogs',
+            'icon' => 'fas fa-file-alt',
             'href' => '/informes'
         ],
         [
