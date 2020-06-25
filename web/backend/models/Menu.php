@@ -51,6 +51,11 @@ class Menu
             'permiso' => 'BuscarCheques'
         ],
         [
+            'name' => 'Informes',
+            'icon' => 'fas fa-cogs',
+            'href' => '/informes'
+        ],
+        [
             'name' => 'Sistema',
             'icon' => 'fas fa-cogs',
             'submenu' => [

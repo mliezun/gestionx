@@ -740,6 +740,46 @@ CREATE TABLE Ventas(
 ;
 
 
+CREATE TABLE `ModelosReporte` (
+  `IdModeloReporte` int(11) NOT NULL,
+  `IdModeloReportePadre` int(11) DEFAULT NULL,
+  `Reporte` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `NombreMenu` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Procedimiento` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `OrdenMenu` int(11) NOT NULL,
+  `Estado` char(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Ayuda` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`IdModeloReporte`),
+  UNIQUE KEY `UI_Reporte` (`Reporte`),
+  UNIQUE KEY `UI_OrdenMenuIdModeloReportePadre` (`OrdenMenu`,`IdModeloReportePadre`),
+  UNIQUE KEY `UI_Procedimiento` (`Procedimiento`),
+  KEY `RefModelosReporte536` (`IdModeloReportePadre`),
+  CONSTRAINT `RefModelosReporte536` FOREIGN KEY (`IdModeloReportePadre`) REFERENCES `ModelosReporte` (`IdModeloReporte`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `ParamsReportes` (
+  `IdModeloReporte` int(11) NOT NULL,
+  `NroParametro` tinyint(4) NOT NULL,
+  `Parametro` varchar(70) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Tipo` char(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Etiqueta` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ValorDefecto` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ProcLlenado` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ListaTieneTodos` char(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `yiiRules` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `OrdenForm` tinyint(4) NOT NULL,
+  `ToolTipText` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ProcDame` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ValorNoEsUsaComun` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`IdModeloReporte`,`NroParametro`),
+  UNIQUE KEY `UI_ParametroIdModeloReporte` (`Parametro`,`IdModeloReporte`),
+  UNIQUE KEY `UI_OrdenFormIdModeloReporte` (`OrdenForm`,`IdModeloReporte`),
+  CONSTRAINT `RefModelosReporte537` FOREIGN KEY (`IdModeloReporte`) REFERENCES `ModelosReporte` (`IdModeloReporte`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 
 -- 
 -- INDEX: UI_Empresa 
