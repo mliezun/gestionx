@@ -745,6 +745,8 @@ SALIR: BEGIN
     /*
 	* Permite obtener los datos para generar un comprobante de Venta.
 	*/
+    DECLARE pIdEmpresa int;
+    DECLARE pNroComprobante int;
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -765,6 +767,7 @@ SALIR: BEGIN
 	            c.Nombres, c.Apellidos, c.RazonSocial, c.Documento, c.Datos,
 	            c.FechaAlta FechaAltaCliente, c.Tipo TipoCliente,
                 c.Observaciones ObservacionesCliente, c.Estado EstadoCliente,
+                IF(pv.Datos->"$.NroPuntoVenta" = '', NULL, CAST(pv.Datos->"$.NroPuntoVenta" AS UNSIGNED)) NroPuntoVenta,
                 JSON_ARRAYAGG(JSON_OBJECT(
                         'Articulo', a.Articulo,
                         'Codigo', a.Codigo,
@@ -806,6 +809,7 @@ SALIR: BEGIN
     INNER JOIN  Clientes c USING(IdCliente)
     INNER JOIN  LineasVenta lv USING(IdVenta)
     INNER JOIN  Articulos a USING(IdArticulo)
+    INNER JOIN  PuntosVenta pv USING(IdPuntoVenta)
     WHERE       v.IdVenta = pIdVenta AND v.Estado IN ('P', 'D')
     GROUP BY    v.IdVenta;
 
@@ -815,9 +819,17 @@ SALIR: BEGIN
             INNER JOIN  ComprobantesAfip c USING(IdVenta,IdTipoComprobanteAfip)
             SET         t.IdComprobanteAfip = c.IdComprobanteAfip, t.FechaGenerado = c.FechaGenerado;
         ELSE
+            SET pIdEmpresa = (SELECT IdEmpresa FROM Ventas WHERE IdVenta = pIdVenta);
+            SET pNroComprobante = (SELECT Valor FROM ParametroEmpresa WHERE IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROCOMPROBANTE' FOR UPDATE);
+
             INSERT INTO ComprobantesAfip
-            SELECT      0, IdVenta, IdTipoComprobanteAfip, FechaGenerado
+            SELECT      0, IdVenta, IdTipoComprobanteAfip, pNroComprobante, FechaGenerado
             FROM        tmp_comprobante;
+
+            -- Actulizo el parametro empresa
+            UPDATE	ParametroEmpresa
+            SET		Valor = pNroComprobante + 1
+            WHERE   IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROCOMPROBANTE';
 
             UPDATE tmp_comprobante SET IdComprobanteAfip = LAST_INSERT_ID();
         END IF;
