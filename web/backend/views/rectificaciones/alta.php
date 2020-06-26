@@ -8,7 +8,6 @@ use yii\web\View;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 
-
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model RectificacionesPV */

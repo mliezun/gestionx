@@ -9,7 +9,7 @@ use dosamigos\datepicker\DatePicker;
 <?=
 
 $form->field($model, $parametro['Parametro'])->widget(
-        DatePicker::className(),
+    DatePicker::className(),
     [
     'language' => Yii::$app->language,
     'clientOptions' => [

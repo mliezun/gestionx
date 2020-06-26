@@ -120,7 +120,7 @@ class GestorClientes
      * clientes por su estado con pEstado y filtrar las ventas por su estado con pEstadoVenta.
      * Permitiendo ver cuáles están en mora con pMora [S|N].
      * xsp_buscar_ventas_clientes
-     * 
+     *
      */
     public function BuscarVentas($IdCliente = 0, $FechaInicio = null, $FechaFin = null, $Estado = 'T', $EstadoVenta = 'T', $Mora = 'N')
     {

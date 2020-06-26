@@ -92,7 +92,7 @@ class TabsPuntosVenta extends BaseController
             $estado = $busqueda->Combo2 ? $busqueda->Combo2 : 'E';
             $proveedor = $busqueda->Combo ? $busqueda->Combo : 0;
             $canal = $busqueda->Combo3 ? $busqueda->Combo3 : 0;
-            $remitos = $gestor->Buscar(0,$busqueda->Cadena, $estado, $proveedor, $canal, 'S');
+            $remitos = $gestor->Buscar(0, $busqueda->Cadena, $estado, $proveedor, $canal, 'S');
         } else {
             $remitos = $gestor->Buscar(0);
         }
@@ -224,7 +224,7 @@ class TabsPuntosVenta extends BaseController
         }
         
         $paginado->totalCount = count($existencias);
-        $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
+        $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);
         $canales = GestorCanales::Buscar();
 
         return $this->renderAjax('articulos', [

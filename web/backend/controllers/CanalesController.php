@@ -58,7 +58,7 @@ class CanalesController extends BaseController
 
         $canal->setScenario(Canales::_ALTA);
 
-        if($canal->load(Yii::$app->request->post()) && $canal->validate()){
+        if ($canal->load(Yii::$app->request->post()) && $canal->validate()) {
             $resultado = GestorCanales::Alta($canal);
 
             Yii::$app->response->format = 'json';
@@ -67,7 +67,7 @@ class CanalesController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Canal',
                 'model' => $canal
@@ -87,7 +87,7 @@ class CanalesController extends BaseController
 
         $canal->setScenario(Canales::_MODIFICAR);
 
-        if ($canal->load(Yii::$app->request->post()) && $canal->validate() ) {
+        if ($canal->load(Yii::$app->request->post()) && $canal->validate()) {
             $resultado = GestorCanales::Modificar($canal);
 
             Yii::$app->response->format = 'json';
@@ -174,5 +174,3 @@ class CanalesController extends BaseController
         }
     }
 }
-
-?>

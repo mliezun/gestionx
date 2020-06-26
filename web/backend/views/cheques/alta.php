@@ -64,7 +64,7 @@ use kartik\date\DatePicker;
                 ]);
             ?>
 
-            <?php // $form->field($model, 'Importe')->widget(MaskMoney::classname()) ?>
+            <?php // $form->field($model, 'Importe')->widget(MaskMoney::classname())?>
 
             <?= $form->field($model, 'Importe') ?>
 

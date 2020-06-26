@@ -92,5 +92,3 @@ class IngresosController extends BaseController
         return ['error' => null];
     }
 }
-
-?>

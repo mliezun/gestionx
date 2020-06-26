@@ -137,5 +137,4 @@ class Ingresos extends Model
 
         return $query->queryAll();
     }
-
 }

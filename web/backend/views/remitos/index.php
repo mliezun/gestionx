@@ -95,7 +95,7 @@ $proveedor = new Proveedores();
                                                     </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E' OR $model['Estado'] == 'A') : ?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'A') : ?>
                                                 <?php if ($model['Estado'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarRemito')): ?>
                                                         <button type="button" class="btn btn-default"

@@ -66,9 +66,9 @@ use kartik\money\MaskMoney;
                 
             <?php endif; ?>
 
-            <?php if ($model['MedioPago'] == 'Tarjeta' OR $model['MedioPago'] == 'Efectivo' ) :?>
+            <?php if ($model['MedioPago'] == 'Tarjeta' or $model['MedioPago'] == 'Efectivo') :?>
 
-                <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname()) ?>
+                <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname())?>
 
                 <?= $form->field($model, 'Monto') ?>
 

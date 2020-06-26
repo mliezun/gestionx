@@ -11,7 +11,7 @@ class GestorUsuarios
      * Rol (0: todos los roles). Si la cadena de búsqueda es un texto, busca por usuario, apellido
      * y nombre. Para listar todos, cadena vacía.
      * xsp_buscar_usuarios
-     * 
+     *
      */
     public function Buscar($Cadena = '', $Estado = 'A', $IdRol = 0)
     {
@@ -31,14 +31,14 @@ class GestorUsuarios
 
     /**
      * Permite modificar un Usuario existente. No se puede cambiar el nombre de usuario, ni la contraseña.
-	 * Los nombres y apellidos son obligatorios. El correo electrónico no debe existir ya. El rol debe 
-	 * existir. Si se cambia el rol, y se resetea token. 
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Los nombres y apellidos son obligatorios. El correo electrónico no debe existir ya. El rol debe
+     * existir. Si se cambia el rol, y se resetea token.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_modifica_usuario
      */
     public function Modificar($usuario)
     {
-        $sql = "call xsp_modifica_usuario( :token, :idusuario, :idrol, :nombres, :apellidos, :email, " 
+        $sql = "call xsp_modifica_usuario( :token, :idusuario, :idrol, :nombres, :apellidos, :email, "
         . " :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -61,13 +61,13 @@ class GestorUsuarios
 
     /**
      * Permite dar de alta un Usuario controlando que el nombre del usuario no exista ya, siendo nombres y apellidos obligatorios.
-     * Se guarda el password hash de la contraseña. El correo electrónico no debe existir ya. El rol debe existir. 
+     * Se guarda el password hash de la contraseña. El correo electrónico no debe existir ya. El rol debe existir.
      * Devuelve OK + Id o el mensaje de error en Mensaje.
      * xsp_alta_usuario
      */
     public function Alta($usuario)
     {
-        $sql = "call xsp_alta_usuario( :token, :idrol, :nombres, :apellidos, :usuario, :password, :email, " 
+        $sql = "call xsp_alta_usuario( :token, :idrol, :nombres, :apellidos, :usuario, :password, :email, "
         . " :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);

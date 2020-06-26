@@ -65,7 +65,7 @@ class Articulos extends Model
     /**
      * Permite instaciar un artículo desde la base de datos.
      * xsp_dame_articulo
-     * 
+     *
      */
     public function Dame()
     {
@@ -84,7 +84,7 @@ class Articulos extends Model
      * Permite dar de baja un articulo controlando que no esté dado de baja ya.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_darbaja_articulo
-     * 
+     *
      */
     public function DarBaja()
     {
@@ -107,7 +107,7 @@ class Articulos extends Model
      * Permite activar un articulo controlando que no esté activo ya.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_activar_articulo
-     * 
+     *
      */
     public function Activar()
     {
@@ -230,8 +230,8 @@ class Articulos extends Model
     }
 
     /*
-	* Permite listar el historial de precios de un articulo.
-	*/
+    * Permite listar el historial de precios de un articulo.
+    */
     public function ListarHistorialPrecios()
     {
         $sql = 'CALL xsp_listar_historial_articulo( :id, :idempresa)';

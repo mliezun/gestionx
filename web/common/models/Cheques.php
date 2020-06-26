@@ -75,5 +75,4 @@ class Cheques extends Model
         
         $this->attributes = $query->queryOne();
     }
-
 }

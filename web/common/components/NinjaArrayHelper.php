@@ -37,7 +37,7 @@ class NinjaArrayHelper
     public static function assocToArray($arrayAssoc)
     {
         $out = [];
-        foreach($arrayAssoc as $key => $val) {
+        foreach ($arrayAssoc as $key => $val) {
             $out[] = [
                 $key => $val
             ];
@@ -48,12 +48,12 @@ class NinjaArrayHelper
     public static function renameKeys($array, $rename, $remove = true)
     {
         $out = [];
-        foreach($array as $el) {
+        foreach ($array as $el) {
             $newEl = [];
             foreach ($rename as $orgKey => $newKey) {
                 if (array_key_exists($orgKey, $el)) {
                     $newEl[$newKey] = $el[$orgKey];
-                } else if (!$remove) {
+                } elseif (!$remove) {
                     $newEl[$orgKey] = $el[$orgKey];
                 }
             }

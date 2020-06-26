@@ -71,7 +71,7 @@ class RectificacionesPV extends Model
 
     /**
      * Permite confirmar una rectificacion, solamente si esta se encuentra pendiente de confirmación.
-	 * Añade las existencias consolidadas en el destino.
+     * Añade las existencias consolidadas en el destino.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_confirmar_rectificacionpv
      */

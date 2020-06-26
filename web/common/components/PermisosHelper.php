@@ -79,7 +79,7 @@ class PermisosHelper
         $permisos = Yii::$app->session->get('Permisos');
 
         foreach ($permisos as $permiso) {
-            if (strpos($permiso, $cadena) !== FALSE) {
+            if (strpos($permiso, $cadena) !== false) {
                 return true;
             }
         }

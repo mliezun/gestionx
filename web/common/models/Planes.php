@@ -60,10 +60,10 @@ class Planes extends Model
      * devuelve el precio final de utilizar ese codigo de descuento.
      * La columna Descuento indica el valor total del descuento calculado.
      * xsp_dame_plan
-     * 
+     *
      */
     public function Dame($Codigo = '')
-    { 
+    {
         $sql = "CALL xsp_dame_plan (:IdPlan, :Codigo)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -82,7 +82,7 @@ class Planes extends Model
      *
      */
     public function DarBaja()
-    { 
+    {
         $sql = "CALL xsp_baja_plan(:token, :IdPlan, :IP, :UserAgent, :Aplicacion)";
 
         $query = Yii::$app->db->createCommand($sql);

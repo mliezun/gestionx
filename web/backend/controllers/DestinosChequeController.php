@@ -47,7 +47,7 @@ class DestinosChequeController extends BaseController
 
         $destino->setScenario(DestinosCheque::SCENARIO_ALTA);
 
-        if($destino->load(Yii::$app->request->post()) && $destino->validate()){
+        if ($destino->load(Yii::$app->request->post()) && $destino->validate()) {
             $resultado = GestorDestinosCheque::Alta($destino);
 
             Yii::$app->response->format = 'json';
@@ -56,7 +56,7 @@ class DestinosChequeController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Destino de Cheque',
                 'model' => $destino
@@ -72,7 +72,7 @@ class DestinosChequeController extends BaseController
 
         $destino->setScenario(DestinosCheque::SCENARIO_EDITAR);
 
-        if ($destino->load(Yii::$app->request->post()) && $destino->validate() ) {
+        if ($destino->load(Yii::$app->request->post()) && $destino->validate()) {
             $resultado = GestorDestinosCheque::Modificar($destino);
 
             Yii::$app->response->format = 'json';
@@ -147,5 +147,3 @@ class DestinosChequeController extends BaseController
         }
     }
 }
-
-?>

@@ -71,7 +71,7 @@ class GestorCheques
      * el estado y una fecha de inicio y fin.
      * Para listar todos, cadena vacía.
      * xsp_buscar_cheques
-     * 
+     *
      */
     public function Buscar($Cadena = '', $FechaInicio = '', $FechaFin = '', $Estado = 'D', $Tipo = 'T', $IdCliente = null)
     {

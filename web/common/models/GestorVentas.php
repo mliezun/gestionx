@@ -9,7 +9,7 @@ class GestorVentas
 {
     /**
      * Permite dar de alta una venta en un punto de venta, indicando el cliente, el tipo de venta y el usuario.
-	 * Devuelve OK + Id o el mensaje de error en Mensaje.
+     * Devuelve OK + Id o el mensaje de error en Mensaje.
      * xsp_alta_venta
      */
     public function Alta(Ventas $venta)
@@ -39,7 +39,7 @@ class GestorVentas
 
     /**
      * Permite modificar una venta en un punto de venta, siempre y cuando la venta este en edicion.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_modifica_venta
      */
     public function Modificar(Ventas $venta)
@@ -69,7 +69,7 @@ class GestorVentas
     /**
      * Permite borrar una venta controlando que no tenga pagos o lineas ventas asosiadas,
      * siempre y cunado se encuentre en estado de edicion.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_borra_venta
      */
     public function Borrar(Ventas $venta)

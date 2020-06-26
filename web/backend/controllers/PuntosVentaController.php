@@ -53,7 +53,7 @@ class PuntosVentaController extends BaseController
 
         $puntoventa->setScenario(PuntosVenta::_ALTA);
 
-        if($puntoventa->load(Yii::$app->request->post()) && $puntoventa->validate()){
+        if ($puntoventa->load(Yii::$app->request->post()) && $puntoventa->validate()) {
             $gestor = new GestorPuntosVenta();
             $resultado = $gestor->Alta($puntoventa);
 
@@ -63,7 +63,7 @@ class PuntosVentaController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta punto de venta',
                 'model' => $puntoventa
@@ -169,7 +169,7 @@ class PuntosVentaController extends BaseController
 
         $remito->setScenario(Remitos::_ALTA);
 
-        if($remito->load(Yii::$app->request->post())){
+        if ($remito->load(Yii::$app->request->post())) {
             $gestor = new GestorRemitos();
             $remito->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
             $resultado = $gestor->Alta($remito);
@@ -249,5 +249,3 @@ class PuntosVentaController extends BaseController
         return $tabs->{$nombre}();
     }
 }
-
-?>

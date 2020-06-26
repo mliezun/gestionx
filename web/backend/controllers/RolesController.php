@@ -48,7 +48,7 @@ class RolesController extends BaseController
 
         $rol->setScenario(Roles::_ALTA);
 
-        if($rol->load(Yii::$app->request->post()) && $rol->validate()){
+        if ($rol->load(Yii::$app->request->post()) && $rol->validate()) {
             $gestor = new GestorRoles();
             $resultado = $gestor->Alta($rol);
 
@@ -58,7 +58,7 @@ class RolesController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta rol',
                 'model' => $rol
@@ -226,5 +226,3 @@ class RolesController extends BaseController
         }
     }
 }
-
-?>

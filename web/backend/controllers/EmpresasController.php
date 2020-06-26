@@ -82,7 +82,6 @@ class EmpresasController extends BaseController
         $resultado = $empresa->Activar();
 
         if ($resultado == 'OK') {
-
             $empresa->Dame();
             $vhost_name = $empresa->vhost();
 
@@ -118,7 +117,6 @@ class EmpresasController extends BaseController
         $resultado = $empresa->DarBaja();
 
         if ($resultado == 'OK') {
-
             $empresa->Dame();
             $vhost_name = $empresa->vhost();
 

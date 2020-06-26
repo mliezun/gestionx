@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['TipoDocAfip']) ?>: <?= Html::encode($model['Documento']) ?></td>
                                     <td>
                                         <ul>
-                                        <?php foreach(json_decode($model['Datos']) as $dato => $valor): ?>
+                                        <?php foreach (json_decode($model['Datos']) as $dato => $valor): ?>
                                             <?php if (isset($valor) && $valor != ''): ?>
                                                 <li><?= Html::encode($dato) ?>: <?= Html::encode($valor) ?></li>
                                             <?php endif; ?>

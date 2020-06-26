@@ -105,7 +105,7 @@ class Menu
      */
     public static function renderiza($el)
     {
-        if($el['name'] == 'Canales') {
+        if ($el['name'] == 'Canales') {
             return Yii::$app->session->get('Parametros')['CANTCANALES'] > 1;
         }
         if (array_key_exists('permiso', $el)) {

@@ -16,5 +16,4 @@ class InformesAsset extends AssetBundle
     public $depends = [
         'backend\assets\AppAsset'
     ];
-
 }

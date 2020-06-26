@@ -102,7 +102,7 @@ class Ventas extends Model
     /**
      * Permite obtener los datos para generar un comprobante de Venta.
      * xsp_generar_comprobante_venta
-     * 
+     *
      */
     public function GenerarComprobante()
     {
@@ -120,7 +120,7 @@ class Ventas extends Model
 
     /**
      * Permite cambiar el estado de la Venta siempre y cuando no esté dado de baja ya.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_darbaja_venta
      */
     public function DarBaja()
@@ -142,7 +142,7 @@ class Ventas extends Model
 
     /**
      * Permite cambiar el estado de la Venta a Activo siempre y cuando el estado actual sea Edicion.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_activar_venta
      */
     public function Activar()
@@ -252,7 +252,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_efectivo
      */
     public function PagarEfectivo(Pagos $pago)
@@ -279,7 +279,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_tarjeta
      */
     public function PagarTarjeta(Pagos $pago)
@@ -311,7 +311,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_cheque
      */
     public function PagarCheque(Pagos $pago)
@@ -339,7 +339,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_mercaderia
      */
     public function PagarMercaderia(Pagos $pago)
@@ -367,7 +367,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_efectivo
      */
     public function ModificarPagoEfectivo(Pagos $pago)
@@ -393,7 +393,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_tarjeta
      */
     public function ModificarPagoTarjeta(Pagos $pago)
@@ -423,7 +423,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_cheque
      */
     public function ModificarPagoCheque(Pagos $pago)
@@ -449,7 +449,7 @@ class Ventas extends Model
     }
 
     /**
-     * 
+     *
      * xsp_pagar_venta_mercaderia
      */
     public function ModificarPagoMercaderia(Pagos $pago)

@@ -225,5 +225,3 @@ class InformesController extends BaseController
         */
     }
 }
-
-?>

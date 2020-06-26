@@ -316,9 +316,9 @@ class Usuarios extends Model implements IdentityInterface
 
     /**
      * Permite setear DebeCambiarPass en S y setear un nuevo Password, para un usuario indicado.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_restablecer_password
-     * 
+     *
      * @param Password Contraseña nueva para el usuario
      */
     public function RestablecerPassword($Password = '')

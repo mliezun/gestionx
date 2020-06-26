@@ -92,7 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fas fa-history" style="color: tomato"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio') ) : ?>
+                                            <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-ajax="<?= Url::to(['/listas-precio/borrar', 'id' => $model['IdListaPrecio']]) ?>"
                                                         data-hint="Borrar">

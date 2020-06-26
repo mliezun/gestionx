@@ -47,7 +47,7 @@ class EmpresasModel extends Model
 
         $str = strtolower(str_replace(' ', '_', $this->Empresa));
 
-        $str = strtr( $str, $unwanted_array );
+        $str = strtr($str, $unwanted_array);
 
         return $str;
     }
@@ -74,7 +74,7 @@ class EmpresasModel extends Model
      * Permite dar de baja una empresa, controlando que exista y se encuentre activa.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_darbaja_empresa
-     * 
+     *
      */
     public function DarBaja()
     {
@@ -97,7 +97,7 @@ class EmpresasModel extends Model
      * Permite activar una empresa, controlando que exista y se encuentre activa.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_activar_empresa
-     * 
+     *
      */
     public function Activar()
     {
@@ -115,5 +115,4 @@ class EmpresasModel extends Model
 
         return $query->queryScalar();
     }
-    
 }

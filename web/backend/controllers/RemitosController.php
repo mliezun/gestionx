@@ -24,12 +24,12 @@ class RemitosController extends BaseController
 
         $remito->setScenario(Remitos::_ALTA);
 
-        if($remito->load(Yii::$app->request->post())){
+        if ($remito->load(Yii::$app->request->post())) {
             $gestor = new GestorRemitos();
             $remito->IdEmpresa = Yii::$app->user->identity->IdEmpresa;
             $remito->IdCanal = $remito->IdCanal ?? Yii::$app->session->get('Parametros')['CANALPORDEFECTO'];
 
-            $resultado = $gestor->Alta($remito,$id);
+            $resultado = $gestor->Alta($remito, $id);
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
@@ -122,5 +122,3 @@ class RemitosController extends BaseController
         }
     }
 }
-
-?>
