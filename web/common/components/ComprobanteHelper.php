@@ -216,6 +216,9 @@ class ComprobanteHelper
     private static function datosResultado($resultado)
     {
         $resultado = json_decode(json_encode($resultado), true);
+        if (array_key_exists('CAEFchVto', $resultado)) {
+            $resultado['CAEFchVto'] = str_replace('-', '', $resultado['CAEFchVto']);
+        }
         return NinjaArrayHelper::normalizar($resultado, [
             'CAE' => 'cae',
             'CodAutorizacion' => 'cae',
