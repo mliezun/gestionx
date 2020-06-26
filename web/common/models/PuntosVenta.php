@@ -33,7 +33,7 @@ class PuntosVenta extends Model
         return [
             [['PuntoVenta','Direccion','Telefono','NroPuntoVenta'],
                 'required', 'on' => self::_ALTA],
-            [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono'],
+            [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono','NroPuntoVenta'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];

@@ -55,7 +55,7 @@ class ComprobanteHelper
             // Cantidad de comprobantes a registrar
             'CantReg' 	=> 1,
             // Punto de venta
-            'PtoVta' 	=> $datos['NroPuntoVenta'] ?? $datos['IdPuntoVenta'],
+            'PtoVta' 	=> $datos['NroPuntoVenta'],
             // Tipo de comprobante (ver tipos disponibles)
             'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
             // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
@@ -65,9 +65,9 @@ class ComprobanteHelper
             // Número de documento del comprador (0 consumidor final)
             'DocNro' 	=> $datos['Documento'],
             // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
-            'CbteDesde' 	=> $datos['IdComprobanteAfip'],
+            'CbteDesde' 	=> $datos['NroComprobante'],
             // Número de comprobante o numero del último comprobante en caso de ser mas de uno
-            'CbteHasta' 	=> $datos['IdComprobanteAfip'],
+            'CbteHasta' 	=> $datos['NroComprobante'],
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
             // Importe total del comprobante
@@ -88,13 +88,6 @@ class ComprobanteHelper
             'MonCotiz' 	=> 1
         ];
 
-        if ($datosAfip['PtoVta'] == 3) {
-            $datosAfip['PtoVta'] = 5;
-        }
-        if ($datosAfip['PtoVta'] == 5) {
-            $datosAfip['PtoVta'] = 4;
-        }
-
         $datosCliente = json_decode($datos['Datos'], true);
 
         if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT'])) {
@@ -108,8 +101,8 @@ class ComprobanteHelper
             $datosAfip['CbtesAsoc'] = [
                 [
                     'Tipo' => $comprobanteOrig['IdTipoComprobanteAfip'],
-                    'PtoVta' => $datos['IdPuntoVenta'],
-                    'Nro' => $comprobanteOrig['IdComprobanteAfip'],
+                    'PtoVta' => $datos['NroPuntoVenta'],
+                    'Nro' => $comprobanteOrig['NroComprobante'],
                     'CbteFch' => FechaHelper::fechaAfip($comprobanteOrig['FechaGenerado']),
                 ]
             ];
@@ -313,6 +306,9 @@ class ComprobanteHelper
         $comprobante = $datos['Comprobante'];
 
         Yii::info($comprobante, 'Comprobante AFIP');
+
+        define('SOAP_1_1', 1);
+        define('SOAP_1_2', 2);
 
         $cbteAfip = $afip->ElectronicBilling->GetVoucherInfo($comprobante['CbteDesde'], $comprobante['PtoVta'], $comprobante['CbteTipo']);
 

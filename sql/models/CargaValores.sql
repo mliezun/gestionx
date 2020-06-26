@@ -87,7 +87,6 @@ INSERT INTO Parametros VALUES('AFIPKEY', 1, 'Clave AFIP WS.', 'Cadena', 'SET @pV
 INSERT INTO Parametros VALUES('PROVINCIA', 1, 'Provincia por defecto en la cual se cargarán los clientes.', 'Cadena', 'SET @pValor = "";', 'S', 'S');
 INSERT INTO Parametros VALUES('CANTCANALES', 1, 'Indica la cantidad de canales disponibles para el stock. De ser 1 deshabilita las vistas e inputs referentes a canales.', 'Entero', 'SET @pValor = 1;', 'N', 'S');
 INSERT INTO Parametros VALUES('CANALPORDEFECTO', 1, 'Id del canal por defecto de una empresa.', 'Entero', 'SET @pValor = 0;', 'N', 'S');
-INSERT INTO Parametros VALUES('NUMEROVENTA', 1, 'Numero de Venta de la proxima venta que se realice. Se calcula al insertar una nueva venta.', 'Entero', 'SET @pValor = 1;', 'N', 'S');
 INSERT INTO Parametros VALUES('NUMEROCOMPROBANTE', 1, 'Numero de Comprobante de Afip del proximo comprobante. Se calcula al insertar un nuevo comprobante.', 'Entero', 'SET @pValor = 1;', 'N', 'S');
 INSERT INTO Parametros VALUES('LISTAPORDEFECTO', 1, 'Id de la lista por defecto de una empresa.', 'Entero', 'SET @pValor = 0;', 'N', 'S');
 

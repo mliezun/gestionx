@@ -120,10 +120,10 @@ CREATE TABLE Comprobantes(
 
 
 -- 
--- TABLE: ComprobantesAfip
+-- TABLE: ComprobantesVentas
 --
 
-CREATE TABLE `ComprobantesAfip` (
+CREATE TABLE `ComprobantesVentas` (
   `IdComprobanteAfip` bigint(20) NOT NULL AUTO_INCREMENT,
   `IdVenta` bigint(20) NOT NULL,
   `IdTipoComprobanteAfip` smallint(6) DEFAULT NULL,
@@ -731,7 +731,6 @@ CREATE TABLE Ventas(
     IdTipoComprobanteAfip    SMALLINT          NOT NULL,
     IdTipoTributo            TINYINT           NOT NULL,
     IdCanal                  BIGINT            NOT NULL,
-    NroVenta                 INT               NOT NULL,
     Monto                    DECIMAL(12, 2),
     FechaAlta                DATETIME          NOT NULL,
     Estado                   CHAR(1)           NOT NULL,

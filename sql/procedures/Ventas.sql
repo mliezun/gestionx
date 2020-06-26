@@ -11,7 +11,6 @@ SALIR:BEGIN
     */
     DECLARE pIdUsuario bigint;
     DECLARE pIdVenta bigint;
-    DECLARE pNroVenta int;
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
     -- Manejo de error en la transacción    
@@ -91,21 +90,15 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pNroVenta = (SELECT Valor FROM ParametroEmpresa WHERE IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROVENTA' FOR UPDATE);
         INSERT INTO Ventas 
         SELECT 0, pIdPuntoVenta, pIdEmpresa, pIdCliente, pIdUsuario,
-        pIdTipoComprobanteAfip, pIdTipoTributo, pIdCanal, pNroVenta, 0, NOW(), pTipo, 'E', pObservaciones;
+        pIdTipoComprobanteAfip, pIdTipoTributo, pIdCanal, 0, NOW(), pTipo, 'E', pObservaciones;
         SET pIdVenta = LAST_INSERT_ID();
 
 		-- Audita
 		INSERT INTO aud_Ventas
 		SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
-
-        -- Actulizo el parametro empresa
-        UPDATE	ParametroEmpresa
-        SET		Valor = pNroVenta + 1
-        WHERE   IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROVENTA';
         
         SELECT CONCAT('OK', pIdVenta) Mensaje;
 	COMMIT;
@@ -767,7 +760,7 @@ SALIR: BEGIN
 	            c.Nombres, c.Apellidos, c.RazonSocial, c.Documento, c.Datos,
 	            c.FechaAlta FechaAltaCliente, c.Tipo TipoCliente,
                 c.Observaciones ObservacionesCliente, c.Estado EstadoCliente,
-                IF(pv.Datos->"$.NroPuntoVenta" = '', NULL, CAST(pv.Datos->"$.NroPuntoVenta" AS UNSIGNED)) NroPuntoVenta,
+                pv.Datos->>'$.NroPuntoVenta' NroPuntoVenta,
                 JSON_ARRAYAGG(JSON_OBJECT(
                         'Articulo', a.Articulo,
                         'Codigo', a.Codigo,
@@ -785,15 +778,16 @@ SALIR: BEGIN
                     v.IdTipoComprobanteAfip+2,
                     -- ELSE
                     v.IdTipoComprobanteAfip
-                ) IdTipoComprobanteAfip, 0 IdComprobanteAfip, NOW() FechaGenerado,
+                ) IdTipoComprobanteAfip, 0 IdComprobanteAfip, 0 NroComprobante, NOW() FechaGenerado,
                 IF(v.Estado = 'D', 
                     -- THEN
                     (SELECT JSON_OBJECT(
                                 'IdComprobanteAfip', IdComprobanteAfip,
+                                'NroComprobante', NroComprobante,
                                 'IdTipoComprobanteAfip', IdTipoComprobanteAfip,
                                 'FechaGenerado', FechaGenerado
                             )
-                    FROM    ComprobantesAfip
+                    FROM    ComprobantesVentas
                     WHERE   IdVenta = v.IdVenta
                             AND IdTipoComprobanteAfip = v.IdTipoComprobanteAfip
                     LIMIT   1),
@@ -810,19 +804,19 @@ SALIR: BEGIN
     INNER JOIN  LineasVenta lv USING(IdVenta)
     INNER JOIN  Articulos a USING(IdArticulo)
     INNER JOIN  PuntosVenta pv USING(IdPuntoVenta)
-    WHERE       v.IdVenta = pIdVenta AND v.Estado IN ('P', 'D')
+    WHERE       v.IdVenta = pIdVenta AND v.Estado IN ('P', 'D', 'A')
     GROUP BY    v.IdVenta;
 
     START TRANSACTION;
-        IF EXISTS (SELECT 1 FROM ComprobantesAfip INNER JOIN tmp_comprobante USING(IdVenta,IdTipoComprobanteAfip)) THEN
+        IF EXISTS (SELECT 1 FROM ComprobantesVentas INNER JOIN tmp_comprobante USING(IdVenta,IdTipoComprobanteAfip)) THEN
             UPDATE      tmp_comprobante t
-            INNER JOIN  ComprobantesAfip c USING(IdVenta,IdTipoComprobanteAfip)
-            SET         t.IdComprobanteAfip = c.IdComprobanteAfip, t.FechaGenerado = c.FechaGenerado;
-        ELSE
+            INNER JOIN  ComprobantesVentas c USING(IdVenta,IdTipoComprobanteAfip)
+            SET         t.IdComprobanteAfip = c.IdComprobanteAfip, t.NroComprobante = c.NroComprobante, t.FechaGenerado = c.FechaGenerado;
+        ELSEIF (SELECT 1 FROM tmp_comprobante WHERE Tipo = 'V') THEN -- es una venta
             SET pIdEmpresa = (SELECT IdEmpresa FROM Ventas WHERE IdVenta = pIdVenta);
             SET pNroComprobante = (SELECT Valor FROM ParametroEmpresa WHERE IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROCOMPROBANTE' FOR UPDATE);
 
-            INSERT INTO ComprobantesAfip
+            INSERT INTO ComprobantesVentas
             SELECT      0, IdVenta, IdTipoComprobanteAfip, pNroComprobante, FechaGenerado
             FROM        tmp_comprobante;
 
@@ -830,6 +824,12 @@ SALIR: BEGIN
             UPDATE	ParametroEmpresa
             SET		Valor = pNroComprobante + 1
             WHERE   IdEmpresa = pIdEmpresa AND Parametro = 'NUMEROCOMPROBANTE';
+
+            UPDATE tmp_comprobante SET NroComprobante = pNroComprobante, IdComprobanteAfip = LAST_INSERT_ID();
+        ELSE -- es cotizacion, presupuesto, etc.
+            INSERT INTO ComprobantesVentas
+            SELECT      0, IdVenta, IdTipoComprobanteAfip, NULL, FechaGenerado
+            FROM        tmp_comprobante;
 
             UPDATE tmp_comprobante SET IdComprobanteAfip = LAST_INSERT_ID();
         END IF;
