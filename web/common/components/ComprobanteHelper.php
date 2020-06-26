@@ -55,7 +55,7 @@ class ComprobanteHelper
             // Cantidad de comprobantes a registrar
             'CantReg' 	=> 1,
             // Punto de venta
-            'PtoVta' 	=> $datos['IdPuntoVenta'],
+            'PtoVta' 	=> $datos['NroPuntoVenta'] ?? $datos['IdPuntoVenta'],
             // Tipo de comprobante (ver tipos disponibles)
             'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
             // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios

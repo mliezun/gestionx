@@ -127,6 +127,7 @@ CREATE TABLE `ComprobantesAfip` (
   `IdComprobanteAfip` bigint(20) NOT NULL AUTO_INCREMENT,
   `IdVenta` bigint(20) NOT NULL,
   `IdTipoComprobanteAfip` smallint(6) DEFAULT NULL,
+  `NroComprobante` int(11) DEFAULT NULL,
   `FechaGenerado` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`IdComprobanteAfip`),
   UNIQUE KEY `UI_IdVentaIdTipoComprobanteAfip` (`IdVenta`,`IdTipoComprobanteAfip`)

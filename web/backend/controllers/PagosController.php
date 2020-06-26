@@ -107,11 +107,9 @@ class PagosController extends BaseController
         if ($pago->load(Yii::$app->request->post())) {
             switch (Yii::$app->request->get('Tipo')) {
                 case 'T':
-                    $pago->Monto = floor($pago->Monto) / 100;
                     $resultado = $venta->PagarTarjeta($pago);
                     break;
                 case 'E':
-                    $pago->Monto = floor($pago->Monto) / 100;
                     $resultado = $venta->PagarEfectivo($pago);
                     break;
                 case 'M':
