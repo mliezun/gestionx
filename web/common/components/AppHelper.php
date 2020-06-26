@@ -3,6 +3,7 @@
 namespace common\components;
 
 use Yii;
+use yii\web\Response;
 
 class AppHelper
 {

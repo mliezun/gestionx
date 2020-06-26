@@ -12,6 +12,7 @@ use common\models\GestorReportes;
 use common\components\PermisosHelper;
 use common\components\AppHelper;
 use common\components\FechaHelper;
+use common\components\CmdHelper;
 
 class InformesController extends BaseController
 {
@@ -80,9 +81,12 @@ class InformesController extends BaseController
                         'resultado' => null,
                     ]);
 
-                    $comando = "informes/generar '$key' '$idReporte' \"$cadena\" > /dev/null &";
+                    $comando = "informes/generar '$key' '$idReporte' \"$cadena\"";
 
-                    Yii::$app->consoleRunner->run($comando);
+                    CmdHelper::exec([
+                        "php " . Yii::getAlias("@webroot/../../yii") . " " . $comando
+                    ]);
+                    
 
                     AppHelper::setJsonResponseFormat();
                     return [

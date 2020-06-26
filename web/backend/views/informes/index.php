@@ -17,43 +17,29 @@ $this->registerJs('Informes.init()');
 $this->title = "Informes";
 $this->params['breadcrumbs'][] = $this->title;
 
-function arbol($menu, $padre = null)
+function buscar_hojas($menu)
 {
-    $clase = ($padre == 1 ? 'nav navbar-nav' : 'dropdown-menu');
-    echo "<ul class='$clase'>";
+    $out = array();
     foreach ($menu as $elemento) {
-        if ($elemento['IdModeloReportePadre'] == $padre) {
-            if ($elemento['EsHoja'] == 'N') {
-                echo '<li class="dropdown" style="display: none">';
-                echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">'
-                . $elemento['NombreMenu']
-                . '<span class="caret"></span></a>';
-                arbol($menu, $elemento['IdModeloReporte']);
-                echo '</li>';
-            } elseif (PermisosHelper::tienePermiso($elemento['Reporte'])) {
-                echo '<li>';
-                echo '<a href="' . Url::to(['/informes', 'id' => $elemento['IdModeloReporte']]) . '"'
-                . 'data-hint="' . $elemento['Ayuda'] . '">'
-                . $elemento['NombreMenu']
-                . '</a>';
-                echo '</li>';
-            }
+        if ($elemento['EsHoja'] == 'S') {
+            $out[] = $elemento;
         }
     }
-    echo '</ul>';
+    return $out;
 }
+
+$reportes = buscar_hojas($menu);
+
+Yii::info($reportes);
 ?>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-
-        <div class="collapse navbar-collapse">
-
-            <?php arbol($menu, 1) ?>
-
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
+<div style="margin-bottom: 30px">
+    <?php foreach ($reportes as $r): ?>
+    <a data-hint="<?= $r['Ayuda'] ?>" href="<?= URL::to(['/informes', 'id' => $r['IdModeloReporte']]) ?>">
+        <?= $r['NombreMenu'] ?>
+    </a>
+    <?php endforeach; ?>
+</div>
 
 <?php if ($reporte != null): ?>
 
@@ -83,76 +69,68 @@ function arbol($menu, $padre = null)
 
             <?php
                 foreach ($parametros as $parametro) {
-                    if ($parametro['ValorNoEsUsaComun'] != null && !PermisosHelper::tienePermiso('UsaComun')) {
-                        echo $this->render('inputs/oculto', [
-                            'model' => $model,
-                            'form' => $form,
-                            'parametro' => $parametro
-                        ]);
-                    } else {
-                        switch ($parametro['Tipo']) {
-                            case 'E':
-                                echo $this->render('inputs/entero', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'L':
-                                echo $this->render('inputs/listado', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'F':
-                                echo $this->render('inputs/fecha', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'H':
-                                echo $this->render('inputs/fechahora', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'A':
-                                echo $this->render('inputs/autocompletado', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'M':
-                                echo $this->render('inputs/moneda', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            case 'O':
-                                echo $this->render('inputs/opcion', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                                break;
-                            default:
-                                echo $this->render('inputs/cadena', [
-                                    'model' => $model,
-                                    'form' => $form,
-                                    'parametro' => $parametro
-                                ]);
-                        }
+                    switch ($parametro['Tipo']) {
+                        case 'E':
+                            echo $this->render('inputs/entero', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'L':
+                            echo $this->render('inputs/listado', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'F':
+                            echo $this->render('inputs/fecha', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'H':
+                            echo $this->render('inputs/fechahora', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'A':
+                            echo $this->render('inputs/autocompletado', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'M':
+                            echo $this->render('inputs/moneda', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        case 'O':
+                            echo $this->render('inputs/opcion', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
+                        default:
+                            echo $this->render('inputs/cadena', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
                     }
                 }
                 ?>
             <?php ActiveForm::end(); ?>
 
-            <button class="btn btn-default pull-right no-print" @click="generarInforme( <?= $reporte['IdModeloReporte'] ?>)">
+            <button class="btn btn-primary pull-right no-print" @click="generarInforme( <?= $reporte['IdModeloReporte'] ?>)">
                 <i class="fa fa-play"></i> <?= "Ejecutar" ?>
             </button>
 

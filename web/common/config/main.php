@@ -36,9 +36,5 @@ return [
             'thousandSeparator' => '.',
             'locale' => 'es-AR'
         ],
-        'consoleRunner' => [
-            'class' => 'toriphes\console\Runner',
-            'yiiscript' => '@root/yii',
-        ],
     ],
 ];

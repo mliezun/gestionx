@@ -33,8 +33,7 @@
         "kartik-v/yii2-money": "@dev",
         "macgyer/yii2-materializecss": "3.0.0",
         "phpoffice/phpexcel": "1.8.2",
-        "kartik-v/yii2-mpdf": "1.0.1",
-        "toriphes/yii2-console-runner": "dev-master#9a8226b2c8011945018cb35cd6310647c1004180"
+        "kartik-v/yii2-mpdf": "1.0.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
