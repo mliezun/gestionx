@@ -64,7 +64,9 @@ use kartik\date\DatePicker;
                 ]);
             ?>
 
-            <?= $form->field($model, 'Importe')->widget(MaskMoney::classname()) ?>
+            <?php // $form->field($model, 'Importe')->widget(MaskMoney::classname())?>
+
+            <?= $form->field($model, 'Importe') ?>
 
             <?= $form->field($model, 'FechaVencimiento')->widget(DatePicker::classname(), [
                 'options' => ['placeholder' => 'Fecha de Vencimiento'],

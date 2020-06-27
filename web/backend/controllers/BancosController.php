@@ -13,7 +13,6 @@ use yii\helpers\ArrayHelper;
 
 class BancosController extends BaseController
 {
-
     public function actionListar($Cadena = '')
     {
         Yii::$app->response->format = 'json';
@@ -61,7 +60,8 @@ class BancosController extends BaseController
 
         $gestor = new GestorBancos();
 
-        return parent::alta($banco, [$gestor, 'Alta'], function () use ($banco) {});
+        return parent::alta($banco, [$gestor, 'Alta'], function () use ($banco) {
+        });
     }
 
     public function actionEditar($id)
@@ -109,5 +109,3 @@ class BancosController extends BaseController
         return parent::aplicarOperacionGestor($banco, array(new GestorBancos, 'Borrar'));
     }
 }
-
-?>

@@ -23,7 +23,7 @@ class ListasPrecioController extends BaseController
 
         if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $estado = $busqueda->Check ? $busqueda->Check : 'N';
-            $listas = GestorListasPrecio::Buscar('S',$busqueda->Cadena, $estado);
+            $listas = GestorListasPrecio::Buscar('S', $busqueda->Cadena, $estado);
         } else {
             $listas = GestorListasPrecio::Buscar('S');
         }
@@ -45,7 +45,7 @@ class ListasPrecioController extends BaseController
 
         $lista->setScenario(ListasPrecio::_ALTA);
 
-        if($lista->load(Yii::$app->request->post()) && $lista->validate()){
+        if ($lista->load(Yii::$app->request->post()) && $lista->validate()) {
             $gestor = new GestorListasPrecio();
             $resultado = $gestor->Alta($lista);
 
@@ -55,7 +55,7 @@ class ListasPrecioController extends BaseController
             } else {
                 return ['error' => $resultado];
             }
-        }else {
+        } else {
             return $this->renderAjax('alta', [
                 'titulo' => 'Alta Lista de Precios',
                 'model' => $lista
@@ -147,5 +147,3 @@ class ListasPrecioController extends BaseController
         ]);
     }
 }
-
-?>

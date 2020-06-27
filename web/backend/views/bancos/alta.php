@@ -4,6 +4,7 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
+
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Articulos */

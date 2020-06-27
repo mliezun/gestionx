@@ -41,7 +41,9 @@ use kartik\money\MaskMoney;
                 
             <?php endif; ?>
 
-            <?= $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname()) ?>
+            <?php // $form->field($model, 'PrecioVenta')->widget(MaskMoney::classname())?>
+
+            <?= $form->field($model, 'PrecioVenta') ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

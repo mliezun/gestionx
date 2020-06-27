@@ -7,13 +7,12 @@ use common\models\Planes;
 use Yii;
 use yii\console\Exception;
 
-
 class PaypalComponent
 {
     /**
      * Da de alta una suscripción en paypal. La crea en estado pendiente de aprobación.
      * Retorna id de la suscripción y el link para redirigir al cliente a la ventana de pago.
-     * 
+     *
      * @param IdSuscripcion Identificador único de una suscripción. Usado para idempotencia
      * @param Plan Nombre del Plan al que se desea suscribir
      */
@@ -38,7 +37,7 @@ class PaypalComponent
     /**
      * Retorna los datos de una suscripción.
      * Referencia: https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_get
-     * 
+     *
      * @param subscription_id Identificador de la suscripción en Paypal
      */
     public function obtenerSuscripcion($suscription_id)
@@ -51,7 +50,7 @@ class PaypalComponent
     /**
      * Cancela una suscripción.
      * Referencia: https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_cancel
-     * 
+     *
      * @param subscription_id Identificador de la suscripción en Paypal
      */
     public function cancelarSuscripcion($subscription_id)
@@ -64,7 +63,7 @@ class PaypalComponent
     /**
      * Verifica que el webhook tenga la firma correcta.
      * Si no es correcta tira una excepción.
-     * 
+     *
      */
     public static function verificarWebhook()
     {

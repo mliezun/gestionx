@@ -12,7 +12,7 @@ class GestorTiposTributos
      * Para listar todos, cadena vacía.
      * xsp_buscar_tipos_tributos
      */
-    public function Buscar( $Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar($Cadena = '', $IncluyeBajas = 'N')
     {
         $sql = "call xsp_buscar_tipos_tributos(:cadena, :iBajas)";
 

@@ -18,13 +18,17 @@ class ComprobanteHelper
 
         // Envío los datos de la venta a AFIP
         if ($esAfip) {
-            $resultado = self::altaComprobante([
-                'CUIT' => $params['CUIT'],
-                'cert' => $esProd ? $params['AFIPCERT'] : $params['AFIPCERTHOMO'],
-                'key' => $params['AFIPKEY'],
-                'Comprobante' => $datosAfip
-            ], $esProd);
-            $resultado = self::datosResultado($resultado);
+            $cacheKey = serialize(['comprobante-afip', $datos['IdComprobanteAfip']]);
+            $funcionObtener = function () use ($params, $esProd, $datosAfip) {
+                $resultado = self::altaComprobante([
+                    'CUIT' => $params['CUIT'],
+                    'cert' => $esProd ? $params['AFIPCERT'] : $params['AFIPCERTHOMO'],
+                    'key' => $params['AFIPKEY'],
+                    'Comprobante' => $datosAfip
+                ], $esProd);
+                return self::datosResultado($resultado);
+            };
+            $resultado = Yii::$app->cache->getOrSet($cacheKey, $funcionObtener);
         } else {
             $idempresa = Yii::$app->user->identity->IdEmpresa;
             $cae = $idempresa . str_pad("{$datos['IdVenta']}", 16 - strlen($idempresa), '0', STR_PAD_LEFT);
@@ -51,7 +55,7 @@ class ComprobanteHelper
             // Cantidad de comprobantes a registrar
             'CantReg' 	=> 1,
             // Punto de venta
-            'PtoVta' 	=> $datos['NroPuntoVenta'] ?? $datos['IdPuntoVenta'],
+            'PtoVta' 	=> $datos['NroPuntoVenta'],
             // Tipo de comprobante (ver tipos disponibles)
             'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
             // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
@@ -61,9 +65,9 @@ class ComprobanteHelper
             // Número de documento del comprador (0 consumidor final)
             'DocNro' 	=> $datos['Documento'],
             // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
-            'CbteDesde' 	=> $datos['IdComprobanteAfip'],
+            'CbteDesde' 	=> $datos['NroComprobante'],
             // Número de comprobante o numero del último comprobante en caso de ser mas de uno
-            'CbteHasta' 	=> $datos['IdComprobanteAfip'],
+            'CbteHasta' 	=> $datos['NroComprobante'],
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
             // Importe total del comprobante
@@ -97,8 +101,8 @@ class ComprobanteHelper
             $datosAfip['CbtesAsoc'] = [
                 [
                     'Tipo' => $comprobanteOrig['IdTipoComprobanteAfip'],
-                    'PtoVta' => $datos['IdPuntoVenta'],
-                    'Nro' => $comprobanteOrig['IdComprobanteAfip'],
+                    'PtoVta' => $datos['NroPuntoVenta'],
+                    'Nro' => $comprobanteOrig['NroComprobante'],
                     'CbteFch' => FechaHelper::fechaAfip($comprobanteOrig['FechaGenerado']),
                 ]
             ];
@@ -162,8 +166,8 @@ class ComprobanteHelper
             'Articulos' => [
                 'items',
                 [
-                    'Descripcion' => 'ds',
-                    'Articulo' => 'codigo',
+                    'Articulo' => 'ds',
+                    'Codigo' => 'codigo',
                     'Cantidad' => 'qty',
                     'Precio' => 'precio',
                     'Subtotal' => 'importe',
@@ -205,6 +209,9 @@ class ComprobanteHelper
     private static function datosResultado($resultado)
     {
         $resultado = json_decode(json_encode($resultado), true);
+        if (array_key_exists('CAEFchVto', $resultado)) {
+            $resultado['CAEFchVto'] = str_replace('-', '', $resultado['CAEFchVto']);
+        }
         return NinjaArrayHelper::normalizar($resultado, [
             'CAE' => 'cae',
             'CodAutorizacion' => 'cae',
@@ -216,7 +223,6 @@ class ComprobanteHelper
 
     /**
      * Generación de comprobante de AFIP.
-     * Referencia: https://github.com/mliezun/eratospdf
      */
     private static function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
     {
@@ -299,12 +305,19 @@ class ComprobanteHelper
 
         $comprobante = $datos['Comprobante'];
 
+        Yii::info($comprobante, 'Comprobante AFIP');
+
+        define('SOAP_1_1', 1);
+        define('SOAP_1_2', 2);
+
         $cbteAfip = $afip->ElectronicBilling->GetVoucherInfo($comprobante['CbteDesde'], $comprobante['PtoVta'], $comprobante['CbteTipo']);
 
         if (!isset($cbteAfip)) {
             $res = $afip->ElectronicBilling->CreateNextVoucher($comprobante);
+            Yii::info($res, 'Nuevo Comprobante AFIP');
         } else {
             $res = $cbteAfip;
+            Yii::info($res, 'Comprobante Almacenado AFIP');
         }
 
         // Borra los archivos temporales

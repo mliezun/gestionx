@@ -8,7 +8,6 @@ use yii\helpers\Html;
 use common\widgets\Alert;
 use common\models\Empresa;
 
-
 AppAsset::register($this);
 
 $defaultCrumb = [ 'label' => 'Inicio', 'link' => '/' ];

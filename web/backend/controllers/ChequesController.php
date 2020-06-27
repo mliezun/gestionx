@@ -17,7 +17,6 @@ use yii\helpers\ArrayHelper;
 
 class ChequesController extends BaseController
 {
-
     public function actionListar($Cadena = '')
     {
         Yii::$app->response->format = 'json';
@@ -31,11 +30,11 @@ class ChequesController extends BaseController
     {
         PermisosHelper::verificarAlgunPermiso(array('BuscarChequesClientes','BuscarChequesPropios'));
 
-        if (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios')) && PermisosHelper::tieneAlgunPermiso(array('BuscarChequesClientes'))){
+        if (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios')) && PermisosHelper::tieneAlgunPermiso(array('BuscarChequesClientes'))) {
             $Tipo = 'T';
-        } elseif (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios'))){
+        } elseif (PermisosHelper::tieneAlgunPermiso(array('BuscarChequesPropios'))) {
             $Tipo = 'P';
-        } else{
+        } else {
             $Tipo = 'C';
         }
 
@@ -68,9 +67,9 @@ class ChequesController extends BaseController
         PermisosHelper::verificarPermiso('AltaCheque' . $Tipo);
 
         $cheque = new Cheques();
-        if ($Tipo == 'Propio'){
+        if ($Tipo == 'Propio') {
             $cheque->setScenario(Cheques::SCENARIO_ALTA_PROPIO);
-        }else{
+        } else {
             $cheque->setScenario(Cheques::SCENARIO_ALTA);
         }
 
@@ -127,9 +126,9 @@ class ChequesController extends BaseController
         PermisosHelper::verificaAlgunPermisoContiene('ModificarCheque');
 
         $cheque = new Cheques();
-        if ($Tipo == 'Propio'){
+        if ($Tipo == 'Propio') {
             $cheque->setScenario(Cheques::SCENARIO_EDITAR_PROPIO);
-        }else{
+        } else {
             $cheque->setScenario(Cheques::SCENARIO_EDITAR);
         }
 
@@ -199,5 +198,3 @@ class ChequesController extends BaseController
         return parent::aplicarOperacionGestor($cheque, array(new GestorCheques, 'Borrar'));
     }
 }
-
-?>

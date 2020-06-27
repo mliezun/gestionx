@@ -42,8 +42,7 @@ $config = [
             'name' => 'BACKSESSID',
             'timeout' => 60 * 60,
             'cookieParams' => [
-                // Solo mientras use http
-                'secure' => false
+                'secure' => true
             ]
         ],
         'urlManager' => [
@@ -121,7 +120,8 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        'allowedIPs' => ['190.30.53.206'],
+        'allowedIPs' => ['181.110.81.66', '186.123.83.241'],
+        'historySize' => 5000
     ];
 }
 

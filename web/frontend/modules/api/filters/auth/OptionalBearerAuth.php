@@ -23,7 +23,7 @@ class OptionalBearerAuth extends HttpBearerAuth
         $response = $this->response ? : Yii::$app->getResponse();
         try {
             $identity = $this->authenticate(
-                    $this->user ? : Yii::$app->getUser(),
+                $this->user ? : Yii::$app->getUser(),
                 $this->request ? : Yii::$app->getRequest(),
                 $response
             );

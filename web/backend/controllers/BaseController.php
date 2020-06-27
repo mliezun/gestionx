@@ -41,7 +41,7 @@ class BaseController extends Controller
 
     /**
      * Genera la vista de listado de elementos de un modelo específico.
-     * 
+     *
      * @param gestor Gestor que implementa el método Buscar, el cual retorna un listado de elementos.
      * @param buscar Listado de atributos de la clase BuscarForm que se tienen en cuenta como filtros.
      */
@@ -74,7 +74,7 @@ class BaseController extends Controller
 
     /**
      * Permite generar la vista de alta de un modelo.
-     * 
+     *
      * @param model Un objeto que implemente la clase Model de yii.
      * @param accion array(gestor, metodo) que se ejecutará sobre el modelo.
      * @param mostrar Función que se ejecutará en caso que el pedido sea un GET.
@@ -102,7 +102,7 @@ class BaseController extends Controller
 
     /**
      * Permite cambiar el estado de un modelo.
-     * 
+     *
      * @param model Un objeto que implemente la clase Model de yii.
      * @param operacion Método que se ejecutará sobre el objeto.
      */
@@ -121,7 +121,7 @@ class BaseController extends Controller
 
     /**
      * Permite aplicar una operación del gestor sobre un modelo.
-     * 
+     *
      * @param model Un objeto que implemente la clase Model de yii.
      * @param accion array(gestor, metodo) que se ejecutará sobre el modelo.
      */
@@ -138,5 +138,3 @@ class BaseController extends Controller
         }
     }
 }
-
-?>

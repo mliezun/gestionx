@@ -105,7 +105,7 @@ class Empresa extends Model
     }
 
     /**
-     * 
+     *
      */
     public function CambiarParametro($Parametro, $Valor)
     {

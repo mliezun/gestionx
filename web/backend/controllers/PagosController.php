@@ -93,7 +93,7 @@ class PagosController extends BaseController
                 PermisosHelper::verificarPermiso('PagarVentaMercaderia');
                 $pago->setScenario(Pagos::_ALTA_MERCADERIA);
                 $pago->MedioPago = 'Mercaderia';
-                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta,'','A',0, 0,'N');
+                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta, '', 'A', 0, 0, 'N');
                 break;
             case 'C':
                 PermisosHelper::verificarPermiso('PagarVentaCheque');
@@ -104,7 +104,7 @@ class PagosController extends BaseController
         }
         $pago->DameMedioPago();
 
-        if($pago->load(Yii::$app->request->post())){
+        if ($pago->load(Yii::$app->request->post())) {
             switch (Yii::$app->request->get('Tipo')) {
                 case 'T':
                     $resultado = $venta->PagarTarjeta($pago);
@@ -150,7 +150,7 @@ class PagosController extends BaseController
 
         $pago->setScenario(Pagos::_ELECCION);
 
-        if($pago->load(Yii::$app->request->post())){
+        if ($pago->load(Yii::$app->request->post())) {
             $pago->DameMedioPago();
             switch ($pago->MedioPago) {
                 case 'Tarjeta':
@@ -164,7 +164,7 @@ class PagosController extends BaseController
                 case 'Mercaderia':
                     PermisosHelper::verificarPermiso('PagarVentaMercaderia');
                     $pago->setScenario(Pagos::_ALTA_MERCADERIA);
-                    $remitos = (new GestorRemitos())->Buscar(0,'','A',0);
+                    $remitos = (new GestorRemitos())->Buscar(0, '', 'A', 0);
                     break;
                 case 'Cheque':
                     PermisosHelper::verificarPermiso('PagarVentaCheque');
@@ -211,7 +211,7 @@ class PagosController extends BaseController
             case 'Mercaderia':
                 PermisosHelper::verificarPermiso('ModificarPagoMercaderia');
                 $pago->setScenario(Pagos::_MODIFICAR_MERCADERIA);
-                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta,'','A',0,'N');
+                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta, '', 'A', 0, 'N');
                 $remito = new Remitos();
                 $remito->IdRemito = $pago->IdRemito;
                 $remito->Dame();
@@ -228,7 +228,7 @@ class PagosController extends BaseController
                 break;
         }
 
-        if($pago->load(Yii::$app->request->post())){
+        if ($pago->load(Yii::$app->request->post())) {
             switch ($pago->MedioPago) {
                 case 'Tarjeta':
                     $resultado = (new Ventas())->ModificarPagoTarjeta($pago);
@@ -277,7 +277,4 @@ class PagosController extends BaseController
             return ['error' => $resultado];
         }
     }
-
 }
-
-?>

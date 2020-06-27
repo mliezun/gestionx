@@ -161,12 +161,16 @@ class UsuariosController extends BaseController
 
             Yii::$app->response->format = 'json';
             if (substr($resultado, 0, 2) == 'OK') {
-                EmailHelper::enviarEmail($from, $usuario->Email,
-                'Alta usuario ' . $parametros['EMPRESA'],
-                'alta-usuario', [
+                EmailHelper::enviarEmail(
+                    $from,
+                    $usuario->Email,
+                    'Alta usuario ' . $parametros['EMPRESA'],
+                    'alta-usuario',
+                    [
                     'usuario' => $usuario->Usuario,
                     'password' => $usuario->Password
-                ]);
+                ]
+                );
                 return ['error' => null];
             } else {
                 return ['error' => $resultado];
@@ -245,11 +249,15 @@ class UsuariosController extends BaseController
             return ['error' => $resultado];
         }
         
-        EmailHelper::enviarEmail($from, $usuario->Email,
-        'Restablecimiento de contraseña ' . $parametros['EMPRESA'],
-        'restablecer-pass', [
+        EmailHelper::enviarEmail(
+            $from,
+            $usuario->Email,
+            'Restablecimiento de contraseña ' . $parametros['EMPRESA'],
+            'restablecer-pass',
+            [
             'password' => $pass
-        ]);
+        ]
+        );
             
         return ['error' => null];
     }
@@ -315,5 +323,3 @@ class UsuariosController extends BaseController
         }
     }
 }
-
-?>

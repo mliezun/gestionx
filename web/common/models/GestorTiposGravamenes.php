@@ -10,7 +10,7 @@ class GestorTiposGravamenes
      * Permite dar de alta un proveedor. Controlando que el nombre del proveedor no exista ya
      * dentro de la misma empresa. Devuelve OK+Id o el mensaje de error en Mensaje.
      * xsp_alta_proveedor
-     * 
+     *
      */
     public function Alta(TiposGravamenes $TipoGravamen)
     {
@@ -33,7 +33,7 @@ class GestorTiposGravamenes
      * Permite buscar proveedores dentro de una empresa indicando una cadena de búsqueda
      * y si se incluyen bajas.
      * xsp_buscar_proveedores
-     * 
+     *
      */
     public function Buscar($Cadena = '', $IncluyeBajas = 'N')
     {

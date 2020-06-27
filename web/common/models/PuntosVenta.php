@@ -33,7 +33,7 @@ class PuntosVenta extends Model
         return [
             [['PuntoVenta','Direccion','Telefono','NroPuntoVenta'],
                 'required', 'on' => self::_ALTA],
-            [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono'],
+            [['IdPuntoVenta', 'PuntoVenta','Direccion','Telefono','NroPuntoVenta'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];
@@ -111,9 +111,9 @@ class PuntosVenta extends Model
 
     /**
      * Permite asignar el punto de venta al que pertenece un usuario, controlando que ambos pertenezcan a la misma empresa.
-	 * Un usuario sólo puede pertenecer a un punto de venta. Por lo tanto se dan de baja las pertenencias anteriores y se 
-	 * da de alta la nueva en estado activo.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Un usuario sólo puede pertenecer a un punto de venta. Por lo tanto se dan de baja las pertenencias anteriores y se
+     * da de alta la nueva en estado activo.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_asignar_usuario_puntoventa
      */
     public function AsignarUsuario($IdUsuario)
@@ -136,7 +136,7 @@ class PuntosVenta extends Model
 
     /**
      * Permite desasignar a un usuario del punto de venta.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_desasignar_usuario_puntoventa
      */
     public function DesasignarUsuario($IdUsuario)
@@ -213,9 +213,9 @@ class PuntosVenta extends Model
 
     /**
      * Permite dar de alta una Rectificacion de Punto de Venta, incrementando o decrementando la cantidad
-	 * de existencias de un articulo en un punto de venta con la posibilidad de que se aplique
-	 * la accion contraria inmediatamente en otro punto de venta de la misma empresa
-	 * Devuelve OK + Id o el mensaje de error en Mensaje.
+     * de existencias de un articulo en un punto de venta con la posibilidad de que se aplique
+     * la accion contraria inmediatamente en otro punto de venta de la misma empresa
+     * Devuelve OK + Id o el mensaje de error en Mensaje.
      * xsp_alta_rectificacionpv
      */
     public function AltaRectificacion(RectificacionesPV $Rectificacion)
@@ -247,7 +247,7 @@ class PuntosVenta extends Model
      * y si se incluyen bajas. Si pIdPuntoVenta = 0 lista todas las rectficaciones activos de una empresa.
      * xsp_buscar_rectificacionespv
      */
-    public function ListarRectificaciones($cadena = '',$Incluye = 'N', $idCanal = 0)
+    public function ListarRectificaciones($cadena = '', $Incluye = 'N', $idCanal = 0)
     {
         $sql = 'CALL xsp_buscar_rectificacionespv(:idempresa, :idPuntoVenta, :idCanal, :cadena, :incluye )';
         
@@ -266,8 +266,8 @@ class PuntosVenta extends Model
 
     /**
      * Permite borrar una Rectificacion de Punto de Venta, dentro del tiempo de anulacion.
-	 * Siempre y cuando se encuentre pendiente de confirmación
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Siempre y cuando se encuentre pendiente de confirmación
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_borra_rectificacionpv
      */
     public function BorrarRectificacion(RectificacionesPV $Rectificacion)
@@ -290,7 +290,7 @@ class PuntosVenta extends Model
 
     /**
      * Permite devolver una rectificacion, solamente si esta se encuentra pendiente de confirmación.
-	 * Devuelve OK o el mensaje de error en Mensaje.
+     * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_devolucion_rectificacionpv
      */
     public function DevolverRectificacion(RectificacionesPV $Rectificacion)

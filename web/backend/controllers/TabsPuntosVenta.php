@@ -224,7 +224,7 @@ class TabsPuntosVenta extends BaseController
         }
         
         $paginado->totalCount = count($existencias);
-        $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);        
+        $existencias = array_slice($existencias, $paginado->page * $paginado->pageSize, $paginado->pageSize);
         $canales = GestorCanales::Buscar();
 
         return $this->renderAjax('articulos', [

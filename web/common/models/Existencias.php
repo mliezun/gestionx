@@ -15,5 +15,4 @@ class Existencias extends Model
     public $Codigo;
     public $Descripcion;
     public $PrecioCosto;
-
 }

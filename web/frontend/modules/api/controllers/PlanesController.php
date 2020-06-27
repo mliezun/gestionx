@@ -39,7 +39,7 @@ class PlanesController extends BaseController
         
                 
         $out = [];
-        if (count($listado) == 1 && array_key_exists('Mensaje', $listado[0])){
+        if (count($listado) == 1 && array_key_exists('Mensaje', $listado[0])) {
             throw new ForbiddenHttpException($listado[0]['Mensaje']);
         }
         foreach ($listado as $u) {
@@ -60,9 +60,9 @@ class PlanesController extends BaseController
      * @apiName GetPlan
      * @apiGroup Planes
      * @apiPermission logueado
-     * 
+     *
      * @apiParam {Entero} IdPlan Identificar del PLAN.
-     * 
+     *
      * @apiError {String} Error Mensaje de error.
      */
     public function actionView($id)

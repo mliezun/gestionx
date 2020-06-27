@@ -22,5 +22,3 @@ class GestorMediosPago
         return $clientes;*/
     }
 }
-
-

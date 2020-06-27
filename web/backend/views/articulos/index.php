@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= Html::encode($valor) ?></td>
                                     <?php endforeach; ?>
                                     <td>
-                                    <?php foreach(json_decode($model['Existencias'], true) as $existencias): ?>
+                                    <?php foreach (json_decode($model['Existencias'], true) as $existencias): ?>
                                     <div>
                                         <strong><?= Html::encode("{$existencias['PuntoVenta']}") ?>:</strong>
                                             <?= Html::encode("{$existencias['Cantidad']}") ?>
