@@ -129,14 +129,14 @@ $proveedor = new Proveedores();
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
+                                            <?php if (PermisosHelper::tienePermiso('AltaLineaVenta')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['/ventas/lineas', 'id' => $model['IdVenta']]) ?>" 
+                                                        data-hint="Lineas">
+                                                    <i class="fas fa-clipboard-list"></i>
+                                                </a>
+                                            <?php endif; ?>
                                             <?php if ($model['Estado'] == 'E') :?>
-                                                <?php if (PermisosHelper::tienePermiso('AltaLineaVenta')) : ?>
-                                                    <a class="btn btn-default"
-                                                            href="<?= Url::to(['/ventas/lineas', 'id' => $model['IdVenta']]) ?>" 
-                                                            data-hint="Lineas">
-                                                        <i class="fas fa-clipboard-list"></i>
-                                                    </a>
-                                                <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-modal="<?= Url::to(['ventas/editar', 'id' => $model['IdVenta']]) ?>"
