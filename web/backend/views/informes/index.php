@@ -159,7 +159,7 @@ Yii::info($reportes);
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
                         <th><?php
                         $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
-                        echo Html::encode($titulo) ?>
+                        echo Html::encode(str_replace('Json', '', $titulo)) ?>
                         </th>
                         <?php endforeach; ?>
                     </tr>
@@ -178,7 +178,20 @@ Yii::info($reportes);
                                 } elseif (strpos($columna, '#') !== false) {
                                     $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.#', '#']);
                                 }
-                                echo isset($celda) ? $celda : '';
+                                if (strpos($columna, 'Json') !== false) {
+                                    $valores = json_decode($celda, true);
+                                    if (is_array($valores)) {
+                                        foreach ($valores as $valor) {
+                                            echo '<ul>';
+                                            foreach ($valor as $k => $v) {
+                                                echo "<li>{$k}: {$v}</li>";
+                                            }
+                                            echo '</ul>';
+                                        }
+                                    }
+                                } else {
+                                    echo isset($celda) ? $celda : '';
+                                }
                             ?>
                         </td>
                         <?php endforeach; ?>

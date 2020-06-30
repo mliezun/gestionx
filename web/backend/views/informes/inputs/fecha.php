@@ -1,21 +1,16 @@
 <?php
-use dosamigos\datepicker\DatePicker;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $parametro [] */
 ?>
 
-<?=
-
-$form->field($model, $parametro['Parametro'])->widget(
-    DatePicker::className(),
-    [
-    'language' => Yii::$app->language,
-    'clientOptions' => [
-        'autoclose' => true,
-        'format' => Yii::$app->formatter->datepickerFormat,
-        'zIndexOffset' => 1050
+<?= $form->field($model, $parametro['Parametro'])->widget(DatePicker::classname(), [
+    'options' => [],
+    'type' => DatePicker::TYPE_INPUT,
+    'pluginOptions' => [
+        'autoclose'=> true,
+        'format' => 'dd/mm/yyyy'
     ]
-]
-)->hint(Yii::t("backend", $parametro['ToolTipText']))->label(Yii::t("backend", $parametro['Etiqueta']));
+])->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']) ?>

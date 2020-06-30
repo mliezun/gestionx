@@ -81,7 +81,8 @@ class InformesController extends BaseController
                         'resultado' => null,
                     ]);
 
-                    $comando = "informes/generar '$key' '$idReporte' \"$cadena\"";
+                    $IdEmpresa = Yii::$app->user->identity->IdEmpresa;
+                    $comando = "informes/generar '{$IdEmpresa}' '$key' '$idReporte' \"$cadena\"";
 
                     CmdHelper::exec([
                         "php " . Yii::getAlias("@webroot/../../yii") . " " . $comando
@@ -122,12 +123,39 @@ class InformesController extends BaseController
         return ['ready' => $resultado != null || is_array($resultado)];
     }
 
+    public function actionAutocompletar($idModeloReporte, $nroParametro, $id = 0, $cadena = '')
+    {
+        AppHelper::setJsonResponseFormat();
+
+        $gestor = new GestorReportes();
+
+        if ($id != 0) {
+            $nombre = $gestor->DameParametroListado($idModeloReporte, $nroParametro, $id)['Nombre'];
+
+            $out = ['id' => $id, 'text' => $nombre];
+        } else {
+            if (strlen($cadena) > 3) {
+                $elementos = $gestor->LlenarListadoParametro($idModeloReporte, $nroParametro, $cadena);
+
+                $out = array();
+
+                foreach ($elementos as $elemento) {
+                    $out[] = ['id' => $elemento['Id'], 'text' => $elemento['Nombre']];
+                }
+            } else {
+                $out = ['id' => '0', 'text' => "Ingresar más de 4 caracteres."];
+            }
+        }
+
+        return $out;
+    }
+
     public function actionExcel($id, $key)
     {
         ini_set("memory_limit", "1024M");
 
         if (!intval($id) || !Yii::$app->cache->get($key)) {
-            throw new HttpException('422', Yii::t("backend", "El informe es inválido.", []));
+            throw new HttpException('422', "El informe es inválido.");
         }
 
         $gestor = new GestorReportes();

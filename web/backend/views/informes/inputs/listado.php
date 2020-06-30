@@ -14,8 +14,8 @@ foreach ($opciones as &$opcion) {
 $opciones = ArrayHelper::map($opciones, 'Id', 'Nombre');
 
 if ($parametro['ListaTieneTodos'] == 'S') {
-    $opciones = ArrayHelper::merge($opciones, ['T' => Yii::t("backend", "Todos", [])]);
+    $opciones = ArrayHelper::merge($opciones, ['T' => "Todos"]);
 }
 ?>
 
-<?= $form->field($model, $parametro['Parametro'])->dropDownList($opciones)->hint(Yii::t("backend", $parametro['ToolTipText']))->label(Yii::t("backend", $parametro['Etiqueta']));
+<?= $form->field($model, $parametro['Parametro'])->dropDownList($opciones)->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']);
