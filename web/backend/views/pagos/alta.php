@@ -8,6 +8,130 @@ use yii\web\View;
 use kartik\select2\Select2;
 use kartik\money\MaskMoney;
 
+// MOVER A OTRO ARCHIVO
+$this->registerJs('
+(function() {
+    function controlarTipoPago() {
+        var cambio = false;
+        switch (parseInt($("#pagos-idmediopago").val())) {
+            // Efectivo - Deposito
+            case 1:
+            case 6:
+                $(".field-pagos-monto").show();
+
+                $("#pagos-nrotarjeta").val("");
+                $(".field-pagos-nrotarjeta").hide();
+                $("#pagos-mesvencimiento").val("");
+                $(".field-pagos-mesvencimiento").hide();
+                $("#pagos-aniovencimiento").val("");
+                $(".field-pagos-aniovencimiento").hide();
+                $("#pagos-ccv").val("");
+                $(".field-pagos-ccv").hide();
+                $("#pagos-idremito").val(0);
+                $(".field-pagos-idremito").hide();
+                $("#pagos-idcheque").val(0);
+                $(".field-pagos-idcheque").hide();
+                return true;
+            // Mercaderia
+            case 2:
+                $(".field-pagos-idremito").show();
+
+                $("#pagos-monto").val(null);
+                $(".field-pagos-monto").hide();
+                $("#pagos-nrotarjeta").val("");
+                $(".field-pagos-nrotarjeta").hide();
+                $("#pagos-mesvencimiento").val("");
+                $(".field-pagos-mesvencimiento").hide();
+                $("#pagos-aniovencimiento").val("");
+                $(".field-pagos-aniovencimiento").hide();
+                $("#pagos-ccv").val("");
+                $(".field-pagos-ccv").hide();
+                $("#pagos-idcheque").val(0);
+                $(".field-pagos-idcheque").hide();
+                return true;
+            // Tarjeta
+            case 3:
+                $(".field-pagos-monto").show();
+                $(".field-pagos-nrotarjeta").show();
+                $(".field-pagos-mesvencimiento").show();
+                $(".field-pagos-aniovencimiento").show();
+                $(".field-pagos-ccv").show();
+                
+                $("#pagos-idremito").val(0);
+                $(".field-pagos-idremito").hide();
+                $("#pagos-idcheque").val(0);
+                $(".field-pagos-idcheque").hide();
+                return true;
+            // Cheque
+            case 5:
+                $(".field-pagos-idcheque").show();
+
+                $("#pagos-monto").val(null);
+                $(".field-pagos-monto").hide();
+                $("#pagos-nrotarjeta").val("");
+                $(".field-pagos-nrotarjeta").hide();
+                $("#pagos-mesvencimiento").val("");
+                $(".field-pagos-mesvencimiento").hide();
+                $("#pagos-aniovencimiento").val("");
+                $(".field-pagos-aniovencimiento").hide();
+                $("#pagos-ccv").val("");
+                $(".field-pagos-ccv").hide();
+                $("#pagos-idremito").val(0);
+                $(".field-pagos-idremito").hide();
+                return true;
+            default:
+                break;
+        }
+        // Efectivo - Deposito
+        $("#pagos-monto").val(0);
+        $(".field-pagos-monto").hide();
+
+        // Tarjeta
+        $("#pagos-nrotarjeta").val("");
+        $(".field-pagos-nrotarjeta").hide();
+        $("#pagos-mesvencimiento").val("");
+        $(".field-pagos-mesvencimiento").hide();
+        $("#pagos-aniovencimiento").val("");
+        $(".field-pagos-aniovencimiento").hide();
+        $("#pagos-ccv").val("");
+        $(".field-pagos-ccv").hide();
+
+        // Mercaderia
+        $("#pagos-idremito").val(0);
+        $(".field-pagos-idremito").hide();
+
+        // Cheque
+        $("#pagos-idcheque").val(0);
+        $(".field-pagos-idcheque").hide();
+        return false;
+    };
+
+    $("#pagos-idmediopago").change(function() {
+        controlarTipoPago();
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-nrotarjeta");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-mesvencimiento");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-aniovencimiento");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
+    });
+
+    $("#pagos-idmediopago").keyup(function() {
+        controlarTipoPago();
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-nrotarjeta");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-mesvencimiento");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-aniovencimiento");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
+    });
+
+    controlarTipoPago();
+})();
+');
+
 /* @var $this View */
 /* @var $form ActiveForm */
 /* @var $model Pagos */
@@ -22,63 +146,51 @@ use kartik\money\MaskMoney;
             </button>
         </div>
 
-        <?php $form = ActiveForm::begin(['id' => 'pago-form',]) ?>
+        <?php $form = ActiveForm::begin(['id' => 'pagos-form',]) ?>
 
         <div class="modal-body">
             <div id="errores-modal"> </div>
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
 
-            <?= Html::activeHiddenInput($model, 'IdMedioPago') ?>
+            <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
 
-            <?php if ($model['MedioPago'] == 'Tarjeta') :?>
-                <?= $form->field($model, 'NroTarjeta') ?>
+            <?= $form->field($model, 'NroTarjeta') ?>
 
-                <?= $form->field($model, 'MesVencimiento') ?>
+            <?= $form->field($model, 'MesVencimiento') ?>
 
-                <?= $form->field($model, 'AnioVencimiento') ?>
+            <?= $form->field($model, 'AnioVencimiento') ?>
 
-                <?= $form->field($model, 'CCV') ?>
-                
-            <?php endif; ?>
+            <?= $form->field($model, 'CCV') ?>
 
-            <?php if ($model['MedioPago'] == 'Mercaderia') :?>
-                <?= $form->field($model, 'IdRemito')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Nro de Remito'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ]
-                ]) ?>
-                
-            <?php endif; ?>
+            <?= $form->field($model, 'IdRemito')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Nro de Remito'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ]
+            ]) ?>
 
-            <?php if ($model['MedioPago'] == 'Cheque') :?>
-                <?= $form->field($model, 'IdCheque')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($cheques, 'IdCheque', 'NroCheque'),
-                    'language' => 'es',
-                    'options' => ['placeholder' => 'Nro de Cheque'],
-                    'pluginOptions' => [
-                        'allowClear' => true
-                    ]
-                ]) ?>
-                
-            <?php endif; ?>
+            <?= $form->field($model, 'IdCheque')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map($cheques, 'IdCheque', 'NroCheque'),
+                'language' => 'es',
+                'options' => ['placeholder' => 'Nro de Cheque'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ]
+            ]) ?>
 
-            <?php if ($model['MedioPago'] == 'Tarjeta' or $model['MedioPago'] == 'Efectivo') :?>
+            <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname()) 
+            ?>
 
-                <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname())?>
+            <?= $form->field($model, 'Monto') ?>
 
-                <?= $form->field($model, 'Monto') ?>
-
-            <?php endif; ?>
-
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'Observaciones')->textarea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>
-            <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary',]) ?>  
+            <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary',]) ?>
         </div>
         <?php ActiveForm::end(); ?>
     </div>

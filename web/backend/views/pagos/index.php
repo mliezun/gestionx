@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="buscar--form">
             <?php $form = ActiveForm::begin(['layout' => 'inline']); ?>
 
-            <?= $form->field($busqueda, 'Combo')->dropDownList(Pagos::TIPOS, ['prompt' => 'Tipo']) ?>
+            <?= $form->field($busqueda, 'Combo')->dropDownList(Pagos::MEDIOS_PAGO, ['prompt' => 'Tipo']) ?>
 
             <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary', 'name' => 'pregunta-button']) ?> 
 
@@ -30,33 +30,38 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?php if (/* PermisosHelper::tienePermiso('PagarVenta') && */ $model['Estado'] != 'P') : ?>
             <div class="alta--button">
+                <button type="button" class="btn btn-primary"
+                        data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta']]) ?>"
+                        data-hint="Nuevo Pago">
+                    Nuevo Pago
+                </button>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaEfectivo')) : ?>
-                    <button type="button" class="btn btn-primary"
-                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E', 'Prueba'=> 'GG']) ?>"
+                    <!-- <button type="button" class="btn btn-primary"
+                            data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'E']) ?>"
                             data-hint="Nuevo Pago con Efectivo">
                         Nuevo Pago con Efectivo
-                    </button>
+                    </button> -->
                 <?php endif; ?>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaTarjeta')) : ?>
-                    <button type="button" class="btn btn-secondary"
+                    <!-- <button type="button" class="btn btn-secondary"
                             data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'T']) ?>"
                             data-hint="Nuevo Pago con Tarjeta">
                         Nuevo Pago con Tarjeta
-                    </button>
+                    </button> -->
                 <?php endif; ?>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaMercaderia')) : ?>
-                    <button type="button" class="btn btn-primary"
+                    <!-- <button type="button" class="btn btn-primary"
                             data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'M']) ?>"
                             data-hint="Nuevo Pago con Mercaderia">
                         Nuevo Pago con Mercaderia
-                    </button>
+                    </button> -->
                 <?php endif; ?>
                 <?php if (PermisosHelper::tienePermiso('PagarVentaCheque')) : ?>
-                    <button type="button" class="btn btn-secondary"
+                    <!-- <button type="button" class="btn btn-secondary"
                             data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'Tipo' => 'C']) ?>"
                             data-hint="Nuevo Pago con Cheque">
                         Nuevo Pago con Cheque
-                    </button>
+                    </button> -->
                 <?php endif; ?>
             </div>
         <?php endif; ?>

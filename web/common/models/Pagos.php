@@ -34,6 +34,9 @@ class Pagos extends Model
     const _ALTA_EFECTIVO = 'altae';
     const _ALTA_MERCADERIA = 'altam';
     const _ALTA_CHEQUE = 'altac';
+    const _ALTA_DEPOSITO = 'altad';
+    const _ALTA_GARANTIA = 'altag';
+    const _ALTA_RETENCION = 'altar';
     const _MODIFICAR_TARJETA = 'modificart';
     const _MODIFICAR_EFECTIVO = 'modificare';
     const _MODIFICAR_MERCADERIA = 'modificarm';
@@ -41,11 +44,22 @@ class Pagos extends Model
     const _ELECCION = 'eleccion';
 
     const TIPOS = [
-        'T' => 'Tarjeta',
         'E' => 'Efectivo',
+        'T' => 'Tarjeta',
+        'D' => 'Deposito',
         'C' => 'Cheque',
         'M' => 'Mercaderia',
+        'G' => 'Garantia',
+        'R' => 'Retencion',
         'A' => 'Todos'
+    ];
+
+    const MEDIOS_PAGO = [
+        1 => 'Efectivo',
+        3 => 'Tarjeta',
+        5 => 'Cheque',
+        6 => 'Deposito',
+        0 => 'Todos'
     ];
 
     public function attributeLabels()
@@ -68,7 +82,7 @@ class Pagos extends Model
             ['Monto', 'double'],
             [['IdVenta','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
-            [['IdVenta','IdMedioPago','IdRemito','Monto'],
+            [['IdVenta','IdMedioPago','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
             [['IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_MERCADERIA],
@@ -84,6 +98,13 @@ class Pagos extends Model
             'required', 'on' => self::_MODIFICAR_MERCADERIA],
             [['IdPago','IdVenta','IdMedioPago','IdCheque'],
             'required', 'on' => self::_MODIFICAR_CHEQUE],
+            ['Monto', 'required', 'when' => function ($model) {
+                return $model->IdMedioPago == 1 or $model->IdMedioPago == 6 or $model->IdMedioPago == 3;
+            }, 'whenClient' => "function (attribute, value) { 
+                return parseInt($('ventas-idmediopago').val()) == 1 
+                || parseInt($('ventas-idmediopago').val()) == 6
+                || parseInt($('ventas-idmediopago').val()) == 3;
+            }"],
             [$this->attributes(), 'safe']
         ];
     }

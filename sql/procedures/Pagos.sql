@@ -1,3 +1,23 @@
+DROP PROCEDURE IF EXISTS `xsp_buscar_pagos_venta`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_buscar_pagos_venta`(pIdVenta bigint, pIdMedioPago SMALLINT)
+SALIR: BEGIN
+    /*
+	* Permite buscar los pagos de una venta. Se puede filtrar por medio de pago (0 para listar todos)
+	*/
+	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
+    FROM        Pagos p 
+    INNER JOIN  MediosPago mp USING(IdMedioPago)
+    INNER JOIN  Ventas v USING(IdVenta)
+    INNER JOIN  Clientes cl USING(IdCliente)
+    LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
+    LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
+    WHERE       p.IdVenta = pIdVenta
+                AND (IdMedioPago = pIdMedioPago OR pIdMedioPago = 0)
+    ORDER BY    p.FechaAlta;
+END$$
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `xsp_pagar_venta_cheque`;
 DELIMITER $$
 CREATE PROCEDURE `xsp_pagar_venta_cheque`(pToken varchar(500), pIdVenta bigint, pIdMedioPago smallint,

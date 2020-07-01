@@ -475,6 +475,24 @@ class Ventas extends Model
     }
     
     /**
+     * Permite buscar los pagos de una venta. Se puede filtrar por medio de pago (0 para listar todos)
+     * xsp_buscar_pagos_venta
+     */
+    public function BuscarPagos($IdMedioPago = 0)
+    {
+        $sql = "call xsp_buscar_pagos_venta( :idVenta, :IdMedioPago)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idVenta' => $this->IdVenta,
+            ':IdMedioPago' => $IdMedioPago,
+        ]);
+
+        return $query->queryAll();
+    }
+
+    /**
      * Permite obtener los pagos de una venta.
      * xsp_dame_pagos_venta
      */

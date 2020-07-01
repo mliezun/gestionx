@@ -11,6 +11,7 @@ use common\models\PuntosVenta;
 use common\models\GestorVentas;
 use common\models\GestorRemitos;
 use common\models\GestorClientes;
+use common\models\GestorMediosPago;
 use common\models\GestorCheques;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
@@ -41,7 +42,13 @@ class PagosController extends BaseController
         $cliente->IdCliente = $venta->IdCliente;
         $cliente->Dame();
 
-        $pagos = $venta->DamePagos();
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
+            $medio = $busqueda->Combo ? $busqueda->Combo : 0;
+            $pagos = $venta->BuscarPagos($medio);
+        } else {
+            $pagos = $venta->DamePagos();
+        }
+
 
         $pv = new PuntosVenta();
         $pv->IdPuntoVenta = $venta->IdPuntoVenta;
@@ -65,7 +72,7 @@ class PagosController extends BaseController
             'paginado' => $paginado
         ]);
     }
-    
+
     public function actionAlta($id)
     {
         // PermisosHelper::verificarPermiso('PagarVenta');
@@ -75,8 +82,9 @@ class PagosController extends BaseController
         $venta->Dame();
 
         $pago = new Pagos();
-        $remitos=0;
-        $cheques=0;
+        $pago->IdVenta = $id;
+        $remitos = 0;
+        $cheques = 0;
 
         switch (Yii::$app->request->get('Tipo')) {
             case 'T':
@@ -101,22 +109,53 @@ class PagosController extends BaseController
                 $pago->MedioPago = 'Cheque';
                 $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $venta->IdCliente);
                 break;
+            default:
+                $pago->setScenario(Pagos::_ELECCION);
+                break;
         }
+        $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta, '', 'A', 0, 0, 'N');
+        $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $venta->IdCliente);
         $pago->DameMedioPago();
 
         if ($pago->load(Yii::$app->request->post())) {
-            switch (Yii::$app->request->get('Tipo')) {
-                case 'T':
+            switch ($pago->IdMedioPago) {
+                    // Tarjeta
+                case 3:
+                    $pago->setScenario(Pagos::_ALTA_TARJETA);
+                    if (!$pago->validate()) {
+                        Yii::$app->response->format = 'json';
+                        Yii::info(json_encode($pago), "AHRE");
+                        Yii::info($pago->errors, "AHRE");
+                        return ['error' => $pago->errors["NroTarjeta"] ?? $pago->errors["Monto"]];
+                    }
                     $resultado = $venta->PagarTarjeta($pago);
                     break;
-                case 'E':
+                    // Deposito
+                case 6:
+                    // Efectivo
+                case 1:
+                    $pago->setScenario(Pagos::_ALTA_EFECTIVO);
+                    if (!$pago->validate()) {
+                        Yii::$app->response->format = 'json';
+                        return ['error' => $pago->errors["Monto"]];
+                    }
                     $resultado = $venta->PagarEfectivo($pago);
                     break;
-                case 'M':
+                    // Mercaderia
+                case 2:
                     $resultado = $venta->PagarMercaderia($pago);
+                    if (!$pago->validate()) {
+                        Yii::$app->response->format = 'json';
+                        return ['error' => $pago->errors["IdRemito"]];
+                    }
                     break;
-                case 'C':
+                    // Cheque
+                case 5:
                     $resultado = $venta->PagarCheque($pago);
+                    if (!$pago->validate()) {
+                        Yii::$app->response->format = 'json';
+                        return ['error' => $pago->errors["IdCheque"]];
+                    }
                     break;
             }
 
@@ -127,10 +166,12 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
+            $medios = GestorMediosPago::Listar();
             return $this->renderAjax('alta', [
                 'titulo' => 'Agregar pago',
                 'model' => $pago,
                 'remitos' => $remitos,
+                'medios' => $medios,
                 'cheques' => $cheques
             ]);
         }
@@ -146,7 +187,7 @@ class PagosController extends BaseController
 
         $pago = new Pagos();
         $pago->IdCheque = $id;
-        $remitos=0;
+        $remitos = 0;
 
         $pago->setScenario(Pagos::_ELECCION);
 
@@ -196,8 +237,8 @@ class PagosController extends BaseController
         $venta->IdVenta = $pago->IdVenta;
         $venta->Dame();
 
-        $remitos=0;
-        $cheques=0;
+        $remitos = 0;
+        $cheques = 0;
 
         switch ($pago->MedioPago) {
             case 'Tarjeta':
@@ -265,7 +306,7 @@ class PagosController extends BaseController
         PermisosHelper::verificarPermiso('BorrarPagoVenta');
 
         Yii::$app->response->format = 'json';
-        
+
         $pago = new Pagos();
         $pago->IdPago = $id;
 
