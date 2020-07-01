@@ -102,14 +102,14 @@ use yii\widgets\LinkPager;
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
+                                            <?php if (PermisosHelper::tienePermiso('AltaLineaExistencia')) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['/ingresos/lineas', 'id' => $model['IdIngreso']]) ?>" 
+                                                        data-hint="Lineas">
+                                                    <i class="fas fa-clipboard-list"></i>
+                                                </a>
+                                            <?php endif; ?>
                                             <?php if ($model['Estado'] == 'E') :?>
-                                                <?php if (PermisosHelper::tienePermiso('AltaLineaExistencia')) : ?>
-                                                    <a class="btn btn-default"
-                                                            href="<?= Url::to(['/ingresos/lineas', 'id' => $model['IdIngreso']]) ?>" 
-                                                            data-hint="Lineas">
-                                                        <i class="fas fa-clipboard-list"></i>
-                                                    </a>
-                                                <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
