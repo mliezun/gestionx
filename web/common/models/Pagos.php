@@ -55,10 +55,11 @@ class Pagos extends Model
     ];
 
     const MEDIOS_PAGO = [
-        1 => 'Efectivo',
-        3 => 'Tarjeta',
         5 => 'Cheque',
         6 => 'Deposito',
+        1 => 'Efectivo',
+        2 => 'Mercaderia',
+        3 => 'Tarjeta',
         0 => 'Todos'
     ];
 

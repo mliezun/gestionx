@@ -245,6 +245,7 @@ class PagosController extends BaseController
                 PermisosHelper::verificarPermiso('ModificarPagoTarjeta');
                 $pago->setScenario(Pagos::_MODIFICAR_TARJETA);
                 break;
+            case 'Deposito':
             case 'Efectivo':
                 PermisosHelper::verificarPermiso('ModificarPagoEfectivo');
                 $pago->setScenario(Pagos::_MODIFICAR_EFECTIVO);
@@ -252,7 +253,7 @@ class PagosController extends BaseController
             case 'Mercaderia':
                 PermisosHelper::verificarPermiso('ModificarPagoMercaderia');
                 $pago->setScenario(Pagos::_MODIFICAR_MERCADERIA);
-                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta, '', 'A', 0, 'N');
+                $remitos = (new GestorRemitos())->Buscar($venta->IdPuntoVenta, '', 'A', 0, 0, 'N');
                 $remito = new Remitos();
                 $remito->IdRemito = $pago->IdRemito;
                 $remito->Dame();
@@ -274,6 +275,7 @@ class PagosController extends BaseController
                 case 'Tarjeta':
                     $resultado = (new Ventas())->ModificarPagoTarjeta($pago);
                     break;
+                case 'Deposito':
                 case 'Efectivo':
                     $resultado = (new Ventas())->ModificarPagoEfectivo($pago);
                     break;
@@ -292,7 +294,7 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            return $this->renderAjax('alta', [
+            return $this->renderAjax('edita', [
                 'titulo' => 'Modificar Pago',
                 'model' => $pago,
                 'remitos' => $remitos,

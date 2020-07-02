@@ -151,9 +151,14 @@ $this->registerJs('
         <div class="modal-body">
             <div id="errores-modal"> </div>
 
+            <?= Html::activeHiddenInput($model, 'IdPago') ?>
+
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
 
-            <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
+            <?php if (!isset($model['IdPago'])): ?>
+                <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
+
+            <?php endif; ?>
 
             <?= $form->field($model, 'NroTarjeta') ?>
 

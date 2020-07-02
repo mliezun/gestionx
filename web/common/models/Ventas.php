@@ -45,7 +45,8 @@ class Ventas extends Model
         'P' => 'Presupuesto',
         'C' => 'Cotización',
         'V' => 'Venta',
-        'B' => 'Prestamo'
+        'B' => 'Prestamo',
+        'G' => 'Garantia'
     ];
 
     const TIPOS = [
@@ -53,6 +54,7 @@ class Ventas extends Model
         'C' => 'Cotización',
         'V' => 'Venta',
         'B' => 'Prestamo',
+        'G' => 'Garantia',
         'T' => 'Todos'
     ];
 
