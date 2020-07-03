@@ -66,9 +66,15 @@ use kartik\money\MaskMoney;
                 
             <?php endif; ?>
 
-            <?php if ($model['MedioPago'] == 'Tarjeta' or $model['MedioPago'] == 'Efectivo' or $model['MedioPago'] == 'Deposito') :?>
+            <?php if ($model['MedioPago'] == 'Tarjeta' or $model['MedioPago'] == 'Efectivo' or $model['MedioPago'] == 'Deposito' or $model['MedioPago'] == 'Retencion') :?>
 
                 <?= $form->field($model, 'Monto') ?>
+
+            <?php endif; ?>
+
+            <?php if ($model['MedioPago'] == 'Retencion') :?>
+
+                <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo')) ?>
 
             <?php endif; ?>
 

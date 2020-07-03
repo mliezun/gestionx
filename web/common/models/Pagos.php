@@ -22,6 +22,7 @@ class Pagos extends Model
     public $MesVencimiento;
     public $AnioVencimiento;
     public $CCV;
+    public $Datos;
 
     //Derivados
     public $IdTipoComprobante;
@@ -30,17 +31,20 @@ class Pagos extends Model
     public $NroCheque;
     public $TipoComprobante;
 
+    // Datos
+    public $IdTipoTributo;
+
     const _ALTA_TARJETA = 'altat';
     const _ALTA_EFECTIVO = 'altae';
     const _ALTA_MERCADERIA = 'altam';
     const _ALTA_CHEQUE = 'altac';
     const _ALTA_DEPOSITO = 'altad';
-    const _ALTA_GARANTIA = 'altag';
     const _ALTA_RETENCION = 'altar';
     const _MODIFICAR_TARJETA = 'modificart';
     const _MODIFICAR_EFECTIVO = 'modificare';
     const _MODIFICAR_MERCADERIA = 'modificarm';
     const _MODIFICAR_CHEQUE = 'modificarc';
+    const _MODIFICAR_RETENCION = 'modificarr';
     const _ELECCION = 'eleccion';
 
     const TIPOS = [
@@ -59,6 +63,7 @@ class Pagos extends Model
         6 => 'Deposito',
         1 => 'Efectivo',
         2 => 'Mercaderia',
+        7 => 'Retencion',
         3 => 'Tarjeta',
         0 => 'Todos'
     ];
@@ -73,7 +78,8 @@ class Pagos extends Model
             'TipoComprobante' => 'Tipo de Comprobante',
             'IdTipoComprobante' => 'Tipo de Comprobante',
             'MedioPago' => 'Medio de Pago',
-            'IdMedioPago' => 'Medio de Pago'
+            'IdMedioPago' => 'Medio de Pago',
+            'IdTipoTributo' => 'Tipo de Tributo',
         ];
     }
  
@@ -89,16 +95,20 @@ class Pagos extends Model
             'required', 'on' => self::_ALTA_MERCADERIA],
             [['IdVenta','IdMedioPago','IdCheque'],
             'required', 'on' => self::_ALTA_CHEQUE],
+            [['IdVenta','IdMedioPago','Monto','IdTipoTributo'],
+            'required', 'on' => self::_ALTA_RETENCION],
             [['IdVenta','IdMedioPago'],
             'required', 'on' => self::_ELECCION],
             [['IdPago','IdVenta','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_MODIFICAR_TARJETA],
-            [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
+            [['IdPago','IdVenta','IdMedioPago','Monto'],
             'required', 'on' => self::_MODIFICAR_EFECTIVO],
             [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_MODIFICAR_MERCADERIA],
             [['IdPago','IdVenta','IdMedioPago','IdCheque'],
             'required', 'on' => self::_MODIFICAR_CHEQUE],
+            [['IdPago','IdVenta','IdMedioPago','IdTipoTributo','Monto'],
+            'required', 'on' => self::_MODIFICAR_RETENCION],
             ['Monto', 'required', 'when' => function ($model) {
                 return $model->IdMedioPago == 1 or $model->IdMedioPago == 6 or $model->IdMedioPago == 3;
             }, 'whenClient' => "function (attribute, value) { 

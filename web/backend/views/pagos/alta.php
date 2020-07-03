@@ -31,12 +31,14 @@ $this->registerJs('
                 $(".field-pagos-idremito").hide();
                 $("#pagos-idcheque").val(0);
                 $(".field-pagos-idcheque").hide();
+                $("#pagos-idtipotributo").val(0);
+                $(".field-pagos-idtipotributo").hide();
                 return true;
             // Mercaderia
             case 2:
                 $(".field-pagos-idremito").show();
 
-                $("#pagos-monto").val(null);
+                $("#pagos-monto").val(0);
                 $(".field-pagos-monto").hide();
                 $("#pagos-nrotarjeta").val("");
                 $(".field-pagos-nrotarjeta").hide();
@@ -48,6 +50,8 @@ $this->registerJs('
                 $(".field-pagos-ccv").hide();
                 $("#pagos-idcheque").val(0);
                 $(".field-pagos-idcheque").hide();
+                $("#pagos-idtipotributo").val(0);
+                $(".field-pagos-idtipotributo").hide();
                 return true;
             // Tarjeta
             case 3:
@@ -61,12 +65,16 @@ $this->registerJs('
                 $(".field-pagos-idremito").hide();
                 $("#pagos-idcheque").val(0);
                 $(".field-pagos-idcheque").hide();
+                $("#pagos-agente").val("");
+                $(".field-pagos-agente").hide();
+                $("#pagos-idtipoiva").val(0);
+                $(".field-pagos-idtipoiva").hide();
                 return true;
             // Cheque
             case 5:
                 $(".field-pagos-idcheque").show();
 
-                $("#pagos-monto").val(null);
+                $("#pagos-monto").val(0);
                 $(".field-pagos-monto").hide();
                 $("#pagos-nrotarjeta").val("");
                 $(".field-pagos-nrotarjeta").hide();
@@ -78,6 +86,26 @@ $this->registerJs('
                 $(".field-pagos-ccv").hide();
                 $("#pagos-idremito").val(0);
                 $(".field-pagos-idremito").hide();
+                $("#pagos-idtipotributo").val(0);
+                $(".field-pagos-idtipotributo").hide();
+                return true;
+            // Retencion
+            case 7:
+                $(".field-pagos-monto").show();
+                $(".field-pagos-idtipotributo").show();
+
+                $("#pagos-nrotarjeta").val("");
+                $(".field-pagos-nrotarjeta").hide();
+                $("#pagos-mesvencimiento").val("");
+                $(".field-pagos-mesvencimiento").hide();
+                $("#pagos-aniovencimiento").val("");
+                $(".field-pagos-aniovencimiento").hide();
+                $("#pagos-ccv").val("");
+                $(".field-pagos-ccv").hide();
+                $("#pagos-idremito").val(0);
+                $(".field-pagos-idremito").hide();
+                $("#pagos-idcheque").val(0);
+                $(".field-pagos-idcheque").hide();
                 return true;
             default:
                 break;
@@ -103,6 +131,10 @@ $this->registerJs('
         // Cheque
         $("#pagos-idcheque").val(0);
         $(".field-pagos-idcheque").hide();
+
+        // Retencion
+        $("#pagos-idtipotributo").val(0);
+        $(".field-pagos-idtipotributo").hide();
         return false;
     };
 
@@ -115,6 +147,7 @@ $this->registerJs('
         $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
     });
 
     $("#pagos-idmediopago").keyup(function() {
@@ -126,6 +159,7 @@ $this->registerJs('
         $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
     });
 
     controlarTipoPago();
@@ -155,7 +189,7 @@ $this->registerJs('
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
 
-            <?php if (!isset($model['IdPago'])): ?>
+            <?php if (!isset($model['IdPago'])) : ?>
                 <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
 
             <?php endif; ?>
@@ -190,6 +224,8 @@ $this->registerJs('
             ?>
 
             <?= $form->field($model, 'Monto') ?>
+
+            <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo')) ?>
 
             <?= $form->field($model, 'Observaciones')->textarea() ?>
         </div>
