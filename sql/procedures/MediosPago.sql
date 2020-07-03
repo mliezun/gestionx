@@ -7,7 +7,8 @@ BEGIN
     */
     SELECT		mp.*
     FROM		MediosPago mp
-    WHERE		mp.Estado = 'A';
+    WHERE		mp.Estado = 'A'
+    ORDER BY    mp.MedioPago;
 END$$
 DELIMITER ;
 

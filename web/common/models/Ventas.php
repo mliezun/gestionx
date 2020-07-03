@@ -45,7 +45,8 @@ class Ventas extends Model
         'P' => 'Presupuesto',
         'C' => 'Cotización',
         'V' => 'Venta',
-        'B' => 'Prestamo'
+        'B' => 'Prestamo',
+        'G' => 'Garantia'
     ];
 
     const TIPOS = [
@@ -53,6 +54,7 @@ class Ventas extends Model
         'C' => 'Cotización',
         'V' => 'Venta',
         'B' => 'Prestamo',
+        'G' => 'Garantia',
         'T' => 'Todos'
     ];
 
@@ -366,6 +368,40 @@ class Ventas extends Model
         return $query->queryScalar();
     }
 
+    
+    /* 
+    Permite dar de alta un nuevo pago de una venta, utilizando efectivo a un agente de Retencion.
+    Siempre y cuando el estado actual de la venta sea Activo.
+    Si con este nuevo pago se termina de pagar la venta, cambiar el estado de
+    la venta a Pagado.
+    Devuelve OK o el mensaje de error en Mensaje.
+    
+    xsp_pagar_venta_retencion
+    */
+    public function PagarRetencion(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_venta_retencion( :token, :idventa, :idmediopago, :idtipotributo, :monto, 
+        :fechadebe, :fechapago, :observaciones, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idventa' => $this->IdVenta,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':idtipotributo' => $pago->IdTipoTributo,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
     /**
      *
      * xsp_pagar_venta_efectivo
@@ -473,7 +509,52 @@ class Ventas extends Model
 
         return $query->queryScalar();
     }
+
+    /**
+     *
+     * xsp_modificar_pago_retencion
+     */
+    public function ModificarPagoRetencion(Pagos $pago)
+    {
+        $sql = "call xsp_modificar_pago_retencion( :token, :idpago, :idtipotributo, :monto, "
+        .":fechadebe, :fechapago, :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
+            ':idtipotributo' => $pago->IdTipoTributo,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => $pago->FechaDebe,
+            ':fechapago' => $pago->FechaPago,
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
     
+    /**
+     * Permite buscar los pagos de una venta. Se puede filtrar por medio de pago (0 para listar todos)
+     * xsp_buscar_pagos_venta
+     */
+    public function BuscarPagos($IdMedioPago = 0)
+    {
+        $sql = "call xsp_buscar_pagos_venta( :idVenta, :IdMedioPago)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idVenta' => $this->IdVenta,
+            ':IdMedioPago' => $IdMedioPago,
+        ]);
+
+        return $query->queryAll();
+    }
+
     /**
      * Permite obtener los pagos de una venta.
      * xsp_dame_pagos_venta

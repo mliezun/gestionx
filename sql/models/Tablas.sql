@@ -361,6 +361,7 @@ CREATE TABLE Pagos(
     MesVencimiento    CHAR(2),
     AñoVencimiento    CHAR(2),
     CCV               CHAR(3),
+    Datos             JSON,
     PRIMARY KEY (IdPago)
 )ENGINE=INNODB
 ;
