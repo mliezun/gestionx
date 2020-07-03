@@ -216,6 +216,8 @@ INSERT INTO Permisos VALUES(75,1,'GestionVentas', 'Gestión de Ventas','A',NULL,
 		INSERT INTO Permisos VALUES(107,100, 'ModificarPagoEfectivo', 'Modificar pagos, con efectivo','A',NULL,'7','xsp_modificar_pago_efectivo', 2);
 		INSERT INTO Permisos VALUES(108,100, 'ModificarPagoTarjeta', 'Modificar pagos, con tarjeta','A',NULL,'8','xsp_modificar_pago_tarjeta', 2);
 		INSERT INTO Permisos VALUES(109,100, 'ModificarPagoMercaderia', 'Modificar pagos, con mercaderia','A',NULL,'9','xsp_modificar_pago_mercaderia', 2);
+		INSERT INTO Permisos VALUES(150,100, 'PagarVentaRetencion', 'Pagar ventas ya activas, de tipo rentencion','A',NULL,'10','xsp_pagar_venta_retencion', 2);
+		INSERT INTO Permisos VALUES(151,100, 'ModificarPagoRetencion', 'Modificar pagos, de tipo rentencion','A',NULL,'11','xsp_modificar_pago_retencion', 2);
 
 INSERT INTO Permisos VALUES(85,1,'GestionBancos', 'Gestión de Bancos','A',NULL,15,NULL, 2);
 	INSERT INTO Permisos VALUES(86,85, 'AltaBanco', 'Dar de alta bancos', 'A', NULL, '1', 'xsp_alta_banco', 2);
@@ -269,7 +271,7 @@ INSERT INTO Permisos VALUES(146,1,'GestionSuscripciones', 'Gestión de Suscripci
 	INSERT INTO Permisos VALUES(148,146, 'DarBajaSuscripcion', 'Dar de baja una suscripción', 'A', NULL, '2', 'xsp_inicio_darbaja_suscripcion', 1);
 	INSERT INTO Permisos VALUES(149,146, 'DarBajaPlan', 'Dar de baja un plan', 'A', NULL, '3', 'xsp_baja_plan', 0);
 
-	-- Ú 149
+	-- Ú 151
 		
 -- RolesGenericos
 INSERT INTO RolesGenericos VALUES
@@ -422,6 +424,8 @@ INSERT INTO PermisosRolGenerico VALUES(142, 1);
 INSERT INTO PermisosRolGenerico VALUES(143, 1);
 INSERT INTO PermisosRolGenerico VALUES(144, 1);
 INSERT INTO PermisosRolGenerico VALUES(145, 1);
+INSERT INTO PermisosRolGenerico VALUES(150, 1);
+INSERT INTO PermisosRolGenerico VALUES(151, 1);
 -- Permisos de Vendedor
 INSERT INTO PermisosRolGenerico VALUES(46, 2);
 INSERT INTO PermisosRolGenerico VALUES(47, 2);
@@ -488,6 +492,8 @@ INSERT INTO PermisosRolGenerico VALUES(134, 2);
 INSERT INTO PermisosRolGenerico VALUES(135, 2);
 INSERT INTO PermisosRolGenerico VALUES(136, 2);
 INSERT INTO PermisosRolGenerico VALUES(145, 2);
+INSERT INTO PermisosRolGenerico VALUES(150, 2);
+INSERT INTO PermisosRolGenerico VALUES(151, 2);
 
 -- Genero datos de empresa inicial
 DROP PROCEDURE IF EXISTS `xsp_generar_datos_empresa`;

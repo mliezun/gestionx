@@ -85,7 +85,7 @@ SALIR: BEGIN
                     AND ec.IdCanal = pIdCanal;
     END IF;
 
-    SET pIdEmpresa = (SELECT IdEmpresa FROM Ingresos WHERE pIdIngreso = pIdIngreso);
+    SET pIdEmpresa = (SELECT IdEmpresa FROM Ingresos WHERE IdIngreso = pIdIngreso);
     IF NOT((SELECT FechaAlta FROM Ingresos WHERE IdIngreso = pIdIngreso) <  NOW() + 
     SEC_TO_TIME(60*(SELECT Valor FROM ParametroEmpresa WHERE IdEmpresa = pIdEmpresa AND Parametro = 'MAXTIEMPOANULACION' AND IdModulo = 1)) ) THEN
         SET pMensaje = 'El ingreso supero el tiempo maximo de anulacion.';

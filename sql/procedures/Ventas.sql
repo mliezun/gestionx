@@ -438,11 +438,21 @@ SALIR:BEGIN
         INSERT INTO aud_Ventas
         SELECT 0,NOW(),CONCAT(pIdUsuario,'@',pUsuario),pIP,pUserAgent,pAplicacion,'ACTIVAR','A',
         Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
-        -- Activa Venta
-        UPDATE Ventas 
-        SET     Estado = 'A',
-                Monto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta)
-        WHERE IdVenta = pIdVenta;
+
+        IF ( (SELECT Tipo FROM Ventas WHERE IdVenta = pIdVenta) = 'G') THEN
+            -- Paga Venta
+            UPDATE  Ventas 
+            SET     Estado = 'P',
+                    Monto = 0
+            WHERE   IdVenta = pIdVenta;
+        ELSE
+            -- Activa Venta
+            UPDATE  Ventas 
+            SET     Estado = 'A',
+                    Monto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta)
+            WHERE   IdVenta = pIdVenta;
+        END IF;
+
         -- Audito Venta Después
         INSERT INTO aud_Ventas
         SELECT 0,NOW(),CONCAT(pIdUsuario,'@',pUsuario),pIP,pUserAgent,pAplicacion,'ACTIVAR','D',
@@ -495,10 +505,14 @@ SALIR: BEGIN
             LEAVE SALIR;
         END IF;
     END IF;
+    IF ( (SELECT Tipo FROM Ventas WHERE IdVenta = pIdVenta) = 'G') THEN
+        -- Venta por Garantia
+        SET pPrecio = 0;
+    END IF;
     START TRANSACTION;
         SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuarioGestion);
 
-        IF EXISTS (SELECT IdVenta FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo) THEN
+        /* IF EXISTS (SELECT IdVenta FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo) THEN
             -- Audito Antes la linea de venta
             INSERT INTO aud_LineasVenta
             SELECT 0, NOW(), CONCAT(pIdUsuarioGestion,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'AGG', 'A', LineasVenta.*
@@ -522,7 +536,20 @@ SALIR: BEGIN
             INSERT INTO aud_LineasVenta
             SELECT 0, NOW(), CONCAT(pIdUsuarioGestion,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I', LineasVenta.*
             FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo;
-        END IF;
+        END IF; */
+
+        SET pNroLinea = (SELECT COALESCE(MAX(NroLinea), 0) + 1 FROM LineasVenta WHERE IdVenta = pIdVenta);
+        SET pIdListaPrecio = (SELECT c.IdListaPrecio FROM Ventas v
+        INNER JOIN Clientes c USING(IdCliente) WHERE v.IdVenta = pIdVenta);
+        SET pFactor = (SELECT (pPrecio/pa.PrecioVenta) FROM Articulos a 
+        INNER JOIN PreciosArticulos pa USING(IdArticulo)
+        WHERE IdArticulo = pIdArticulo AND IdListaPrecio = pIdListaPrecio);
+        -- Inserto la linea de venta
+        INSERT INTO LineasVenta SELECT pIdVenta, pNroLinea, pIdArticulo, pCantidad, pPrecio, pFactor;
+        -- Audito la linea de venta
+        INSERT INTO aud_LineasVenta
+        SELECT 0, NOW(), CONCAT(pIdUsuarioGestion,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I', LineasVenta.*
+        FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo;
 
         IF (pConsumeStock = 'S') THEN
             SET pIdPuntoVenta = (SELECT IdPuntoVenta FROM Ventas WHERE IdVenta = pIdVenta);
