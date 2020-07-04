@@ -1280,11 +1280,11 @@ SALIR:BEGIN
     --     SELECT 'Debe indicar el tipo de comprobante.' Mensaje;
     --     LEAVE SALIR;
 	-- END IF;
-    IF (pNroTarjeta IS NULL OR CHAR_LENGTH(pNroTarjeta) != 16) THEN
+    IF (pNroTarjeta IS NULL) THEN
         SELECT 'Debe indicar el numero de la tarjeta.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF (pMesVencimiento IS NULL OR CHAR_LENGTH(pMesVencimiento) != 2) THEN
+    /*IF (pMesVencimiento IS NULL OR CHAR_LENGTH(pMesVencimiento) != 2) THEN
         SELECT 'Debe indicar el mes de vencimiento de la tarjeta.' Mensaje;
         LEAVE SALIR;
 	END IF;
@@ -1295,7 +1295,7 @@ SALIR:BEGIN
     IF (pCCV IS NULL OR CHAR_LENGTH(pCCV) != 3) THEN
         SELECT 'Debe indicar el codigo de verificacion de la tarjeta.' Mensaje;
         LEAVE SALIR;
-	END IF;
+	END IF;*/
     IF (pMontoPago IS NULL OR pMontoPago <= 0) THEN
         SELECT 'Debe indicar la monto del pago.' Mensaje;
         LEAVE SALIR;
@@ -1305,10 +1305,10 @@ SALIR:BEGIN
 		SELECT 'El pago indicado no existe.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF NOT EXISTS(SELECT Estado FROM TiposComprobante WHERE IdTipoComprobante = pIdTipoComprobante AND Estado = 'A') THEN
-		SELECT 'El tipo de comprobante no se encuentra activo.' Mensaje;
-        LEAVE SALIR;
-	END IF;
+    -- IF NOT EXISTS(SELECT Estado FROM TiposComprobante WHERE IdTipoComprobante = pIdTipoComprobante AND Estado = 'A') THEN
+	-- 	SELECT 'El tipo de comprobante no se encuentra activo.' Mensaje;
+    --     LEAVE SALIR;
+	-- END IF;
     IF NOT EXISTS(SELECT NroTarjeta FROM Pagos WHERE IdPago = pIdPago AND IdRemito IS NULL AND IdCheque IS NULL)THEN
         SELECT 'El pago indicado no es de tipo tarjeta.' Mensaje;
         LEAVE SALIR;

@@ -254,9 +254,9 @@ class PagosController extends BaseController
         $venta->IdVenta = $pago->IdVenta;
         $venta->Dame();
 
-        $tributos = 0;
-        $remitos = 0;
-        $cheques = 0;
+        $tributos = [];
+        $remitos = [];
+        $cheques = [];
 
         switch ($pago->MedioPago) {
             case 'Tarjeta':
@@ -321,7 +321,7 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            return $this->renderAjax('edita', [
+            return $this->renderAjax('alta', [
                 'titulo' => 'Modificar Pago',
                 'model' => $pago,
                 'tributos' => $tributos,

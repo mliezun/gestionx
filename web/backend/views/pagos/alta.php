@@ -65,10 +65,8 @@ $this->registerJs('
                 $(".field-pagos-idremito").hide();
                 $("#pagos-idcheque").val(0);
                 $(".field-pagos-idcheque").hide();
-                $("#pagos-agente").val("");
-                $(".field-pagos-agente").hide();
-                $("#pagos-idtipoiva").val(0);
-                $(".field-pagos-idtipoiva").hide();
+                $("#pagos-idtipotributo").val(0);
+                $(".field-pagos-idtipotributo").hide();
                 return true;
             // Cheque
             case 5:
@@ -191,7 +189,8 @@ $this->registerJs('
 
             <?php if (!isset($model['IdPago'])) : ?>
                 <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
-
+            <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'IdMedioPago') ?>
             <?php endif; ?>
 
             <?= $form->field($model, 'NroTarjeta') ?>

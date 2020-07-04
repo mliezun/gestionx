@@ -28,7 +28,7 @@ class GestorRemitos
             ':idcanal' => $remito->IdCanal,
             ':idpuntoventa' => $PuntoVenta,
             ':nroremito' => $remito->NroRemito,
-            ':cai' => $remito->CAI,
+            ':cai' => $remito->CAI == "" ? NULL : $remito->CAI,
             ':observaciones' => $remito->Observaciones,
         ]);
 
@@ -56,7 +56,7 @@ class GestorRemitos
             ':idproveedor' => $remito->IdProveedor,
             ':idcanal' => $remito->IdCanal,
             ':nroremito' => $remito->NroRemito,
-            ':cai' => $remito->CAI,
+            ':cai' => $remito->CAI == "" ? NULL : $remito->CAI,
             ':observaciones' => $remito->Observaciones,
         ]);
 

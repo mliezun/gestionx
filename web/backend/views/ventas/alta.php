@@ -68,9 +68,11 @@ $this->registerJs('
 
             <?php if (!isset($model['IdVenta'])): ?>
                 <?= $form->field($model, 'Tipo')->dropDownList(Ventas::TIPOS_ALTA, ['prompt' => 'Tipo']) ?>
-
-                <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
+            <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'Tipo') ?>
             <?php endif; ?>
+
+            <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
 
             <?= $form->field($model, 'Observaciones') ?>
         </div>
