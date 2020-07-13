@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
+use common\components\NinjaArrayHelper;
 
 \backend\assets\InformesAsset::register($this);
 $this->registerJs('Informes.init()');
@@ -157,10 +159,22 @@ Yii::info($reportes);
                 <thead>
                     <tr>
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
-                        <th><?php
-                        $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
-                        echo Html::encode(str_replace('Json', '', $titulo)) ?>
-                        </th>
+                        <?php if (strpos($titulo, 'JsonGroupKeys') !== false): ?>
+                            <?php
+                                $expose = [
+                                    $titulo => json_decode($valor)
+                                ];
+                                extract($expose);
+                            ?>
+                            <?php foreach (${$titulo} as $key): ?>
+                                <th><?= Html::encode($key) ?></th>
+                            <?php endforeach; ?>
+                        <?php elseif (strpos($titulo, 'JsonGroupValues') === false): ?>
+                            <th><?php
+                            $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
+                            echo Html::encode(str_replace('JsonList', '', $titulo)) ?>
+                            </th>
+                        <?php endif; ?>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
@@ -168,6 +182,38 @@ Yii::info($reportes);
                     <?php foreach ($tabla as $fila): ?>
                     <tr class="no-break">
                         <?php foreach ($fila as $columna => $celda): ?>
+                        <?php if (strpos($columna, 'JsonGroupValues') !== false): ?>
+                            <?php
+                            $grupoName = str_replace('JsonGroupValues', '', $columna);
+                            $grupos = $grupoName . 'JsonGroupKeys';
+
+                            if (isset($celda)) {
+                                $crudo = json_decode($celda, true);
+                                $groupKey = $crudo['GroupBy'];
+                                $reduceKey = $crudo['ReduceBy'];
+                                $valores = $crudo['Valores'];
+                                $agrupados = NinjaArrayHelper::groupBy($valores, $groupKey);
+                                Yii::info($valores);
+                                Yii::info($agrupados);
+                                Yii::info($groupKey);
+                                Yii::info($reduceKey);
+                                foreach (${$grupos} as $grupo) {
+                                    $total = 0;
+                                    $recorrer = $agrupados[$grupo] ?? [];
+                                    Yii::info($recorrer, 'recorrer');
+                                    foreach ($recorrer as $v) {
+                                        $total += floatval($v[$reduceKey]);
+                                    }
+                                    echo "<td>{$total}</td>";
+                                }
+                            } else {
+                                foreach (${$grupos} as $grupo) {
+                                    echo "<td>0</td>";
+                                }
+                            }
+                            
+                            ?>
+                        <?php elseif (strpos($columna, 'JsonGroupKeys') === false): ?>
                         <td>
                             <?php
                                 $patrones = [$reporte['Procedimiento'] . '.' . $columna];
@@ -178,22 +224,30 @@ Yii::info($reportes);
                                 } elseif (strpos($columna, '#') !== false) {
                                     $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.#', '#']);
                                 }
-                                if (strpos($columna, 'Json') !== false) {
+                                if (strpos($columna, 'JsonList') !== false) {
                                     $valores = json_decode($celda, true);
                                     if (is_array($valores)) {
                                         foreach ($valores as $valor) {
                                             echo '<ul>';
                                             foreach ($valor as $k => $v) {
+                                                if (strpos($k, 'Fecha') !== false) {
+                                                    $v = FechaHelper::formatearDatetimeLocal($v);
+                                                }
                                                 echo "<li>{$k}: {$v}</li>";
                                             }
                                             echo '</ul>';
                                         }
                                     }
                                 } else {
-                                    echo isset($celda) ? $celda : '';
+                                    if (strpos($columna, 'Fecha') !== false) {
+                                        echo isset($celda) ? FechaHelper::formatearDatetimeLocal($celda) : '';
+                                    } else {
+                                        echo isset($celda) ? $celda : '';
+                                    }
                                 }
                             ?>
                         </td>
+                        <?php endif;?>
                         <?php endforeach; ?>
                     </tr>
                     <?php endforeach; ?>

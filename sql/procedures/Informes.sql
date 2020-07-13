@@ -273,18 +273,208 @@ DELIMITER ;
 
 
 
+DROP procedure IF EXISTS `xsp_inf_dame_param_tipoventa`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_tipoventa`(pIdEmpresa int, pId char(1))
+BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+    SELECT CASE pId
+    WHEN 'P' THEN 'Presupuesto'
+    WHEN 'C' THEN 'Cotización'
+    WHEN 'V' THEN 'Venta'
+    WHEN 'B' THEN 'Préstamo'
+    WHEN 'G' THEN 'Garantía'
+    WHEN 'T' THEN 'Todas'
+    END Nombre;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_llenar_param_tipoventa`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_llenar_param_tipoventa`(pIdEmpresa int)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT 'P' Id, 'Presupuesto' Nombre
+	UNION
+	SELECT 'C' Id, 'Cotización' Nombre
+	UNION
+	SELECT 'V' Id, 'Venta' Nombre
+    UNION
+	SELECT 'B' Id, 'Préstamo' Nombre
+    UNION
+	SELECT 'G' Id, 'Garantía' Nombre
+    UNION
+	SELECT 'T' Id, 'Todas' Nombre;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_llenar_param_mediopago`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_llenar_param_mediopago`(pIdEmpresa int, pId char(1))
+PROC: BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    IF pId = 0 THEN 
+        SELECT 'Todos' Nombre;
+        LEAVE PROC;
+    END IF;
+
+    SELECT MedioPago Nombre FROM MediosPago WHERE IdMedioPago = pId;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_dame_param_mediopago`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_mediopago`(pIdEmpresa int)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT  IdMedioPago Id, MedioPago Nombre FROM MediosPago WHERE Estado = 'A'
+    UNION
+    SELECT  0, 'Todos';
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_autocompletar_param_articulo`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_autocompletar_param_articulo`(pIdEmpresa int, pCadena varchar(50))
+PROC: BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    SELECT  IdArticulo Id, CONCAT(a.Articulo, ' (', a.Codigo, ') [', p.Proveedor, ']') Nombre
+    FROM    Articulos a
+    INNER JOIN  Proveedores p USING(IdProveedor)
+    WHERE   a.IdEmpresa = pIdEmpresa
+            AND (
+                    a.Articulo LIKE CONCAT('%', pCadena, '%') OR
+                    a.Codigo LIKE CONCAT('%', pCadena, '%') OR
+                    p.Proveedor LIKE CONCAT('%', pCadena, '%')
+                )
+            AND (a.Estado = 'A');
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_dame_param_articulo`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_articulo`(pIdEmpresa int, pId bigint)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT  IdArticulo Id, CONCAT(a.Articulo, ' (', a.Codigo, ')') Nombre FROM Articulos a
+    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND IdArticulo = pId;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+DROP procedure IF EXISTS `xsp_inf_autocompletar_param_proveedor`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_autocompletar_param_proveedor`(pIdEmpresa int, pCadena varchar(50))
+PROC: BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    SELECT  IdProveedor Id, p.Proveedor Nombre
+    FROM    Proveedores p 
+    WHERE   p.IdEmpresa = pIdEmpresa
+            AND p.Proveedor LIKE CONCAT('%', pCadena, '%')
+            AND (p.Estado = 'A');
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_dame_param_proveedor`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_proveedor`(pIdEmpresa int, pId bigint)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT  IdProveedor Id, Proveedor Nombre FROM Proveedores p
+    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND IdProveedor = pId;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
 
 DROP PROCEDURE IF EXISTS `xsp_reporte_ventas`;
 DELIMITER $$
-CREATE PROCEDURE `xsp_reporte_ventas`(pIdEmpresa int, pFechaInicio date, pFechaFin date, pIdPuntoVenta int)
+CREATE PROCEDURE `xsp_reporte_ventas`(pIdEmpresa int, pFechaInicio date, pFechaFin date, pIdPuntoVenta int, pTipoVenta char(1), pIdMedioPago int, pIdArticulo bigint, pIdProveedor bigint)
 BEGIN
     DECLARE pTotal, pPagado, pDeuda DECIMAL(14,2);
+    DECLARE pVentas json;
     SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     SET pIdPuntoVenta = COALESCE(pIdPuntoVenta, 0);
 
     DROP TEMPORARY TABLE IF EXISTS tmp_inf_ventas;
     CREATE TEMPORARY TABLE tmp_inf_ventas
-        SELECT      v.FechaAlta 'Fecha',
+        SELECT      v.IdVenta, v.FechaAlta 'Fecha',
                     CASE v.Tipo
                         WHEN 'V' THEN 'Venta'
                         WHEN 'P' THEN 'Presupuesto'
@@ -295,22 +485,27 @@ BEGIN
                     COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta), 0) 'Monto Pagado',
                     COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta)), v.Monto) Deuda,
                     (
-                        SELECT JSON_ARRAYAGG(JSON_OBJECT(
-                            'MedioPago', mp.MedioPago,
-                            'Monto', p.Monto,
-                            'Fecha', p.FechaPago
-                        ))
+                        SELECT JSON_OBJECT(
+                            "GroupBy", "MedioPago",
+                            "ReduceBy", "Monto",
+                            "Valores", JSON_ARRAYAGG(JSON_OBJECT(
+                                'MedioPago', mp.MedioPago,
+                                'Monto', p.Monto,
+                                'Fecha', p.FechaPago
+                            ))
+                        )
                         FROM Pagos p
                         INNER JOIN MediosPago mp USING(IdMedioPago)
-                        WHERE p.IdVenta = v.IdVenta
-                    ) PagosJson,
+                        WHERE   p.IdVenta = v.IdVenta
+                    ) PagosJsonGroupValues,
+                    null PagosJsonGroupKeys, -- Se agrega junto con los totales
                     JSON_ARRAYAGG(JSON_OBJECT(
                         'Articulo', a.Articulo,
                         'Precio', lv.Precio,
                         'Cantidad', lv.Cantidad,
                         'Subtotal', lv.Precio*lv.Cantidad,
                         'Descuento', IF(lv.Factor < 0, lv.Factor, 0)
-                    )) ArticulosJson,
+                    )) ArticulosJsonList,
                     GROUP_CONCAT(pr.Proveedor) Proveedores, pv.PuntoVenta,
                     CONCAT(u.Nombres, ' ', u.Apellidos) Vendedor,
                     IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente
@@ -326,17 +521,36 @@ BEGIN
         WHERE       v.IdEmpresa = pIdEmpresa AND
                     (v.FechaAlta BETWEEN pFechaInicio AND pFechaFin) AND 
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
+                    AND (pTipoVenta = 'T' OR v.Tipo = pTipoVenta)
+                    AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.IdVenta = v.IdVenta AND p.IdMedioPago = pIdMedioPago))
+                    AND (pIdArticulo = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 WHERE lv2.IdVenta = v.IdVenta AND lv2.IdArticulo = pIdArticulo))
+                    AND (pIdProveedor = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 INNER JOIN Articulos a2 USING(IdArticulo) INNER JOIN Proveedores prv2 USING(IdProveedor) WHERE lv2.IdVenta = v.IdVenta AND prv2.IdProveedor = pIdProveedor))
         GROUP BY    v.IdVenta
         ORDER BY    v.IdVenta desc;
 
 
-    SELECT  SUM(`Monto Total`), SUM(`Monto Pagado`), SUM(Deuda)
-    INTO    pTotal, pPagado, pDeuda
+    SELECT  SUM(`Monto Total`), SUM(`Monto Pagado`), SUM(Deuda), JSON_ARRAYAGG(IdVenta)
+    INTO    pTotal, pPagado, pDeuda, pVentas
     FROM    tmp_inf_ventas;
 
     SELECT * FROM tmp_inf_ventas
     UNION ALL
-    SELECT NOW(), 'TOTALES', pTotal, pPagado, pDeuda, NULL, NULL, NULL, NULL, NULL, NULL;
+    SELECT 0, NOW(), 'TOTALES', pTotal, pPagado, pDeuda, (
+            SELECT JSON_OBJECT(
+                "GroupBy", "MedioPago",
+                "ReduceBy", "Monto",
+                "Valores", JSON_ARRAYAGG(JSON_OBJECT(
+                    'MedioPago', mp.MedioPago,
+                    'Monto', p.Monto
+                ))
+            )
+            FROM Pagos p
+            INNER JOIN MediosPago mp USING(IdMedioPago)
+            WHERE   JSON_CONTAINS(pVentas, CONCAT(p.IdVenta, ''), '$')
+        ), (
+                SELECT JSON_ARRAYAGG(MedioPago) FROM MediosPago WHERE Estado = "A"
+        ), NULL, NULL, NULL, NULL, NULL
+    ORDER BY Fecha desc;
 
     
     DROP TEMPORARY TABLE IF EXISTS tmp_inf_ventas;

@@ -8,9 +8,6 @@ use yii\helpers\ArrayHelper;
 
 $gestor = new \common\models\GestorReportes();
 $opciones = $gestor->LlenarListadoParametro($parametro['IdModeloReporte'], $parametro['NroParametro']);
-foreach ($opciones as &$opcion) {
-    $opcion['Nombre'] = Yii::$app->traductor->traducir($opcion['Nombre'], "backend", [$parametro['IdModeloReporte'] . '.' . $parametro['NroParametro']]);
-}
 $opciones = ArrayHelper::map($opciones, 'Id', 'Nombre');
 
 if ($parametro['ListaTieneTodos'] == 'S') {
