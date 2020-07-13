@@ -36,7 +36,7 @@ SALIR:BEGIN
 		SELECT 'Debe existir la empresa dada.' Mensaje;
 		LEAVE SALIR;
 	END IF;
-    IF EXISTS(SELECT IdBanco FROM Bancos WHERE Banco = pBanco) THEN
+    IF EXISTS(SELECT IdBanco FROM Bancos WHERE Banco = pBanco AND IdEmpresa = pIdEmpresa) THEN
 		SELECT 'Ya existe un banco con el nombre indicado.' Mensaje;
 		LEAVE SALIR;
 	END IF;
@@ -90,7 +90,7 @@ SALIR: BEGIN
         LEAVE SALIR;
 	END IF;
 	-- Control de Parametros incorrectos
-    IF EXISTS(SELECT IdBanco FROM Bancos WHERE Banco = pBanco AND IdBanco != pIdBanco) THEN
+    IF EXISTS(SELECT IdBanco FROM Bancos WHERE Banco = pBanco AND IdEmpresa = pIdEmpresa AND IdBanco != pIdBanco) THEN
 		SELECT 'Ya existe otro banco con el nombre indicado.' Mensaje;
 		LEAVE SALIR;
 	END IF;

@@ -171,7 +171,7 @@ $proveedor = new Proveedores();
                                                         </a>
                                                 <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
-                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta') && $model['Estado'] == 'P') : ?>
+                                                    <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-ajax="<?= Url::to(['/ventas/enviar-comprobante', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Enviar Factura">
