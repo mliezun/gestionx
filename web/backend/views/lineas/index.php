@@ -90,12 +90,21 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
             </div>
             <div class="lineas--bottom">
                 <?php if ($model['Estado'] == 'E'): ?>
+                    <?php if ($tipoPrecio == 'PrecioVenta'): ?>
                     <button  type="button" class="btn btn-secondary"
                         @click="completar"
                         data-hint="Agregar pagos"
                     >
                         Agregar pagos
                     </button>
+                    <?php else: ?>
+                    <button  type="button" class="btn btn-secondary"
+                        @click="completar"
+                        data-hint="Completar"
+                    >
+                        Completar
+                    </button>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <div class="lineas--total">
                     Total: ${{ total }}
