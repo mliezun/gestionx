@@ -588,8 +588,11 @@ INSERT INTO TiposGravamenes VALUES(2,'IVA11',1.21,NULL);
 INSERT INTO MediosPago VALUES(1,'Efectivo','A');
 INSERT INTO MediosPago VALUES(2,'Mercaderia','A');
 INSERT INTO MediosPago VALUES(3,'Tarjeta','A');
-INSERT INTO MediosPago VALUES(4,'Otro','A');
-INSERT INTO MediosPago VALUES(4,'Cheque','A');
+INSERT INTO MediosPago VALUES(4,'Otro','B');
+INSERT INTO MediosPago VALUES(5,'Cheque','A');
+INSERT INTO MediosPago VALUES(6,'Deposito','A');
+INSERT INTO MediosPago VALUES(7,'Retencion','A');
+INSERT INTO MediosPago VALUES(8,'Descuento','A');
 
 INSERT INTO TiposComprobante VALUES(1,'Factura A','A');
 INSERT INTO TiposComprobante VALUES(6,'Factura B','A');

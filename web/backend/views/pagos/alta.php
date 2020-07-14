@@ -12,7 +12,6 @@ use kartik\money\MaskMoney;
 $this->registerJs('
 (function() {
     function controlarTipoPago() {
-        var cambio = false;
         switch (parseInt($("#pagos-idmediopago").val())) {
             // Efectivo - Deposito
             case 1:
@@ -33,6 +32,7 @@ $this->registerJs('
                 $(".field-pagos-idcheque").hide();
                 $("#pagos-idtipotributo").val(0);
                 $(".field-pagos-idtipotributo").hide();
+                $(".field-pagos-descuento").hide();
                 return true;
             // Mercaderia
             case 2:
@@ -52,6 +52,7 @@ $this->registerJs('
                 $(".field-pagos-idcheque").hide();
                 $("#pagos-idtipotributo").val(0);
                 $(".field-pagos-idtipotributo").hide();
+                $(".field-pagos-descuento").hide();
                 return true;
             // Tarjeta
             case 3:
@@ -67,6 +68,7 @@ $this->registerJs('
                 $(".field-pagos-idcheque").hide();
                 $("#pagos-idtipotributo").val(0);
                 $(".field-pagos-idtipotributo").hide();
+                $(".field-pagos-descuento").hide();
                 return true;
             // Cheque
             case 5:
@@ -86,6 +88,7 @@ $this->registerJs('
                 $(".field-pagos-idremito").hide();
                 $("#pagos-idtipotributo").val(0);
                 $(".field-pagos-idtipotributo").hide();
+                $(".field-pagos-descuento").hide();
                 return true;
             // Retencion
             case 7:
@@ -104,6 +107,27 @@ $this->registerJs('
                 $(".field-pagos-idremito").hide();
                 $("#pagos-idcheque").val(0);
                 $(".field-pagos-idcheque").hide();
+                $(".field-pagos-descuento").hide();
+                return true;
+            // Descuento
+            case 8:
+                $(".field-pagos-monto").show();
+                $(".field-pagos-descuento").show();
+
+                $("#pagos-nrotarjeta").val("");
+                $(".field-pagos-nrotarjeta").hide();
+                $("#pagos-mesvencimiento").val("");
+                $(".field-pagos-mesvencimiento").hide();
+                $("#pagos-aniovencimiento").val("");
+                $(".field-pagos-aniovencimiento").hide();
+                $("#pagos-ccv").val("");
+                $(".field-pagos-ccv").hide();
+                $("#pagos-idremito").val(0);
+                $(".field-pagos-idremito").hide();
+                $("#pagos-idcheque").val(0);
+                $(".field-pagos-idcheque").hide();
+                $("#pagos-idtipotributo").val(0);
+                $(".field-pagos-idtipotributo").hide();
                 return true;
             default:
                 break;
@@ -133,6 +157,10 @@ $this->registerJs('
         // Retencion
         $("#pagos-idtipotributo").val(0);
         $(".field-pagos-idtipotributo").hide();
+        
+        // Descuento
+        $("#pagos-descuento").val(0);
+        $(".field-pagos-descuento").hide();
         return false;
     };
 
@@ -146,6 +174,7 @@ $this->registerJs('
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
     });
 
     $("#pagos-idmediopago").keyup(function() {
@@ -158,9 +187,55 @@ $this->registerJs('
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
     });
 
     controlarTipoPago();
+
+    function actualizarDescuento() {
+        $("#pagos-descuento").val( ($("#pagos-monto").val() / $("#pagos-montoventa").val()) * 100 );
+        return false;
+    };
+
+    $("#pagos-monto").change(function() {
+        if (parseInt($("#pagos-idmediopago").val()) == 8){
+            actualizarDescuento();
+        }
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
+    });
+
+    $("#pagos-monto").keyup(function() {
+        if (parseInt($("#pagos-idmediopago").val()) == 8){
+            actualizarDescuento();
+        }
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
+    });
+
+    function actualizarMonto() {
+        console.log("ANTES\n", $("#pagos-monto").val() );
+        console.log("GG\n", parseInt(($("#pagos-montoventa").val() * $("#pagos-descuento").val()) / 100) );
+        $("#pagos-monto").val( (($("#pagos-montoventa").val() * $("#pagos-descuento").val()) / 100) );
+        console.log("DESPUES\n", $("#pagos-monto").val() );
+        return false;
+    };
+
+    $("#pagos-descuento").change(function() {
+        if (parseInt($("#pagos-idmediopago").val()) == 8){
+            actualizarMonto();
+        }
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
+    });
+
+    $("#pagos-descuento").keyup(function() {
+        if (parseInt($("#pagos-idmediopago").val()) == 8){
+            actualizarMonto();
+        }
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
+    });
 })();
 ');
 
@@ -187,9 +262,11 @@ $this->registerJs('
 
             <?= Html::activeHiddenInput($model, 'IdVenta') ?>
 
+            <?= Html::activeHiddenInput($model, 'MontoVenta') ?>
+
             <?php if (!isset($model['IdPago'])) : ?>
                 <?= $form->field($model, 'IdMedioPago')->dropDownList(ArrayHelper::map($medios, 'IdMedioPago', 'MedioPago'), ['prompt' => 'Medio de Pago']) ?>
-            <?php else: ?>
+            <?php else : ?>
                 <?= Html::activeHiddenInput($model, 'IdMedioPago') ?>
             <?php endif; ?>
 
@@ -221,6 +298,10 @@ $this->registerJs('
 
             <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname()) 
             ?>
+
+            <?= $form->field($model, 'Descuento', [
+                'template' => '{beginLabel}{labelTitle}{endLabel}<div class="input-group"><div class="input-group-prepend"><span class="input-group-text" style="max-height: 35px;">%</span></div>{input}</div>{error}{hint}'
+            ]) ?>
 
             <?= $form->field($model, 'Monto') ?>
 
