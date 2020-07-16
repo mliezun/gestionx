@@ -60,6 +60,19 @@ SALIR: BEGIN
 
         -- Inserto Historico
         INSERT INTO HistorialDescuentos SELECT 0, pIdProveedor, pDescuento, NOW(), NULL;
+
+        -- Se crea la cuenta corriente del Proveedor
+		CALL xsp_alta_cuenta_corriente(pIdUsuarioGestion, 
+			pIdProveedor,
+			'P',
+			'Alta del Proveedor',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 		
         SELECT CONCAT('OK', pIdProveedor) Mensaje;
 	COMMIT;
@@ -538,9 +551,10 @@ SALIR: BEGIN
 	/*
 	Permite instaciar un proveedor desde la base de datos.
 	*/
-    SELECT  *
-    FROM    Proveedores
-    WHERE   IdProveedor = pIdProveedor;
+    SELECT  p.*, - cc.Monto Deuda
+    FROM    Proveedores p
+    INNER JOIN CuentasCorrientes cc ON cc.IdEntidad = p.IdProveedor AND cc.Tipo = 'P'
+    WHERE   p.IdProveedor = pIdProveedor;
 END$$
 DELIMITER ;
 
@@ -553,10 +567,11 @@ SALIR: BEGIN
 	Permite buscar proveedores dentro de una empresa indicando una cadena de búsqueda y
     si se incluyen bajas.
 	*/
-    SELECT  *
-    FROM    Proveedores
-    WHERE   IdEmpresa = pIdEmpresa AND Proveedor LIKE CONCAT('%', pCadena, '%')
-            AND (pIncluyeBajas = 'S' OR Estado = 'A');
+    SELECT  p.*, - cc.Monto Deuda
+    FROM    Proveedores p
+    INNER JOIN CuentasCorrientes cc ON cc.IdEntidad = p.IdProveedor AND cc.Tipo = 'P'
+    WHERE   p.IdEmpresa = pIdEmpresa AND p.Proveedor LIKE CONCAT('%', pCadena, '%')
+            AND (pIncluyeBajas = 'S' OR p.Estado = 'A');
 END$$
 DELIMITER ;
 
@@ -572,5 +587,25 @@ SALIR: BEGIN
     INNER JOIN HistorialDescuentos hd USING(IdProveedor)
     WHERE   p.IdProveedor = pIdProveedor
     ORDER BY FechaFin;
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `xsp_listar_historial_cuenta_proveedor`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_listar_historial_cuenta_proveedor`(pIdProveedor bigint, pFechaInicio date, pFechaFin date)
+SALIR: BEGIN
+	/*
+	Permite listar el historial de descuentos de un proveedor.
+	*/
+    SET pFechaInicio = COALESCE(pFechaInicio, NOW() - INTERVAL 1 MONTH);
+    SET pFechaFin = COALESCE(pFechaFin, NOW());
+
+    SELECT      p.Proveedor, hcc.*
+    FROM        Proveedores p
+    INNER JOIN  CuentasCorrientes cc ON cc.IdEntidad = p.IdProveedor AND cc.Tipo = 'P'
+    INNER JOIN  HistorialCuentasCorrientes hcc USING(IdCuentaCorriente)
+    WHERE       p.IdProveedor = pIdProveedor
+                AND hcc.Fecha BETWEEN CONCAT(pFechaInicio, ' 00:00:00') AND CONCAT(pFechaFin, ' 23:59:59')
+    ORDER BY 	hcc.Fecha DESC;
 END$$
 DELIMITER ;

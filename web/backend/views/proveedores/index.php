@@ -30,15 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php ActiveForm::end(); ?>
         </div>
 
-        <?php if (PermisosHelper::tienePermiso('AltaProveedor')) : ?>
-            <div class="alta--button">
+        <div class="alta--button">
+            <?php if (PermisosHelper::tienePermiso('AltaProveedor')) : ?>
                 <button type="button" class="btn btn-primary"
                         data-modal="<?= Url::to(['/proveedores/alta']) ?>"
                         data-hint="Nuevo Proveedor">
                     Nuevo Proveedor
                 </button>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
 
         <div id="errores"> </div>
         
@@ -52,6 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Descuento</th>
                                 <th>Estado</th>
+                                <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
+                                    <th>Deuda</th>
+                                <?php endif; ?>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -61,10 +64,35 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td>% <?= Html::encode($model['Descuento']) ?></td>
                                     <td><?= Html::encode(Proveedores::ESTADOS[$model['Estado']]) ?></td>
+                                    <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
+                                        <?php
+                                        $deuda = $model['Deuda'];
+                                        $estilo = '';
+                                        if ($deuda > 0) {
+                                            $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
+                                        } elseif($deuda < 0) {
+                                            $deuda = - $deuda . " a favor";
+                                            $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
+                                        } else {
+                                            $estilo = ' style="font-weight: bold" ';
+                                        }
+                                        echo "<td $estilo>";
+                                        echo Html::encode($deuda);
+                                        echo '</td>';
+                                        ?>
+                                    <?php endif; ?>
                                     <td>
 
                                         <div class="btn-group" role="group" aria-label="...">
-                            
+
+                                            <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
+                                                <a class="btn btn-default"
+                                                        href="<?= Url::to(['proveedores/cuentas', 'id' => $model['IdProveedor']]) ?>"
+                                                        data-hint="Historial de Cuenta">
+                                                    <i class="fas fa-list-alt" style="color: green"></i>
+                                                </a>
+                                            <?php endif; ?>
+
                                             <?php if (PermisosHelper::tienePermiso('ModificarProveedor')) : ?>
                                                 <button type="button" class="btn btn-default"
                                                         data-modal="<?= Url::to(['proveedores/editar', 'id' => $model['IdProveedor']]) ?>"

@@ -143,6 +143,23 @@ SALIR:BEGIN
 			LEAVE SALIR;
 		END IF;
 
+		-- Aumenta la deuda al Proveedor
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito),
+			'P',
+			(	SELECT COALESCE(- SUM(li.Cantidad * li.Precio), 0)
+				FROM Ingresos i
+				INNER JOIN  LineasIngreso li USING(IdIngreso)
+				WHERE i.IdRemito = pIdRemito),
+			'Compra al Proveedor',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
 		-- Después
 		INSERT INTO aud_Remitos
 		SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ACTIVAR', 'D', Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
