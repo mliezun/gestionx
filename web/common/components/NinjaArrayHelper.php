@@ -61,4 +61,16 @@ class NinjaArrayHelper
         }
         return $out;
     }
+
+    public static function groupBy($array, $key)
+    {
+        $out = array();
+        foreach ($array as $el) {
+            if (!array_key_exists($el[$key], $out)) {
+                $out[$el[$key]] = array();
+            }
+            $out[$el[$key]][] = $el;
+        }
+        return $out;
+    }
 }

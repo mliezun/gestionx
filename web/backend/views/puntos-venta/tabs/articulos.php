@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <td><?= Html::encode($recti['PuntoVentaOrigen']) ?></td>
                                     <td><?= Html::encode($recti['PuntoVentaDestino']) ?></td>
-                                    <td><?= Html::encode($recti['Articulo']) ?></td>
+                                    <td><?= Html::encode($recti['Articulo'] . " ({$recti['Codigo']}) [{$recti['Proveedor']}]") ?></td>
                                     <td><?= Html::encode($recti['Cantidad']) ?></td>
                                     <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
                                         <td><?= Html::encode($recti['Canal']) ?></td>

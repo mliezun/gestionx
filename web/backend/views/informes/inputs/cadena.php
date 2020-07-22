@@ -7,5 +7,5 @@
 
 <?=
 
-$form->field($model, $parametro['Parametro'])->hint(Yii::t("backend", $parametro['ToolTipText']))->label(Yii::t("backend", $parametro['Etiqueta']));
+$form->field($model, $parametro['Parametro'])->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']);
 ?>

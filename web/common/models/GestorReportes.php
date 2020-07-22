@@ -21,9 +21,14 @@ class GestorReportes extends Model
      */
     public function ListarMenu()
     {
-        $sql = "CALL xsp_inf_listar_menu_reportes ()";
+        $sql = "CALL xsp_inf_listar_menu_reportes (:idEmpresa)";
 
         $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValues([
+            ':idEmpresa' => Yii::$app->user->identity->IdEmpresa,
+        ]);
+
 
         return $query->queryAll();
     }
@@ -35,11 +40,12 @@ class GestorReportes extends Model
      */
     public function DameModeloReporte($IdModeloReporte)
     {
-        $sql = "CALL xsp_inf_dame_modeloreporte ( :id )";
+        $sql = "CALL xsp_inf_dame_modeloreporte ( :idEmpresa, :id )";
 
         $query = Yii::$app->db->createCommand($sql);
 
         $query->bindValues([
+            ':idEmpresa' => Yii::$app->user->identity->IdEmpresa,
             ':id' => $IdModeloReporte,
         ]);
 
@@ -55,11 +61,12 @@ class GestorReportes extends Model
      */
     public function DameParametrosModeloReporte($IdModeloReporte, $TipoOrden = 'F')
     {
-        $sql = "CALL xsp_inf_dame_parametros_modeloreporte ( :id, :tipo)";
+        $sql = "CALL xsp_inf_dame_parametros_modeloreporte ( :idEmpresa, :id, :tipo)";
 
         $query = Yii::$app->db->createCommand($sql);
 
         $query->bindValues([
+            ':idEmpresa' => Yii::$app->user->identity->IdEmpresa,
             ':id' => $IdModeloReporte,
             ':tipo' => $TipoOrden
         ]);
@@ -79,11 +86,12 @@ class GestorReportes extends Model
      */
     public function LlenarListadoParametro($IdModeloReporte, $NroParametro, $Cadena = '')
     {
-        $sql = "CALL xsp_inf_llenar_listado_parametro ( :id, :nroParam, :cadena )";
+        $sql = "CALL xsp_inf_llenar_listado_parametro ( :idEmpresa, :id, :nroParam, :cadena )";
 
         $query = Yii::$app->db->createCommand($sql);
 
         $query->bindValues([
+            ':idEmpresa' => Yii::$app->user->identity->IdEmpresa,
             ':id' => $IdModeloReporte,
             ':nroParam' => $NroParametro,
             ':cadena' => $Cadena
@@ -103,11 +111,12 @@ class GestorReportes extends Model
      */
     public function DameParametroListado($IdModeloReporte, $NroParametro, $Id = '')
     {
-        $sql = "CALL xsp_inf_dame_parametro_listado ( :idReporte, :nroParam, :id )";
+        $sql = "CALL xsp_inf_dame_parametro_listado ( :idEmpresa, :idReporte, :nroParam, :id )";
 
         $query = Yii::$app->db->createCommand($sql);
 
         $query->bindValues([
+            ':idEmpresa' => Yii::$app->user->identity->IdEmpresa,
             ':idReporte' => $IdModeloReporte,
             ':nroParam' => $NroParametro,
             ':id' => $Id
@@ -127,13 +136,14 @@ class GestorReportes extends Model
      * un llamado a SP. De acuerdo al tipo van o no las comillas. El orden es el de
      * NroParametro.
      */
-    public function Ejecutar($IdModeloReporte, $CadenaParam)
+    public function Ejecutar($IdEmpresa, $IdModeloReporte, $CadenaParam)
     {
-        $sql = "CALL xsp_inf_ejecutar_reporte ( :id, :cadena )";
+        $sql = "CALL xsp_inf_ejecutar_reporte ( :idEmpresa, :id, :cadena )";
 
         $query = Yii::$app->db->createCommand($sql);
         
         $query->bindValues([
+            ':idEmpresa' => $IdEmpresa,
             ':id' => $IdModeloReporte,
             ':cadena' => $CadenaParam
         ]);

@@ -39,8 +39,15 @@ class RectificacionesController extends BaseController
             }
         } else {
             $puntosventa = GestorPuntosVenta::Buscar();
-            $clave = array_search($id, $puntosventa);
-            unset($puntosventa[$clave]);
+            $clave = null;
+            foreach ($puntosventa as $i => $pv) {
+                if ($pv['IdPuntoVenta'] == $id) {
+                    $clave = $i;
+                }
+            }
+            if (isset($clave)) {
+                unset($puntosventa[$clave]);
+            }
 
             $canales = GestorCanales::Buscar();
 

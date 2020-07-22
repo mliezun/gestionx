@@ -18,6 +18,7 @@ class ComprobanteHelper
 
         // Envío los datos de la venta a AFIP
         if ($esAfip) {
+            Yii::info($datosAfip, 'Datos Afip');
             $cacheKey = serialize(['comprobante-afip', $datos['IdComprobanteAfip']]);
             $funcionObtener = function () use ($params, $esProd, $datosAfip) {
                 $resultado = self::altaComprobante([
@@ -55,19 +56,19 @@ class ComprobanteHelper
             // Cantidad de comprobantes a registrar
             'CantReg' 	=> 1,
             // Punto de venta
-            'PtoVta' 	=> $datos['NroPuntoVenta'],
+            'PtoVta' 	=> intval($datos['NroPuntoVenta']),
             // Tipo de comprobante (ver tipos disponibles)
-            'CbteTipo' 	=> $datos['IdTipoComprobanteAfip'],
+            'CbteTipo' 	=> intval($datos['IdTipoComprobanteAfip']),
             // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
             'Concepto' 	=> 1,
             // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
-            'DocTipo' 	=> $datos['IdTipoDocAfip'],
+            'DocTipo' 	=> intval($datos['IdTipoDocAfip']),
             // Número de documento del comprador (0 consumidor final)
-            'DocNro' 	=> $datos['Documento'],
+            'DocNro' 	=> intval($datos['Documento']),
             // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
-            'CbteDesde' 	=> $datos['NroComprobante'],
+            'CbteDesde' 	=> intval($datos['NroComprobante']),
             // Número de comprobante o numero del último comprobante en caso de ser mas de uno
-            'CbteHasta' 	=> $datos['NroComprobante'],
+            'CbteHasta' 	=> intval($datos['NroComprobante']),
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
             // Importe total del comprobante
@@ -149,7 +150,7 @@ class ComprobanteHelper
     {
         return NinjaArrayHelper::normalizar($datos, [
             'CbteTipo' => 'tipo_cbte',
-            'PtoVta' => 'punto_venta',
+            'PtoVta' => 'punto_vta',
             'Concepto' => 'concepto',
             'DocTipo' => 'tipo_doc',
             'DocNro' => 'nro_doc',
@@ -216,7 +217,8 @@ class ComprobanteHelper
             'CAE' => 'cae',
             'CodAutorizacion' => 'cae',
             'FchVto' => 'fch_venc_cae',
-            'CAEFchVto' => 'fch_venc_cae'
+            'CAEFchVto' => 'fch_venc_cae',
+            'voucher_number' => 'cbte_nro'
         ]);
     }
 
@@ -226,6 +228,10 @@ class ComprobanteHelper
      */
     private static function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
     {
+        if (array_key_exists('fch_venc_cae', $resultado)) {
+            Yii::info($resultado);
+            $resultado['fch_venc_cae'] = str_replace('-', '', $resultado['fch_venc_cae']);
+        }
         $json = array_merge($datosPdf, $datosCliente, $resultado);
         $json['fecha'] = date('Ymd');
         $json['fecha_cbte'] = "{$json['fecha_cbte']}";
@@ -307,8 +313,12 @@ class ComprobanteHelper
 
         Yii::info($comprobante, 'Comprobante AFIP');
 
-        define('SOAP_1_1', 1);
-        define('SOAP_1_2', 2);
+        if (!defined('SOAP_1_1')) {
+            define('SOAP_1_1', 1);
+        }
+        if (!defined('SOAP_1_2')) {
+            define('SOAP_1_2', 2);
+        }
 
         $cbteAfip = $afip->ElectronicBilling->GetVoucherInfo($comprobante['CbteDesde'], $comprobante['PtoVta'], $comprobante['CbteTipo']);
 
