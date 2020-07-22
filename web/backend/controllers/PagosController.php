@@ -128,12 +128,12 @@ class PagosController extends BaseController
                     $pago->setScenario(Pagos::_ALTA_TARJETA);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
-                        Yii::info(json_encode($pago), "AHRE");
-                        Yii::info($pago->errors, "AHRE");
                         return ['error' => $pago->errors["NroTarjeta"] ?? $pago->errors["Monto"]];
                     }
                     $resultado = $venta->PagarTarjeta($pago);
                     break;
+                case 8:
+                    // Descuento
                 case 6:
                     // Deposito
                 case 1:
@@ -181,6 +181,7 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
+            $pago->MontoVenta = $venta->Monto;
             $medios = (new GestorMediosPago)->Listar();
             $tributos = (new GestorTiposTributos)->Buscar();
             return $this->renderAjax('alta', [
@@ -254,15 +255,19 @@ class PagosController extends BaseController
         $venta->IdVenta = $pago->IdVenta;
         $venta->Dame();
 
-        $tributos = 0;
-        $remitos = 0;
-        $cheques = 0;
+        $pago->Descuento = ($pago->Monto / $venta->Monto) * 100;
+        $pago->MontoVenta = $venta->Monto;
+
+        $tributos = [];
+        $remitos = [];
+        $cheques = [];
 
         switch ($pago->MedioPago) {
             case 'Tarjeta':
                 PermisosHelper::verificarPermiso('ModificarPagoTarjeta');
                 $pago->setScenario(Pagos::_MODIFICAR_TARJETA);
                 break;
+            case 'Descuento':
             case 'Deposito':
             case 'Efectivo':
                 PermisosHelper::verificarPermiso('ModificarPagoEfectivo');
@@ -299,6 +304,7 @@ class PagosController extends BaseController
                 case 'Tarjeta':
                     $resultado = (new Ventas())->ModificarPagoTarjeta($pago);
                     break;
+                case 'Descuento':
                 case 'Deposito':
                 case 'Efectivo':
                     $resultado = (new Ventas())->ModificarPagoEfectivo($pago);
@@ -321,7 +327,7 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            return $this->renderAjax('edita', [
+            return $this->renderAjax('alta', [
                 'titulo' => 'Modificar Pago',
                 'model' => $pago,
                 'tributos' => $tributos,

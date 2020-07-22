@@ -446,7 +446,7 @@ BEGIN
                 ), ']') Pagos, SUM(p.Monto) MontoPagos
     FROM        Clientes c
     INNER JOIN  Ventas v USING(IdCliente)
-    INNER JOIN  Pagos p USING(IdVenta)
+    LEFT JOIN   Pagos p USING(IdVenta)
     WHERE       v.IdEmpresa = pIdEmpresa AND (pIdCliente = 0 OR c.IdCliente = pIdCliente)
                 AND (c.Estado = pEstado OR pEstado = 'T')
                 AND (v.Estado = pEstadoVenta OR pEstadoVenta = 'T')

@@ -43,9 +43,9 @@ class Remitos extends Model
     public function rules()
     {
         return [
-            [['IdEmpresa', 'IdProveedor', 'IdCanal','NroRemito','CAI'],
+            [['IdEmpresa', 'IdProveedor', 'IdCanal','NroRemito'],
                 'required', 'on' => self::_ALTA],
-            [['IdRemito', 'NroRemito','CAI'],
+            [['IdRemito', 'NroRemito'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];

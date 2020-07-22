@@ -77,6 +77,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php if ($pago['MedioPago'] == 'Retencion') : ?>
                                             <li><?= Html::encode('Tipo de Tributo') ?>: <?= Html::encode($tributos[json_decode($pago['Datos'])->IdTipoTributo]) ?></li>
                                         <?php endif; ?>
+                                        <?php if ($pago['MedioPago'] == 'Descuento') : ?>
+                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode( ($pago['Monto'] / $model['Monto']) * 100 ) ?></li>
+                                        <?php endif; ?>
                                         </ul>
                                     </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($pago['FechaAlta'])) ?></td>

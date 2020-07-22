@@ -33,6 +33,8 @@ class Pagos extends Model
 
     // Datos
     public $IdTipoTributo;
+    public $Descuento;
+    public $MontoVenta;
 
     const _ALTA_TARJETA = 'altat';
     const _ALTA_EFECTIVO = 'altae';
@@ -61,6 +63,7 @@ class Pagos extends Model
     const MEDIOS_PAGO = [
         5 => 'Cheque',
         6 => 'Deposito',
+        8 => 'Descuento',
         1 => 'Efectivo',
         2 => 'Mercaderia',
         7 => 'Retencion',
@@ -87,6 +90,7 @@ class Pagos extends Model
     {
         return [
             ['Monto', 'double'],
+            ['Descuento', 'number', 'min' => 0, 'max' => 100],
             [['IdVenta','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
             [['IdVenta','IdMedioPago','Monto'],
