@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use yii\web\HttpException;
 use afipsdk;
 use Yii;
+use common\utils\AfipWrapper;
 
 class ComprobanteHelper
 {
@@ -335,5 +336,17 @@ class ComprobanteHelper
         fclose($tmp_key);
 
         return $res;
+    }
+
+    public static function ListarComprobantes($cuit, $cert, $key, $production, $pv, $tipo, $maxCbte)
+    {
+        $wrapper = new AfipWrapper($cuit, $cert, $key, $production);
+
+        $out = array();
+        for ($i = 1; $i < $maxCbte; $i++) {
+            $out[] = $wrapper->afip->ElectronicBilling->GetVoucherInfo($i, $pv, $tipo);
+        }
+        
+        return $out;
     }
 }

@@ -269,6 +269,29 @@ class VentasController extends BaseController
         ]);
     }
 
+    public function actionContador()
+    {
+        Yii::$app->response->format = 'json';
+
+        $params = Yii::$app->session->get('Parametros');
+        $cuit = $params['CUIT'];
+        $cert = $params['AFIPCERT'];
+        $key = $params['AFIPKEY'];
+        $pvs = [4, 5];
+        $tipos = [6, 1];
+        $maximos = [
+            6 => 25,
+            1 => 8
+        ];
+        $out = [];
+        foreach ($pvs as $pv) {
+            foreach ($tipos as $tipo) {
+                $out[] = ComprobanteHelper::ListarComprobantes($cuit, $cert, $key, true, $pv, $tipo, $maximos[$tipo]);
+            }
+        }
+        return $out;
+    }
+
     public function actionEnviarComprobante($id)
     {
         Yii::$app->response->format = 'json';
