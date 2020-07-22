@@ -4,7 +4,10 @@ namespace backend\controllers;
 
 use common\models\GestorProveedores;
 use common\models\Proveedores;
+use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
+use yii\data\Pagination;
 use yii\web\UploadedFile;
 use Yii;
 
@@ -144,6 +147,39 @@ class ProveedoresController extends BaseController
         return $this->renderAjax('historial', [
             'models' => $historicos,
             'proveedor' => $proveedor
+        ]);
+    }
+
+    public function actionCuentas($id)
+    {
+        // PermisosHelper::verificarPermiso('ListarHistorialDescuentosProveedor');
+
+        $proveedor = new Proveedores();
+        $proveedor->IdProveedor = $id;
+        $proveedor->Dame();
+
+        $paginado = new Pagination();
+        $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+
+        $busqueda = new BuscarForm();
+        if ($busqueda->load(Yii::$app->request->post(), '') && $busqueda->validate()) {
+            $fechaInicio = $busqueda->FechaInicio;
+            $fechaFin = $busqueda->FechaFin;
+            $historicos = $proveedor->ListarHistorialCuenta($fechaInicio, $fechaFin);
+        } else {
+            $busqueda->FechaInicio = FechaHelper::formatearDateLocal(date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . "-1 month")));
+            $busqueda->FechaFin = FechaHelper::dateActualLocal();
+            $historicos = $proveedor->ListarHistorialCuenta($busqueda->FechaInicio, $busqueda->FechaFin);
+        }
+
+        $paginado->totalCount = count($historicos);
+        $historicos = array_slice($historicos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
+
+        return $this->render('cuentas', [
+            'busqueda' => $busqueda,
+            'models' => $historicos,
+            'proveedor' => $proveedor,
+            'paginado' => $paginado,
         ]);
     }
 }

@@ -780,7 +780,26 @@ CREATE TABLE `ParamsReportes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+CREATE TABLE `CuentasCorrientes` (
+  `IdCuentaCorriente` bigint(20) NOT NULL AUTO_INCREMENT,
+  `IdEntidad` bigint(20) NOT NULL,
+  `Tipo` char(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Monto` decimal(12, 2) NOT NULL,
+  `Observaciones` text NULL,
+  PRIMARY KEY (`IdCuentaCorriente`),
+  UNIQUE KEY `UI_IdEntidadTipo` (`IdEntidad`,`Tipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+CREATE TABLE `HistorialCuentasCorrientes` (
+  `IdHistorial` bigint(20) NOT NULL AUTO_INCREMENT,  
+  `IdCuentaCorriente` bigint(20) NOT NULL,
+  `Monto` decimal(12, 2) NOT NULL,
+  `Motivo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Fecha` datetime NOT NULL,
+  `Observaciones` text NULL,
+  PRIMARY KEY (`IdHistorial`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 
 -- INDEX: UI_Empresa 

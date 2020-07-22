@@ -1,6 +1,7 @@
 <?php
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 use yii\base\Model;
 
@@ -14,6 +15,7 @@ class Proveedores extends Model
     // Derivados
     public $Aumento;
     public $Archivo;
+    public $Deuda;
 
     const ESTADOS = [
         'A' => 'Activo',
@@ -42,7 +44,7 @@ class Proveedores extends Model
             // Aumento
             [['IdProveedor', 'Aumento'], 'required', 'on' => self::SCENARIO_AUMENTO],
             // Safe
-            [['IdProveedor', 'IdEmpresa', 'Proveedor', 'Estado'], 'safe'],
+            [['IdProveedor', 'IdEmpresa', 'Proveedor', 'Estado', 'Deuda'], 'safe'],
         ];
     }
 
@@ -215,6 +217,24 @@ class Proveedores extends Model
         
         $query->bindValues([
             ':id' => $this->IdProveedor,
+        ]);
+        
+        return $query->queryAll();
+    }
+
+    /*
+    * Permite listar el historial de descuentos de un proveedor.
+    */
+    public function ListarHistorialCuenta($FechaInicio = null, $FechaFin = null)
+    {
+        $sql = 'CALL xsp_listar_historial_cuenta_proveedor( :id, :fechainicio, :fechafin)';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdProveedor,
+            ':fechainicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechafin' => FechaHelper::formatearDateMysql($FechaFin),
         ]);
         
         return $query->queryAll();

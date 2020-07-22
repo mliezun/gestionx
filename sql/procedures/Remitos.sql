@@ -46,10 +46,10 @@ SALIR:BEGIN
         SELECT 'Debe ingresar el numero del remito.' Mensaje;
         LEAVE SALIR;
 	END IF;
-	IF (pCAI IS NULL OR pCAI = 0) THEN
-        SELECT 'Debe ingresar el CAI.' Mensaje;
-        LEAVE SALIR;
-	END IF;
+	-- IF (pCAI IS NULL OR pCAI = 0) THEN
+  --       SELECT 'Debe ingresar el CAI.' Mensaje;
+  --       LEAVE SALIR;
+	-- END IF;
 	-- Control de Parametros incorrectos
 	IF NOT EXISTS(SELECT Empresa FROM Empresas E WHERE E.IdEmpresa = pIdEmpresa) THEN
 		SELECT 'Debe existir una empresa con el URL dado.' Mensaje;
@@ -67,10 +67,10 @@ SALIR:BEGIN
 		SELECT 'El numero de remito ya existe.' Mensaje;
 		LEAVE SALIR;
 	END IF;
-	IF EXISTS(SELECT CAI FROM Remitos WHERE CAI = pCAI AND IdProveedor=pIdProveedor) THEN
-		SELECT 'El CAI ya existe.' Mensaje;
-		LEAVE SALIR;
-	END IF;
+	-- IF EXISTS(SELECT CAI FROM Remitos WHERE CAI = pCAI AND IdProveedor=pIdProveedor) THEN
+	-- 	SELECT 'El CAI ya existe.' Mensaje;
+	-- 	LEAVE SALIR;
+	-- END IF;
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
@@ -138,6 +138,23 @@ SALIR:BEGIN
 		-- Instancia un nuevo ingreso
 		CALL xsp_activar_existencia(pIdUsuario, (SELECT IdIngreso FROM Ingresos WHERE IdRemito=pIdRemito), pIP, pUserAgent, pAplicacion, pMensaje);
 		IF pMensaje != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
+		-- Aumenta la deuda al Proveedor
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito),
+			'P',
+			(	SELECT COALESCE(- SUM(li.Cantidad * li.Precio), 0)
+				FROM Ingresos i
+				INNER JOIN  LineasIngreso li USING(IdIngreso)
+				WHERE i.IdRemito = pIdRemito),
+			'Compra al Proveedor',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 
 			ROLLBACK;
 			LEAVE SALIR;
@@ -289,10 +306,10 @@ SALIR: BEGIN
         SELECT 'Debe ingresar el numero del remito.' Mensaje;
         LEAVE SALIR;
 	END IF;
-	IF (pCAI IS NULL OR pCAI = 0) THEN
-        SELECT 'Debe ingresar el CAI.' Mensaje;
-        LEAVE SALIR;
-	END IF;
+	-- IF (pCAI IS NULL OR pCAI = 0) THEN
+  --       SELECT 'Debe ingresar el CAI.' Mensaje;
+  --       LEAVE SALIR;
+	-- END IF;
 	-- Control de Parámetros incorrectos
 	IF NOT EXISTS(SELECT Empresa FROM Empresas E WHERE E.IdEmpresa = pIdEmpresa) THEN
 		SELECT 'Debe existir una empresa con el URL dado.' Mensaje;
@@ -310,13 +327,13 @@ SALIR: BEGIN
 		SELECT 'El numero de remito ya existe.' Mensaje;
 		LEAVE SALIR;
 	END IF;
-	IF EXISTS(SELECT CAI FROM Remitos WHERE IdRemito != pIdRemito AND CAI = pCAI AND IdProveedor=pIdProveedor) THEN
-		SELECT 'El CAI ya existe.' Mensaje;
-		LEAVE SALIR;
-	END IF;
+	-- IF EXISTS(SELECT CAI FROM Remitos WHERE IdRemito != pIdRemito AND CAI = pCAI AND IdProveedor=pIdProveedor) THEN
+	-- 	SELECT 'El CAI ya existe.' Mensaje;
+	-- 	LEAVE SALIR;
+	-- END IF;
 	IF NOT EXISTS(SELECT Estado FROM Remitos WHERE IdRemito = pIdRemito AND Estado = 'E') THEN
 		SELECT 'Solo se puede modificar un remito en estado de edicion.' Mensaje;
-        LEAVE SALIR;
+      LEAVE SALIR;
 	END IF;
 	SET pIdProveedorAntiguo = (SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito);
 	IF pIdProveedorAntiguo != pIdProveedor THEN
@@ -325,26 +342,27 @@ SALIR: BEGIN
 			LEAVE SALIR;
 		END IF;
 	END IF;
-
-    START TRANSACTION;
-        SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        -- Antes
-        INSERT INTO aud_Remitos
-        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'A',
+  
+	START TRANSACTION;
+    SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
+    -- Antes
+    INSERT INTO aud_Remitos
+    SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'A',
 		Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
-        -- Modifica
-        UPDATE Remitos
+    -- Modifica
+    UPDATE Remitos
 		SET		NroRemito=pNroRemito,
-				IdCanal=pIdCanal,
-				IdProveedor=pIdProveedor,
-				Observaciones=pObservaciones
+					IdCanal=pIdCanal,
+					IdProveedor=pIdProveedor,
+					CAI=pCAI,
+					Observaciones=pObservaciones
 		WHERE	IdRemito=pIdRemito;
 		-- Despues
-        INSERT INTO aud_Remitos
-        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'D',
+    INSERT INTO aud_Remitos
+    SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'D',
 		Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
 
-        SELECT 'OK' Mensaje;
+    SELECT 'OK' Mensaje;
 	COMMIT;
 END$$
 DELIMITER ;
