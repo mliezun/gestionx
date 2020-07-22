@@ -556,7 +556,8 @@ SALIR: BEGIN
     SELECT  *
     FROM    Proveedores
     WHERE   IdEmpresa = pIdEmpresa AND Proveedor LIKE CONCAT('%', pCadena, '%')
-            AND (pIncluyeBajas = 'S' OR Estado = 'A');
+            AND (pIncluyeBajas = 'S' OR Estado = 'A')
+            ;
 END$$
 DELIMITER ;
 

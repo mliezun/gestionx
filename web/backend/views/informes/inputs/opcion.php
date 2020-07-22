@@ -5,4 +5,4 @@
 /* @var $parametro [] */
 ?>
 
-<?= $form->field($model, $parametro['Parametro'])->checkbox(['value' => 'S', 'uncheck' => 'N'])->hint(Yii::t("backend", $parametro['ToolTipText']))->label(Yii::t("backend", $parametro['Etiqueta']));
+<?= $form->field($model, $parametro['Parametro'])->checkbox(['value' => 'S', 'uncheck' => 'N'])->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']);

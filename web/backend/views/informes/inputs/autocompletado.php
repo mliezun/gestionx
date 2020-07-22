@@ -39,5 +39,5 @@ $form->field($model, $parametro['Parametro'])->widget(Select2::classname(), [
         ],
         'initSelection' => new JsExpression($initScript)
     ],
-])->hint(Yii::t("backend", $parametro['ToolTipText']))->label(Yii::t("backend", $parametro['Etiqueta']));
+])->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']);
 ?>

@@ -50,13 +50,16 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                                 <td>{{ l.Cantidad }}</td>
                                 <td>$ {{ l.Precio }}</td>
                                 <td>
+                                    <?php if ($model['Estado'] == 'E'): ?>
                                     <button type="button" class="btn btn-default"
                                             @click="borrarLinea(i)"
                                             data-hint="Borrar">
                                         <i class="fa fa-times"></i>
                                     </button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
+                            <?php if ($model['Estado'] == 'E'): ?>
                             <tr>
                                 <td>
                                     <select ref="articulo" class="form-control"></select>
@@ -80,17 +83,29 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                                     </button>
                                 </td>
                             </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="lineas--bottom">
-                <button  type="button" class="btn btn-secondary"
-                    @click="completar"
-                    data-hint="Agregar pagos"
-                >
-                    Agregar pagos
-                </button>
+                <?php if ($model['Estado'] == 'E'): ?>
+                    <?php if ($tipoPrecio == 'PrecioVenta'): ?>
+                    <button  type="button" class="btn btn-secondary"
+                        @click="completar"
+                        data-hint="Agregar pagos"
+                    >
+                        Agregar pagos
+                    </button>
+                    <?php else: ?>
+                    <button  type="button" class="btn btn-secondary"
+                        @click="completar"
+                        data-hint="Completar"
+                    >
+                        Completar
+                    </button>
+                    <?php endif; ?>
+                <?php endif; ?>
                 <div class="lineas--total">
                     Total: ${{ total }}
                 </div>

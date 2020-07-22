@@ -95,7 +95,8 @@ SALIR:BEGIN
 			UPDATE ExistenciasConsolidadas SET Cantidad = Cantidad + pCantidad WHERE IdPuntoVenta = pIdPuntoVentaOrigen AND IdArticulo = pIdArticulo  AND IdCanal = pIdCanal;
 		ELSE
 			UPDATE ExistenciasConsolidadas SET Cantidad = Cantidad - pCantidad WHERE IdPuntoVenta = pIdPuntoVentaOrigen AND IdArticulo = pIdArticulo AND IdCanal = pIdCanal;
-			UPDATE ExistenciasConsolidadas SET Cantidad = Cantidad + pCantidad WHERE IdPuntoVenta = pIdPuntoVentaDestino AND IdArticulo = pIdArticulo  AND IdCanal = pIdCanal;
+			-- Esto se hace en la confirmacion
+			-- UPDATE ExistenciasConsolidadas SET Cantidad = Cantidad + pCantidad WHERE IdPuntoVenta = pIdPuntoVentaDestino AND IdArticulo = pIdArticulo  AND IdCanal = pIdCanal;
 		END IF;
         
         SELECT CONCAT('OK', pIdRectificacionPV) Mensaje;
@@ -186,9 +187,10 @@ SALIR: BEGIN
 	Permite buscar rectificaciones dentro de un punto de venta de una empresa, indicando una cadena de búsqueda
     y si se incluyen bajas. Si pIdPuntoVenta = 0 lista todas las rectficaciones activos de una empresa.
 	*/
-    SELECT  r.*, a.Articulo , po.PuntoVenta PuntoVentaOrigen, pd.PuntoVenta PuntoVentaDestino, c.Canal
+    SELECT  r.*, a.Articulo, a.Codigo, pr.Proveedor, po.PuntoVenta PuntoVentaOrigen, pd.PuntoVenta PuntoVentaDestino, c.Canal
     FROM    RectificacionesPV r
 	INNER JOIN Articulos a USING(IdArticulo)
+	INNER JOIN Proveedores pr USING(IdProveedor)
 	INNER JOIN Canales c USING(IdCanal)
     INNER JOIN PuntosVenta po ON r.IdPuntoVentaOrigen = po.IdPuntoVenta
     INNER JOIN PuntosVenta pd ON r.IdPuntoVentaDestino = pd.IdPuntoVenta

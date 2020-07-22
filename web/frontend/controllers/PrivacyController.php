@@ -4,17 +4,12 @@ namespace frontend\controllers;
 use yii\web\Controller;
 
 /**
- * Site controller
+ * Privacy controller
  */
-class SiteController extends Controller
+class PrivacyController extends Controller
 {
     public function actionIndex()
     {
         return $this->render('index');
-    }
-
-    public function actionError()
-    {
-        return $this->render('error');
     }
 }

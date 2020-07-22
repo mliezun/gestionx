@@ -460,7 +460,7 @@ BEGIN
     INNER JOIN Proveedores p USING (IdProveedor)
 	INNER JOIN Canales c USING (IdCanal)
     WHERE	pv.IdPuntoVenta = pIdPuntoVenta AND a.Estado = 'A'
-			AND (c.IdCanal = pIdCanal OR pIdCanal = 0)
+			AND (c.IdCanal = pIdCanal OR pIdCanal = 0) AND c.Estado = 'A'
 			AND (ec.Cantidad != 0 OR pSinStock = 'S')
 			AND (
 					a.Articulo LIKE CONCAT('%', pCadena, '%') OR

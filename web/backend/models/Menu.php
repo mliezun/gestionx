@@ -53,7 +53,9 @@ class Menu
         [
             'name' => 'Informes',
             'icon' => 'fas fa-file-alt',
-            'href' => '/informes'
+            'href' => '/informes',
+            // TODO: cambiar permiso informes
+            'permiso' => 'BuscarParametro'
         ],
         [
             'name' => 'Sistema',
