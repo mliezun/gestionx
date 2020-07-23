@@ -240,7 +240,7 @@ SALIR: BEGIN
         LEAVE SALIR;
 	END IF;
 	-- Control de Parámetros incorrectos
-    IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta = pIdVenta) THEN
+    IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V') THEN
         SELECT 'La venta indicada no se puede borrar, tiene pagos asociados.' Mensaje;
         LEAVE SALIR;
 	END IF;
@@ -283,7 +283,7 @@ BEGIN
     FROM	Ventas v
     LEFT JOIN TiposComprobantesAfip tca USING(IdTipoComprobanteAfip)
     LEFT JOIN TiposTributos tt USING(IdTipoTributo)
-            LEFT JOIN Pagos p USING(IdVenta)
+            LEFT JOIN Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
     WHERE	IdVenta = pIdVenta;
 END$$
 DELIMITER ;
@@ -357,7 +357,7 @@ SALIR:BEGIN
 		SELECT 'La venta ya está dado de baja.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF EXISTS(SELECT IdPago FROM Pagos WHERE IdVenta = pIdVenta) THEN
+    IF EXISTS(SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V') THEN
 		SELECT 'La venta indicada no se puede dar de baja, tiene pagos asociados.' Mensaje;
         LEAVE SALIR;
 	END IF;
@@ -639,15 +639,15 @@ SALIR: BEGIN
     /*
 	* Permite listar los pagos de una venta.
 	*/
-	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
-    FROM Pagos p 
-    INNER JOIN MediosPago mp USING(IdMedioPago)
-    INNER JOIN Ventas v USING(IdVenta)
-    INNER JOIN Clientes cl USING(IdCliente)
-    LEFT JOIN  Remitos r ON p.IdRemito = r.IdRemito
-    LEFT JOIN  Cheques ch ON p.IdCheque = ch.IdCheque
-    WHERE p.IdVenta = pIdVenta
-    ORDER BY p.FechaAlta;
+	SELECT      p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
+    FROM        Pagos p 
+    INNER JOIN  MediosPago mp USING(IdMedioPago)
+    INNER JOIN  Ventas v ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
+    INNER JOIN  Clientes cl USING(IdCliente)
+    LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
+    LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
+    WHERE       p.IdVenta = pIdVenta
+    ORDER BY    p.FechaAlta;
 END$$
 DELIMITER ;
 

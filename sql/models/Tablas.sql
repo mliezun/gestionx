@@ -346,7 +346,8 @@ CREATE TABLE ModulosEmpresas(
 
 CREATE TABLE Pagos(
     IdPago            BIGINT            NOT NULL,
-    IdVenta           BIGINT            NOT NULL,
+    Codigo            BIGINT            NOT NULL,
+    Tipo              CHAR(1)            NOT NULL,
     IdMedioPago       SMALLINT          NOT NULL,
     IdUsuario         BIGINT            NOT NULL,
     FechaAlta         DATETIME          NOT NULL,
@@ -1152,10 +1153,10 @@ ALTER TABLE Pagos ADD CONSTRAINT RefCheques124
     REFERENCES Cheques(IdCheque)
 ;
 
-ALTER TABLE Pagos ADD CONSTRAINT RefVentas35 
-    FOREIGN KEY (IdVenta)
-    REFERENCES Ventas(IdVenta)
-;
+-- ALTER TABLE Pagos ADD CONSTRAINT RefVentas35 
+--     FOREIGN KEY (IdVenta)
+--     REFERENCES Ventas(IdVenta)
+-- ;
 
 ALTER TABLE Pagos ADD CONSTRAINT RefMediosPago36 
     FOREIGN KEY (IdMedioPago)

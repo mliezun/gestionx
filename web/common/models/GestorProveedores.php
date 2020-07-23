@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 
 class GestorProveedores
@@ -95,5 +96,28 @@ class GestorProveedores
         ]);
 
         return $query->queryScalar();
+    }
+
+    /*
+     * Permite buscar proveedores dentro de una empresa indicando una cadena de búsqueda y
+     * si se incluyen bajas. Junto con el Historial de Movimientos que tiene dentro de un rango de fechas.
+     * xsp_buscar_cuentas_proveedores
+     *
+     */
+    public function BuscarCuentas($FechaInicio = null, $FechaFin = null, $Cadena = '', $IncluyeBajas = 'N')
+    {
+        $sql = "call xsp_buscar_cuentas_proveedores( :idempresa, :cadena, :ibajas, :fechaInicio, :fechaFin )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idempresa' => Yii::$app->user->identity->IdEmpresa,
+            ':cadena' => $Cadena,
+            ':fechaInicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechaFin' => FechaHelper::formatearDateMysql($FechaFin),
+            ':ibajas' => $IncluyeBajas,
+        ]);
+
+        return $query->queryAll();
     }
 }
