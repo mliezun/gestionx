@@ -33,17 +33,19 @@ class InformesHelper
      */
     private static function expandirValores(
         $columnas,
-        $valores,
-        $groupBy,
-        $reduceBy,
-        $reduceFn
+        $valores = [],
+        $groupBy = null,
+        $reduceBy = null,
+        $reduceFn = 'function () { return null; }'
     ) {
         $out = array();
         $agrupados = NinjaArrayHelper::groupBy($valores, $groupBy);
         foreach ($columnas as $col) {
             eval('$reduceClosure = ' . $reduceFn . ';');
             $grupo = ($agrupados[$col] ?? []);
-            $out[$col] = array_reduce($grupo, $reduceClosure, $reduceClosure());
+            $out[$col] = array_reduce(array_map(function ($el) use ($reduceBy) {
+                return $el[$reduceBy];
+            }, $grupo), $reduceClosure, $reduceClosure());
         }
         return $out;
     }
@@ -95,13 +97,13 @@ class InformesHelper
             foreach ($fila as $key => $val) {
                 if (self::endsWith($key, 'JsonGroupValues')) {
                     $entidad = str_replace($key, 'JsonGroupValues', '');
-                    $datos = json_decode($val);
+                    $datos = json_decode($val, true);
                     $new_fila = array_merge($new_fila, self::expandirValores(
                         $columnas[$entidad],
-                        $datos->Valores,
-                        $datos->GroupBy,
-                        $datos->ReduceBy,
-                        $datos->ReduceFn
+                        $datos['Valores'] ?? [],
+                        $datos['GroupBy'] ?? null,
+                        $datos['ReduceBy'] ?? null,
+                        $datos['ReduceFn'] ?? 'function () { return null; }'
                     ));
                 } elseif (!self::endsWith($key, 'JsonGroupKeys')) {
                     $new_fila[$key] = $val;

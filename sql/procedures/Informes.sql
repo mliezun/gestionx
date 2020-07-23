@@ -488,7 +488,7 @@ BEGIN
                         SELECT JSON_OBJECT(
                             "GroupBy", "MedioPago",
                             "ReduceBy", "Monto",
-                            "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }"
+                            "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }",
                             "Valores", JSON_ARRAYAGG(JSON_OBJECT(
                                 'MedioPago', mp.MedioPago,
                                 'Monto', p.Monto,
@@ -500,13 +500,7 @@ BEGIN
                         WHERE   p.IdVenta = v.IdVenta
                     ) PagosJsonGroupValues,
                     null PagosJsonGroupKeys, -- Se agrega junto con los totales
-                    JSON_ARRAYAGG(JSON_OBJECT(
-                        'Articulo', a.Articulo,
-                        'Precio', lv.Precio,
-                        'Cantidad', lv.Cantidad,
-                        'Subtotal', lv.Precio*lv.Cantidad,
-                        'Descuento', IF(lv.Factor < 0, lv.Factor, 0)
-                    )) ArticulosJsonList,
+                    GROUP_CONCAT(CONCAT(lv.Cantidad, ' x ', a.Articulo)) Articulos,
                     GROUP_CONCAT(pr.Proveedor) Proveedores, pv.PuntoVenta,
                     CONCAT(u.Nombres, ' ', u.Apellidos) Vendedor,
                     IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente
@@ -540,7 +534,7 @@ BEGIN
             SELECT JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
-                "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }"
+                "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }",
                 "Valores", JSON_ARRAYAGG(JSON_OBJECT(
                     'MedioPago', mp.MedioPago,
                     'Monto', p.Monto

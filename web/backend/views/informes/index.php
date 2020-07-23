@@ -162,7 +162,7 @@ Yii::info($reportes);
                         <th>
                             <?php
                             $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
-                            echo Html::encode(str_replace('JsonList', '', $titulo))
+                            echo Html::encode($titulo)
                             ?>
                         </th>
                         <?php endforeach; ?>
@@ -182,26 +182,10 @@ Yii::info($reportes);
                                 } elseif (strpos($columna, '#') !== false) {
                                     $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.#', '#']);
                                 }
-                                if (strpos($columna, 'JsonList') !== false) {
-                                    $valores = json_decode($celda, true);
-                                    if (is_array($valores)) {
-                                        foreach ($valores as $valor) {
-                                            echo '<ul>';
-                                            foreach ($valor as $k => $v) {
-                                                if (strpos($k, 'Fecha') !== false) {
-                                                    $v = FechaHelper::formatearDatetimeLocal($v);
-                                                }
-                                                echo "<li>{$k}: {$v}</li>";
-                                            }
-                                            echo '</ul>';
-                                        }
-                                    }
+                                if (strpos($columna, 'Fecha') !== false) {
+                                    echo isset($celda) ? FechaHelper::formatearDatetimeLocal($celda) : '';
                                 } else {
-                                    if (strpos($columna, 'Fecha') !== false) {
-                                        echo isset($celda) ? FechaHelper::formatearDatetimeLocal($celda) : '';
-                                    } else {
-                                        echo isset($celda) ? $celda : '';
-                                    }
+                                    echo isset($celda) ? $celda : '';
                                 }
                             ?>
                         </td>
