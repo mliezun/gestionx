@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\models\InformesHelper;
 use yii\base\Model;
 use Yii;
 
@@ -148,6 +149,8 @@ class GestorReportes extends Model
             ':cadena' => $CadenaParam
         ]);
 
-        return $query->queryAll();
+        $resultado = InformesHelper::expand($query->queryAll());
+
+        return $resultado;
     }
 }

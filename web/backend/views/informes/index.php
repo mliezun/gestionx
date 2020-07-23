@@ -159,22 +159,12 @@ Yii::info($reportes);
                 <thead>
                     <tr>
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
-                        <?php if (strpos($titulo, 'JsonGroupKeys') !== false): ?>
+                        <th>
                             <?php
-                                $expose = [
-                                    $titulo => json_decode($valor)
-                                ];
-                                extract($expose);
-                            ?>
-                            <?php foreach (${$titulo} as $key): ?>
-                                <th><?= Html::encode($key) ?></th>
-                            <?php endforeach; ?>
-                        <?php elseif (strpos($titulo, 'JsonGroupValues') === false): ?>
-                            <th><?php
                             $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
-                            echo Html::encode(str_replace('JsonList', '', $titulo)) ?>
-                            </th>
-                        <?php endif; ?>
+                            echo Html::encode(str_replace('JsonList', '', $titulo))
+                            ?>
+                        </th>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
@@ -182,38 +172,6 @@ Yii::info($reportes);
                     <?php foreach ($tabla as $fila): ?>
                     <tr class="no-break">
                         <?php foreach ($fila as $columna => $celda): ?>
-                        <?php if (strpos($columna, 'JsonGroupValues') !== false): ?>
-                            <?php
-                            $grupoName = str_replace('JsonGroupValues', '', $columna);
-                            $grupos = $grupoName . 'JsonGroupKeys';
-
-                            if (isset($celda)) {
-                                $crudo = json_decode($celda, true);
-                                $groupKey = $crudo['GroupBy'];
-                                $reduceKey = $crudo['ReduceBy'];
-                                $valores = $crudo['Valores'];
-                                $agrupados = NinjaArrayHelper::groupBy($valores, $groupKey);
-                                Yii::info($valores);
-                                Yii::info($agrupados);
-                                Yii::info($groupKey);
-                                Yii::info($reduceKey);
-                                foreach (${$grupos} as $grupo) {
-                                    $total = 0;
-                                    $recorrer = $agrupados[$grupo] ?? [];
-                                    Yii::info($recorrer, 'recorrer');
-                                    foreach ($recorrer as $v) {
-                                        $total += floatval($v[$reduceKey]);
-                                    }
-                                    echo "<td>{$total}</td>";
-                                }
-                            } else {
-                                foreach (${$grupos} as $grupo) {
-                                    echo "<td>0</td>";
-                                }
-                            }
-                            
-                            ?>
-                        <?php elseif (strpos($columna, 'JsonGroupKeys') === false): ?>
                         <td>
                             <?php
                                 $patrones = [$reporte['Procedimiento'] . '.' . $columna];
@@ -247,7 +205,6 @@ Yii::info($reportes);
                                 }
                             ?>
                         </td>
-                        <?php endif;?>
                         <?php endforeach; ?>
                     </tr>
                     <?php endforeach; ?>

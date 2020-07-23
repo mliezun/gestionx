@@ -488,6 +488,7 @@ BEGIN
                         SELECT JSON_OBJECT(
                             "GroupBy", "MedioPago",
                             "ReduceBy", "Monto",
+                            "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }"
                             "Valores", JSON_ARRAYAGG(JSON_OBJECT(
                                 'MedioPago', mp.MedioPago,
                                 'Monto', p.Monto,
@@ -539,6 +540,7 @@ BEGIN
             SELECT JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
+                "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }"
                 "Valores", JSON_ARRAYAGG(JSON_OBJECT(
                     'MedioPago', mp.MedioPago,
                     'Monto', p.Monto

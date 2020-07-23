@@ -6,6 +6,12 @@ use Yii;
 
 class NinjaArrayHelper
 {
+    /**
+     * Normalizar permite cambiar el formato de un array dado según una
+     * estructura de normalización.
+     * @param datos
+     * @param normalizacion
+     */
     public static function normalizar($datos, $normalizacion)
     {
         if (gettype($datos) !== 'array') {
@@ -34,9 +40,14 @@ class NinjaArrayHelper
         return $out;
     }
 
+    /**
+     * Permite convertir un array asociativo a un array
+     * de arrays asociativos con 1 clave.
+     * @param arrayAssoc
+     */
     public static function assocToArray($arrayAssoc)
     {
-        $out = [];
+        $out = array();
         foreach ($arrayAssoc as $key => $val) {
             $out[] = [
                 $key => $val
@@ -45,6 +56,12 @@ class NinjaArrayHelper
         return $out;
     }
 
+    /**
+     * Renombra las keys de un array.
+     * @param array
+     * @param rename Rename keys - Example: ['keyA' => 'keyB']
+     * @param remove Indicates if the old key is removed
+     */
     public static function renameKeys($array, $rename, $remove = true)
     {
         $out = [];
@@ -62,6 +79,11 @@ class NinjaArrayHelper
         return $out;
     }
 
+    /**
+     * Agrupa elementos de un array por la clave indicada.
+     * @param array
+     * @param key Clave de agrupación
+     */
     public static function groupBy($array, $key)
     {
         $out = array();
