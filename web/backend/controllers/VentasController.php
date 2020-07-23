@@ -10,6 +10,7 @@ use common\models\GestorClientes;
 use common\models\GestorCanales;
 use common\models\GestorTiposComprobantesAfip;
 use common\models\GestorTiposTributos;
+use common\models\GestorPuntosVenta;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
@@ -269,7 +270,7 @@ class VentasController extends BaseController
         ]);
     }
 
-    public function actionContador()
+    public function actionListarComprobantes()
     {
         Yii::$app->response->format = 'json';
 
@@ -277,16 +278,28 @@ class VentasController extends BaseController
         $cuit = $params['CUIT'];
         $cert = $params['AFIPCERT'];
         $key = $params['AFIPKEY'];
-        $pvs = [4, 5];
-        $tipos = [6, 1];
-        $maximos = [
-            6 => 25,
-            1 => 8
-        ];
-        $out = [];
+
+        $gestorPV = new GestorPuntosVenta;
+        $pvs = $gestorPV->Buscar();
+
+        $comprobantes = (new GestorTiposComprobantesAfip)->Buscar();
+        $tipos = array_map(function ($comprobante) {
+            return intval($comprobante['IdTipoComprobanteAfip']);
+        }, $comprobantes);
+
+        $out = array();
         foreach ($pvs as $pv) {
             foreach ($tipos as $tipo) {
-                $out[] = ComprobanteHelper::ListarComprobantes($cuit, $cert, $key, true, $pv, $tipo, $maximos[$tipo]);
+                $datos = json_decode($pv['Datos']);
+                $NroPV = intval($datos->NroPuntoVenta);
+                $out = array_merge($out, ComprobanteHelper::ListarComprobantes(
+                    $cuit,
+                    $cert,
+                    $key,
+                    true,
+                    $NroPV,
+                    $tipo
+                ));
             }
         }
         return $out;
