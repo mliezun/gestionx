@@ -8,7 +8,7 @@ SALIR: BEGIN
 	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
     FROM        Pagos p 
     INNER JOIN  MediosPago mp USING(IdMedioPago)
-    INNER JOIN  Ventas v ON v.IdVenta = p.Codigo AND Codigo = 'V'
+    INNER JOIN  Ventas v ON v.IdVenta = p.Codigo AND p.Tipo = 'V'
     INNER JOIN  Clientes cl USING(IdCliente)
     LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
@@ -84,7 +84,8 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
+    SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
+    IF ( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
@@ -98,9 +99,8 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
 
-        IF ( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
+        IF ( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -1080,7 +1080,8 @@ SALIR:BEGIN
 	END IF;
 
     SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
-    IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque)
+    SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
+    IF ( pMontoPago
     + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
@@ -1095,7 +1096,6 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
         SET pDiferencia = 0;
         IF(pIdChequeAntiguo != pIdCheque)THEN
             -- Audito Antes el Cheque Antiguo
@@ -1126,7 +1126,7 @@ SALIR:BEGIN
 
             SET pDiferencia = pMontoPago - (SELECT Importe FROM Cheques WHERE IdCheque = pIdChequeAntiguo);
 
-            IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) 
+            IF (pMontoPago
             + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
             < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
                 SET pMotivo='MODIFICA';

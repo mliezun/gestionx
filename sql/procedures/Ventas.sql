@@ -640,9 +640,9 @@ SALIR: BEGIN
 	* Permite listar los pagos de una venta.
 	*/
 	SELECT      p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
-    FROM        Pagos p 
+    FROM        Ventas v 
+    INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
     INNER JOIN  MediosPago mp USING(IdMedioPago)
-    INNER JOIN  Ventas v ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
     INNER JOIN  Clientes cl USING(IdCliente)
     LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
