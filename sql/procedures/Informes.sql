@@ -484,20 +484,21 @@ BEGIN
                     v.Monto 'Monto Total',
                     COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta), 0) 'Monto Pagado',
                     COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta)), v.Monto) Deuda,
-                    (
-                        SELECT JSON_OBJECT(
-                            "GroupBy", "MedioPago",
-                            "ReduceBy", "Monto",
-                            "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }",
-                            "Valores", JSON_ARRAYAGG(JSON_OBJECT(
-                                'MedioPago', mp.MedioPago,
-                                'Monto', p.Monto,
-                                'Fecha', p.FechaPago
-                            ))
+                    JSON_OBJECT(
+                        "GroupBy", "MedioPago",
+                        "ReduceBy", "Monto",
+                        "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }",
+                        "Values", (
+                            SELECT 
+                                JSON_ARRAYAGG(JSON_OBJECT(
+                                    'MedioPago', mp.MedioPago,
+                                    'Monto', p.Monto
+                                ))
+
+                            FROM Pagos p
+                            INNER JOIN MediosPago mp USING(IdMedioPago)
+                            WHERE   p.IdVenta = v.IdVenta
                         )
-                        FROM Pagos p
-                        INNER JOIN MediosPago mp USING(IdMedioPago)
-                        WHERE   p.IdVenta = v.IdVenta
                     ) PagosJsonGroupValues,
                     null PagosJsonGroupKeys, -- Se agrega junto con los totales
                     GROUP_CONCAT(CONCAT(lv.Cantidad, ' x ', a.Articulo)) Articulos,
@@ -530,22 +531,25 @@ BEGIN
 
     SELECT * FROM tmp_inf_ventas
     UNION ALL
-    SELECT 0, NOW(), 'TOTALES', pTotal, pPagado, pDeuda, (
-            SELECT JSON_OBJECT(
+    SELECT  0, NOW(), 'TOTALES', pTotal, pPagado, pDeuda,
+            JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
                 "ReduceFn", "function ($el1 = 0, $el2 = 0) { return $el1 + $el2; }",
-                "Valores", JSON_ARRAYAGG(JSON_OBJECT(
-                    'MedioPago', mp.MedioPago,
-                    'Monto', p.Monto
-                ))
-            )
-            FROM Pagos p
-            INNER JOIN MediosPago mp USING(IdMedioPago)
-            WHERE   JSON_CONTAINS(pVentas, CONCAT(p.IdVenta, ''), '$')
-        ), (
+                "Values", (
+                    SELECT
+                        JSON_ARRAYAGG(JSON_OBJECT(
+                            'MedioPago', mp.MedioPago,
+                            'Monto', p.Monto
+                        ))
+                    FROM Pagos p
+                    INNER JOIN MediosPago mp USING(IdMedioPago)
+                    WHERE   JSON_CONTAINS(pVentas, CONCAT(p.IdVenta, ''), '$')
+                )
+            ),
+            (
                 SELECT JSON_ARRAYAGG(MedioPago) FROM MediosPago WHERE Estado = "A"
-        ), NULL, NULL, NULL, NULL, NULL
+            ), NULL, NULL, NULL, NULL, NULL
     ORDER BY Fecha desc;
 
     

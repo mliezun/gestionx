@@ -85,7 +85,7 @@ class InformesHelper
          * Si no hay elementos para expandir devuelvo el array como estaba.
          */
         if (count($columnas) === 0) {
-            return $informe;
+            return NinjaArrayHelper::deepMap($informe, 'strval');
         }
 
         /**
@@ -100,7 +100,7 @@ class InformesHelper
                     $datos = json_decode($val, true);
                     $new_fila = array_merge($new_fila, self::expandirValores(
                         $columnas[$entidad],
-                        $datos['Valores'] ?? [],
+                        $datos['Values'] ?? [],
                         $datos['GroupBy'] ?? null,
                         $datos['ReduceBy'] ?? null,
                         $datos['ReduceFn'] ?? 'function () { return null; }'
@@ -112,6 +112,6 @@ class InformesHelper
             $out[] = $new_fila;
         }
 
-        return $out;
+        return NinjaArrayHelper::deepMap($out, 'strval');
     }
 }

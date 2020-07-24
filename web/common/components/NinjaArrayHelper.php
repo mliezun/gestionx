@@ -95,4 +95,24 @@ class NinjaArrayHelper
         }
         return $out;
     }
+
+    /**
+     * Misma funcionalidad que map, pero si un elemento es un
+     * array se aplica la funcion de mapeo sobre él.
+     *
+     * @param array
+     * @param mapFn
+     */
+    public static function deepMap($array, $mapFn)
+    {
+        $out = array();
+        foreach ($array as $key => $val) {
+            if (gettype($val) === 'array') {
+                $out[$key] = self::deepMap($val, $mapFn);
+            } else {
+                $out[$key] = $mapFn($val);
+            }
+        }
+        return $out;
+    }
 }
