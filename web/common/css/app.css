@@ -1,41 +1,43 @@
-[v-cloak] {display: none}
+[v-cloak] {
+  display: none !important;
+}
 
 .buscar--form input {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 .buscar--form select {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 .buscar--form {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .alta--button {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .check--buscar-form {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .modulo--button {
-    margin: 10px;
+  margin: 10px;
 }
 .modulo--card {
-    width: 120px;
-    height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  width: 120px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .lineas--bottom {
-    font-size: 30px;
-    text-align: right;
-    padding-right: 30px;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
+  font-size: 30px;
+  text-align: right;
+  padding-right: 30px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
 }
 .lineas--total {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 .modal-open {
-    overflow: scroll;
+  overflow: scroll;
 }
