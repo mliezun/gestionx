@@ -462,10 +462,115 @@ END$$
 DELIMITER ;
 
 
+DROP procedure IF EXISTS `xsp_inf_autocompletar_param_vendedor`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_autocompletar_param_vendedor`(pIdEmpresa int, pCadena varchar(50))
+PROC: BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    SELECT  IdUsuario Id, CONCAT(u.Apellidos, ', ', u.Nombres) Nombre
+    FROM    Usuarios u 
+    WHERE   u.IdEmpresa = pIdEmpresa
+            AND (
+                u.Nombres LIKE CONCAT('%', pCadena, '%') OR
+                u.Apellidos LIKE CONCAT('%', pCadena, '%') OR 
+                CONCAT(u.Apellidos, ', ', u.Nombres) LIKE CONCAT('%', pCadena, '%')
+            )
+            AND (u.Estado = 'A');
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_dame_param_vendedor`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_vendedor`(pIdEmpresa int, pId bigint)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT  IdUsuario Id, CONCAT(u.Apellidos, ', ', u.Nombres) Nombre FROM Usuarios u
+    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND IdUsuario = pId;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_autocompletar_param_cliente`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_autocompletar_param_cliente`(pIdEmpresa int, pCadena varchar(50))
+PROC: BEGIN
+	/*
+    Permite traer el parámetro dado el Id
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    SELECT  IdCliente Id, IF(u.Tipo = 'F', CONCAT(u.Apellidos, ', ', u.Nombres), u.RazonSocial) Nombre
+    FROM    Clientes u 
+    WHERE   u.IdEmpresa = pIdEmpresa
+            AND (
+                u.Nombres LIKE CONCAT('%', pCadena, '%') OR
+                u.Apellidos LIKE CONCAT('%', pCadena, '%') OR 
+                CONCAT(u.Apellidos, ', ', u.Nombres) LIKE CONCAT('%', pCadena, '%') OR
+                u.RazonSocial LIKE CONCAT('%', pCadena, '%')
+            )
+            AND (u.Estado = 'A');
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
+
+DROP procedure IF EXISTS `xsp_inf_dame_param_cliente`;
+DELIMITER $$
+CREATE PROCEDURE `xsp_inf_dame_param_cliente`(pIdEmpresa int, pId bigint)
+BEGIN
+	/*
+    Permite llenar el parámetro TipoVenta de los modelos de reporte.
+    */
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    
+	SELECT  IdCliente Id, IF(u.Tipo = 'F', CONCAT(u.Apellidos, ', ', u.Nombres), u.RazonSocial) Nombre FROM Clientes u
+    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND IdCliente = pId;
+    
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+END$$
+
+DELIMITER ;
+
+
 
 DROP PROCEDURE IF EXISTS `xsp_reporte_ventas`;
 DELIMITER $$
-CREATE PROCEDURE `xsp_reporte_ventas`(pIdEmpresa int, pFechaInicio date, pFechaFin date, pIdPuntoVenta int, pTipoVenta char(1), pIdMedioPago int, pIdArticulo bigint, pIdProveedor bigint)
+CREATE PROCEDURE `xsp_reporte_ventas`(
+    pIdEmpresa int,
+    pFechaInicio date,
+    pFechaFin date,
+    pIdPuntoVenta int,
+    pTipoVenta char(1),
+    pIdMedioPago int,
+    pIdArticulo bigint,
+    pIdProveedor bigint,
+    pIdUsuario bigint,
+    pIdCliente bigint
+)
 BEGIN
     DECLARE pTotal, pPagado, pDeuda DECIMAL(14,2);
     DECLARE pVentas json;
@@ -521,6 +626,8 @@ BEGIN
                     AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.IdVenta = v.IdVenta AND p.IdMedioPago = pIdMedioPago))
                     AND (pIdArticulo = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 WHERE lv2.IdVenta = v.IdVenta AND lv2.IdArticulo = pIdArticulo))
                     AND (pIdProveedor = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 INNER JOIN Articulos a2 USING(IdArticulo) INNER JOIN Proveedores prv2 USING(IdProveedor) WHERE lv2.IdVenta = v.IdVenta AND prv2.IdProveedor = pIdProveedor))
+                    AND (pIdUsuario = 0 OR u.IdUsuario = pIdUsuario)
+                    AND (pIdCliente = 0 OR cl.IdCliente = pIdCliente)
         GROUP BY    v.IdVenta
         ORDER BY    v.IdVenta desc;
 
