@@ -8,7 +8,7 @@ SALIR: BEGIN
 	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
     FROM        Pagos p 
     INNER JOIN  MediosPago mp USING(IdMedioPago)
-    INNER JOIN  Ventas v USING(IdVenta)
+    INNER JOIN  Ventas v ON v.IdVenta = p.Codigo AND p.Tipo = 'V'
     INNER JOIN  Clientes cl USING(IdCliente)
     LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
@@ -37,6 +37,7 @@ SALIR:BEGIN
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
     DECLARE pMensaje text;
+    DECLARE pMontoPago decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -83,13 +84,14 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
+    IF ( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -97,7 +99,8 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF ( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+
+        IF ( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -130,8 +133,8 @@ SALIR:BEGIN
         Cheques.* FROM Cheques WHERE IdCheque = pIdCheque;
 
         -- Inserto el pago
-        INSERT INTO Pagos VALUES (0, pIdVenta, pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
-        pFechaPago, NULL, (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque), pObservacionesPago,
+        INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
+        pFechaPago, NULL, pMontoPago, pObservacionesPago,
         pIdCheque, NULL, NULL, NULL, NULL, NULL, NULL);
 
         SET pIdPago = LAST_INSERT_ID();
@@ -139,6 +142,20 @@ SALIR:BEGIN
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pMontoPago,
+			'Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
         -- -- Inserto el comprobante
         -- INSERT INTO Comprobantes VALUES (pIdPago, pIdTipoComprobante,
@@ -148,20 +165,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
             UPDATE Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -234,13 +251,13 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del pago supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -249,7 +266,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -269,7 +286,7 @@ SALIR:BEGIN
         END IF;
 
         -- Inserto el pago
-        INSERT INTO Pagos VALUES (0, pIdVenta, pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
+        INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
         pFechaPago, NULL, pMontoPago, pObservacionesPago,
         NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
@@ -279,6 +296,20 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pMontoPago,
+			'Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         -- -- Inserto el comprobante
         -- INSERT INTO Comprobantes VALUES (pIdPago, pIdTipoComprobante,
         -- CONCAT('/Rutas_Comprobantes/Comp',pIdPago,'.pdf'), NOW());
@@ -287,20 +318,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
             UPDATE Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -397,13 +428,13 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del pago supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -412,7 +443,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -432,7 +463,7 @@ SALIR:BEGIN
         END IF;
 
         -- Inserto el pago
-        INSERT INTO Pagos VALUES (0, pIdVenta, pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
+        INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
         pFechaPago, NULL, pMontoPago, pObservacionesPago,
         NULL, NULL, pNroTarjeta, pMesVencimiento, pAnioVencimiento, pCCV, NULL);
 
@@ -442,6 +473,20 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pMontoPago,
+			'Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         -- -- Inserto el comprobante
         -- INSERT INTO Comprobantes VALUES (pIdPago, pIdTipoComprobante,
         -- CONCAT('/Rutas_Comprobantes/Comp',pIdPago,'.pdf'), NOW());
@@ -450,20 +495,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
             UPDATE Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -547,7 +592,7 @@ SALIR:BEGIN
     SET pMontoPago = (SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
         INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito);
 
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del pago supera la venta.' Mensaje;
         LEAVE SALIR;
@@ -555,7 +600,7 @@ SALIR:BEGIN
     
     -- IF((SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
     --     INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito)
-    -- + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -564,7 +609,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -598,7 +643,7 @@ SALIR:BEGIN
         Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
 
         -- Inserto el pago
-        INSERT INTO Pagos VALUES (0, pIdVenta, pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
+        INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
         pFechaPago, NULL, pMontoPago, pObservacionesPago,
         NULL, pIdRemito, NULL, NULL, NULL, NULL, NULL);
 
@@ -608,6 +653,20 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pMontoPago,
+			'Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         -- -- Inserto el comprobante
         -- INSERT INTO Comprobantes VALUES (pIdPago, pIdTipoComprobante,
         -- CONCAT('/Rutas_Comprobantes/Comp',pIdPago,'.pdf'), NOW());
@@ -616,20 +675,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
             UPDATE Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -698,6 +757,10 @@ SALIR:BEGIN
 	-- 	SELECT 'El tipo de comprobante no se encuentra activo.' Mensaje;
     --     LEAVE SALIR;
 	-- END IF;
+    IF NOT EXISTS(SELECT IdTipoTributo FROM TiposTributos WHERE IdTipoTributo = pIdTipoTributo AND FechaHasta IS NULL) THEN
+		SELECT 'El tipo de tributo no se encuentra activo.' Mensaje;
+        LEAVE SALIR;
+	END IF;
     IF NOT EXISTS(SELECT Estado FROM MediosPago WHERE IdMedioPago = pIdMedioPago AND Estado = 'A') THEN
 		SELECT 'El medio de pago no se encuentra activo.' Mensaje;
         LEAVE SALIR;
@@ -706,13 +769,13 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del pago supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -721,7 +784,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='ALTA';
         ELSE
@@ -741,7 +804,7 @@ SALIR:BEGIN
         END IF;
 
         -- Inserto el pago
-        INSERT INTO Pagos VALUES (0, pIdVenta, pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
+        INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
         pFechaPago, NULL, pMontoPago, pObservacionesPago,
         NULL, NULL, NULL, NULL, NULL, NULL,
         JSON_OBJECT('IdTipoTributo', pIdTipoTributo));
@@ -752,6 +815,20 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pMontoPago,
+			'Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         -- -- Inserto el comprobante
         -- INSERT INTO Comprobantes VALUES (pIdPago, pIdTipoComprobante,
         -- CONCAT('/Rutas_Comprobantes/Comp',pIdPago,'.pdf'), NOW());
@@ -760,20 +837,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
             UPDATE Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -795,6 +872,8 @@ SALIR:BEGIN
     DECLARE pIdCheque bigint;
     DECLARE pIdRemito bigint;
     DECLARE pIdVenta bigint;
+    DECLARE pIdCliente bigint;
+    DECLARE pMontoPago decimal(12, 2);
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
     -- Manejo de error en la transacción    
@@ -852,7 +931,8 @@ SALIR:BEGIN
         -- -- Borra Comprobante
         -- DELETE FROM Comprobantes WHERE IdPago = pIdPago;
 
-        SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago=pIdPago);
+        SELECT INTO pIdVenta, pMontoPago
+        SELECT Codigo, Monto FROM Pagos WHERE IdPago=pIdPago;
         IF EXISTS( SELECT IdVenta FROM Ventas WHERE IdVenta=pIdVenta AND Estado='P')THEN
             -- Audito Antes la Venta
             INSERT INTO aud_Ventas
@@ -867,6 +947,20 @@ SALIR:BEGIN
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'BORRA_PAGO', 'D',
             Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
         END IF;
+
+        -- Aumenta la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			pIdCliente,
+			'C',
+			- pMontoPago,
+			'Borra Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
 		-- Audito Pago
 		INSERT INTO aud_Pagos
@@ -891,7 +985,7 @@ SALIR: BEGIN
 	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
     FROM Pagos p 
     INNER JOIN MediosPago mp USING(IdMedioPago)
-    INNER JOIN Ventas v USING(IdVenta)
+    INNER JOIN Ventas v ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
     INNER JOIN Clientes cl USING(IdCliente)
     LEFT JOIN  Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN  Cheques ch ON p.IdCheque = ch.IdCheque
@@ -934,6 +1028,8 @@ SALIR:BEGIN
     DECLARE pMotivo varchar(100);
     DECLARE pIdChequeAntiguo bigint;
     DECLARE pMensaje text;
+    DECLARE pMontoPago decimal(12, 2);
+    DECLARE pDiferencia decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -983,15 +1079,16 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago = pIdPago);
-    IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque)
-    + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
+    SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
+    IF ( pMontoPago
+    + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -999,6 +1096,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
+        SET pDiferencia = 0;
         IF(pIdChequeAntiguo != pIdCheque)THEN
             -- Audito Antes el Cheque Antiguo
             INSERT INTO aud_Cheques
@@ -1026,8 +1124,10 @@ SALIR:BEGIN
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'UTILIZA', 'D',
             Cheques.* FROM Cheques WHERE IdCheque = pIdCheque;
 
-            IF ((SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque) 
-            + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+            SET pDiferencia = pMontoPago - (SELECT Importe FROM Cheques WHERE IdCheque = pIdChequeAntiguo);
+
+            IF (pMontoPago
+            + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
             < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
                 SET pMotivo='MODIFICA';
             ELSE
@@ -1055,14 +1155,28 @@ SALIR:BEGIN
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
         -- Modifica el pago
         UPDATE Pagos
-        SET IdCheque=pIdCheque,
-            Monto = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque),
-            Observaciones=pObservacionesPago
-        WHERE IdPago=pIdPago;
+        SET     IdCheque=pIdCheque,
+                Monto = pMontoPago,
+                Observaciones=pObservacionesPago
+        WHERE   IdPago=pIdPago;
         -- Audito el pago Despues
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'D',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pDiferencia,
+			'Modifica Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
         -- -- Audito el comprobante Antes
         -- INSERT INTO aud_Comprobantes
@@ -1077,20 +1191,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'D',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
-            UPDATE Pagos
+            UPDATE  Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -1115,6 +1229,7 @@ SALIR:BEGIN
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
     DECLARE pMensaje text;
+    DECLARE pDiferencia decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -1157,14 +1272,14 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago = pIdPago);
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -1173,7 +1288,8 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+        SET pDiferencia = pMontoPago - (SELECT Monto FROM Pagos WHERE IdPago = pIdPago);
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='MODIFICA';
         ELSE
@@ -1198,13 +1314,27 @@ SALIR:BEGIN
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
         -- Modifica el pago
         UPDATE Pagos
-        SET Monto = pMontoPago,
-            Observaciones=pObservacionesPago
-        WHERE IdPago=pIdPago;
+        SET     Monto = pMontoPago,
+                Observaciones=pObservacionesPago
+        WHERE   IdPago=pIdPago;
         -- Audito el pago Despues
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'D',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pDiferencia,
+			'Modifica Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
         -- -- Audito el comprobante Antes
         -- INSERT INTO aud_Comprobantes
@@ -1219,20 +1349,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'D',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
-            UPDATE Pagos
+            UPDATE  Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -1259,6 +1389,7 @@ SALIR:BEGIN
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
     DECLARE pMensaje text;
+    DECLARE pDiferencia decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -1317,14 +1448,14 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago = pIdPago);
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -1333,7 +1464,8 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+        SET pDiferencia = pMontoPago - (SELECT Monto FROM Pagos WHERE IdPago = pIdPago);
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='MODIFICA';
         ELSE
@@ -1370,6 +1502,20 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'D',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pDiferencia,
+			'Modifica Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         -- -- Audito el comprobante Antes
         -- INSERT INTO aud_Comprobantes
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'A',
@@ -1383,20 +1529,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'D',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
-            UPDATE Pagos
+            UPDATE  Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -1426,6 +1572,7 @@ SALIR:BEGIN
     DECLARE pMontoPago decimal(12,2);
     DECLARE pIdCliente bigint;
     DECLARE pMensaje text;
+    DECLARE pDiferencia decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -1481,15 +1628,15 @@ SALIR:BEGIN
 
     SET pMontoPago = (SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
         INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito);
-    SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago = pIdPago);
+    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
 
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -1498,6 +1645,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
+        SET pDiferencia = 0;
         IF(pIdRemito != pIdRemitoAntiguo)THEN
             SET pIdCliente = (SELECT IdCliente FROM Remitos WHERE IdRemito = pIdRemitoAntiguo);
             -- Audito Antes el remito Antiguo
@@ -1526,7 +1674,10 @@ SALIR:BEGIN
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGO', 'D',
             Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
 
-            IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+            SET pDiferencia = pMontoPago - (SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
+                                            INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemitoAntiguo);
+
+            IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
             < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
                 SET pMotivo='MODIFICA';
             ELSE
@@ -1553,15 +1704,29 @@ SALIR:BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'A',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
         -- Modifica el pago
-        UPDATE Pagos
-        SET IdRemito=pIdRemito,
-            Monto = pMontoPago,
-            Observaciones=pObservacionesPago
-        WHERE IdPago=pIdPago;
+        UPDATE  Pagos
+        SET     IdRemito=pIdRemito,
+                Monto = pMontoPago,
+                Observaciones=pObservacionesPago
+        WHERE   IdPago=pIdPago;
         -- Audito el pago Despues
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'D',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pDiferencia,
+			'Modifica Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
         -- -- Audito el comprobante Antes
         -- INSERT INTO aud_Comprobantes
@@ -1576,20 +1741,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'D',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
-            UPDATE Pagos
+            UPDATE  Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;
@@ -1614,6 +1779,7 @@ SALIR:BEGIN
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
     DECLARE pMensaje text;
+    DECLARE pDiferencia decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -1652,22 +1818,26 @@ SALIR:BEGIN
 	-- 	SELECT 'El tipo de comprobante no se encuentra activo.' Mensaje;
     --     LEAVE SALIR;
 	-- END IF;
-    IF NOT EXISTS(SELECT IdPago FROM Pagos WHERE IdPago = pIdPago AND IdRemito IS NULL AND IdCheque IS NULL AND NroTarjeta IS NULL)THEN
-        SELECT 'El pago indicado no es de tipo efectivo.' Mensaje;
+    IF NOT EXISTS(SELECT IdTipoTributo FROM TiposTributos WHERE IdTipoTributo = pIdTipoTributo AND FechaHasta IS NULL) THEN
+		SELECT 'El tipo de tributo no se encuentra activo.' Mensaje;
+        LEAVE SALIR;
+	END IF;
+    IF NOT EXISTS(SELECT IdPago FROM Pagos WHERE IdPago = pIdPago AND Datos->>'$.IdTipoTributo' IS NOT NULL)THEN
+        SELECT 'El pago indicado no es de tipo retencion.' Mensaje;
         LEAVE SALIR;
     END IF;
     IF (pFechaPago IS NULL) THEN
         SET pFechaPago = NOW();
 	END IF;
 
-    SET pIdVenta = (SELECT IdVenta FROM Pagos WHERE IdPago = pIdPago);
-    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
+    IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
         SELECT 'No se puede pagar, el monto del cheque supera la venta.' Mensaje;
         LEAVE SALIR;
     END IF;
 
-    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta)
+    -- IF( pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     -- < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta) AND pFechaDebe IS NULL) THEN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
@@ -1676,7 +1846,8 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago)
+        SET pDiferencia = pMontoPago - (SELECT Monto FROM Pagos WHERE IdPago = pIdPago);
+        IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='MODIFICA';
         ELSE
@@ -1701,14 +1872,28 @@ SALIR:BEGIN
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
         -- Modifica el pago
         UPDATE Pagos
-        SET Monto = pMontoPago,
-            Datos = JSON_OBJECT('IdTipoTributo', pIdTipoTributo),
-            Observaciones=pObservacionesPago
-        WHERE IdPago=pIdPago;
+        SET     Monto = pMontoPago,
+                Datos = JSON_OBJECT('IdTipoTributo', pIdTipoTributo),
+                Observaciones=pObservacionesPago
+        WHERE   IdPago=pIdPago;
         -- Audito el pago Despues
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, pMotivo, 'D',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Disminuye la deuda del Cliente
+		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+			'C',
+			pDiferencia,
+			'Modifica Pago de Venta',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
 
         -- -- Audito el comprobante Antes
         -- INSERT INTO aud_Comprobantes
@@ -1723,20 +1908,20 @@ SALIR:BEGIN
         -- SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'D',
         -- Comprobantes.* FROM Comprobantes WHERE IdPago = pIdPago;
 
-        IF EXISTS (SELECT IdPago FROM Pagos WHERE IdVenta=pIdVenta AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
+        IF EXISTS (SELECT IdPago FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago AND pMotivo = 'PAGA') THEN
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'A',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
             -- Modifico los demas pagos
-            UPDATE Pagos
+            UPDATE  Pagos
             SET     FechaPago=NOW(),
                     FechaDebe=NULL
-            WHERE   IdVenta = pIdVenta AND IdPago!=pIdPago;
+            WHERE   Codigo = pIdVenta AND Tipo = 'V' AND IdPago!=pIdPago;
             -- Audito antes los demas pagos
             INSERT INTO aud_Pagos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
-            Pagos.* FROM Pagos WHERE IdVenta = pIdVenta AND IdPago != pIdPago;
+            Pagos.* FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago;
         END IF;
 
         SELECT 'OK' Mensaje;

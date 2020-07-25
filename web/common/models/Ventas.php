@@ -5,7 +5,7 @@ use Yii;
 use yii\base\Model;
 use common\models\forms\LineasForm;
 
-class Ventas extends Model
+class Ventas extends Model implements IOperacionesPago
 {
     public $IdVenta;
     public $IdPuntoVenta;
@@ -28,6 +28,8 @@ class Ventas extends Model
     public $TipoTributo;
     public $Cliente;
     public $Usuario;
+
+    public $Codigo;
     
     const _ALTA = 'alta';
     const _MODIFICAR = 'modificar';
