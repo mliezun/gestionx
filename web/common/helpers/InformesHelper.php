@@ -1,9 +1,6 @@
 <?php
 
-namespace common\components;
-
-use Yii;
-use common\helpers\StringsHelper;
+namespace common\helpers;
 
 class InformesHelper
 {
