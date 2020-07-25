@@ -36,6 +36,8 @@ $this->registerJs("Pagos.init();");
 
             <?= Html::activeHiddenInput($model, 'Codigo') ?>
 
+            <?= Html::activeHiddenInput($model, 'Tipo') ?>
+
             <?= Html::activeHiddenInput($model, 'MontoVenta') ?>
 
             <?php if (!isset($model['IdPago'])) : ?>

@@ -78,15 +78,22 @@ class PagosController extends BaseController
 
     public function actionAlta($id, $tipo = 'V')
     {
-        // PermisosHelper::verificarPermiso('PagarVenta');
-
-        if ($tipo == 'V') {
-            $entidad = new Ventas();
-            $entidad->IdVenta = $id;
-        } else {
-            $entidad = new Proveedores();
-            $entidad->IdProveedor = $id;
+        switch ($tipo) {
+            case 'V':
+                $permiso = "Venta";
+                $entidad = new Ventas();
+                $entidad->IdVenta = $id;
+                break;
+            case 'P':
+                $permiso = "Proveedor";
+                $entidad = new Proveedores();
+                $entidad->IdProveedor = $id;
+                break;
+            default:
+                return ['error' => 'Tipo no soportado.'];
+                break;
         }
+
         $entidad->Dame();
 
         $pago = new Pagos();
@@ -102,6 +109,7 @@ class PagosController extends BaseController
             switch ($pago->IdMedioPago) {
                 case 3:
                     // Tarjeta
+                    PermisosHelper::verificarPermiso('Pagar'.$permiso.'Tarjeta');
                     $pago->setScenario(Pagos::_ALTA_TARJETA);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
@@ -119,6 +127,7 @@ class PagosController extends BaseController
                     // Deposito
                 case 1:
                     // Efectivo
+                    PermisosHelper::verificarPermiso('Pagar'.$permiso.'Efectivo');
                     $pago->setScenario(Pagos::_ALTA_EFECTIVO);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
@@ -132,6 +141,7 @@ class PagosController extends BaseController
                         return ['error' => 'Medio de Pago no soportado.'];
                     }
                     // Mercaderia
+                    PermisosHelper::verificarPermiso('Pagar'.$permiso.'Mercaderia');
                     $pago->setScenario(Pagos::_ALTA_MERCADERIA);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
@@ -141,6 +151,7 @@ class PagosController extends BaseController
                     break;
                 case 5:
                     // Cheque
+                    PermisosHelper::verificarPermiso('Pagar'.$permiso.'Cheque');
                     $pago->setScenario(Pagos::_ALTA_CHEQUE);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
@@ -150,6 +161,7 @@ class PagosController extends BaseController
                     break;
                 case 7:
                     // Retencion
+                    PermisosHelper::verificarPermiso('Pagar'.$permiso.'Retencion');
                     $pago->setScenario(Pagos::_ALTA_RETENCION);
                     if (!$pago->validate()) {
                         Yii::$app->response->format = 'json';
@@ -244,22 +256,30 @@ class PagosController extends BaseController
 
     public function actionEditar($id, $tipo = 'V')
     {
-        // PermisosHelper::verificarPermiso('PagarVenta');
-
         $pago = new Pagos();
         $pago->IdPago = $id;
         $pago->Dame();
 
-        if ($tipo == 'V') {
-            $entidad = new Ventas();
-            $entidad->IdVenta = $id;
+        switch ($tipo) {
+            case 'V':
+                $permiso = "Venta";
+                $entidad = new Ventas();
+                $entidad->IdVenta = $id;
 
-            $pago->Descuento = ($pago->Monto / $entidad->Monto) * 100;
-            $pago->MontoVenta = $entidad->Monto;
-        } else {
-            $entidad = new Proveedores();
-            $entidad->IdProveedor = $id;
+                $pago->Descuento = ($pago->Monto / $entidad->Monto) * 100;
+                $pago->MontoVenta = $entidad->Monto;
+                break;
+            case 'P':
+                $permiso = "Proveedor";
+
+                $entidad = new Proveedores();
+                $entidad->IdProveedor = $id;
+                break;
+            default:
+                return ['error' => 'Tipo no soportado.'];
+                break;
         }
+
         $entidad->Dame();
 
         $tributos = [];
@@ -269,7 +289,7 @@ class PagosController extends BaseController
         switch ($pago->IdMedioPago) {
             case 3:
                 // Tarjeta
-                PermisosHelper::verificarPermiso('ModificarPagoTarjeta');
+                PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Tarjeta');
                 $pago->setScenario(Pagos::_MODIFICAR_TARJETA);
                 break;
             case 8:
@@ -282,7 +302,7 @@ class PagosController extends BaseController
                 // Deposito
             case 1:
                 // Efectivo
-                PermisosHelper::verificarPermiso('ModificarPagoEfectivo');
+                PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Efectivo');
                 $pago->setScenario(Pagos::_MODIFICAR_EFECTIVO);
                 break;
             case 2:
@@ -291,7 +311,7 @@ class PagosController extends BaseController
                     return ['error' => 'Medio de Pago no soportado.'];
                 }
                 // Mercaderia
-                PermisosHelper::verificarPermiso('ModificarPagoMercaderia');
+                PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Mercaderia');
                 $pago->setScenario(Pagos::_MODIFICAR_MERCADERIA);
                 $remitos = (new GestorRemitos())->Buscar($entidad->IdPuntoVenta, '', 'A', 0, 0, 'N');
                 $remito = new Remitos();
@@ -301,7 +321,7 @@ class PagosController extends BaseController
                 break;
             case 5:
                 // Cheque
-                PermisosHelper::verificarPermiso('ModificarPagoCheque');
+                PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Cheque');
                 $pago->setScenario(Pagos::_MODIFICAR_CHEQUE);
                 $cheques = (new GestorCheques())->Buscar();
                 $cheque = new Cheques();
@@ -311,7 +331,7 @@ class PagosController extends BaseController
                 break;
             case 7:
                 // Retencion
-                PermisosHelper::verificarPermiso('ModificarPagoRetencion');
+                PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Retencion');
                 $pago->setScenario(Pagos::_MODIFICAR_RETENCION);
                 $tributos = (new GestorTiposTributos)->Buscar();
                 $pago->IdTipoTributo = json_decode($pago['Datos'])->IdTipoTributo;
@@ -319,22 +339,22 @@ class PagosController extends BaseController
         }
 
         if ($pago->load(Yii::$app->request->post())) {
-            switch ($pago->MedioPago) {
-                case 'Tarjeta':
+            switch ($pago->IdMedioPago) {
+                case 3:
                     $resultado = $entidad->ModificarPagoTarjeta($pago);
                     break;
-                case 'Descuento':
-                case 'Deposito':
-                case 'Efectivo':
+                case 8:
+                case 6:
+                case 1:
                     $resultado = $entidad->ModificarPagoEfectivo($pago);
                     break;
-                case 'Mercaderia':
+                case 2:
                     $resultado = $entidad->ModificarPagoMercaderia($pago);
                     break;
-                case 'Cheque':
+                case 5:
                     $resultado = $entidad->ModificarPagoCheque($pago);
                     break;
-                case 'Retencion':
+                case 7:
                     $resultado = $entidad->ModificarPagoRetencion($pago);
                     break;
             }
@@ -358,18 +378,26 @@ class PagosController extends BaseController
 
     public function actionBorrar($id, $tipo = 'V')
     {
-        PermisosHelper::verificarPermiso('BorrarPagoVenta');
+        switch ($tipo) {
+            case 'V':
+                $permiso = "Venta";
+                $entidad = new Ventas();
+                break;
+            case 'P':
+                $permiso = "Proveedor";
+                $entidad = new Proveedores();
+                break;
+            default:
+                return ['error' => 'Tipo no soportado.'];
+                break;
+        }
+
+        PermisosHelper::verificarPermiso('BorrarPago'. $permiso );
 
         Yii::$app->response->format = 'json';
 
         $pago = new Pagos();
         $pago->IdPago = $id;
-
-        if ($tipo == 'V') {
-            $entidad = new Ventas();
-        } else {
-            $entidad = new Proveedores();
-        }
 
         $resultado = $entidad->BorrarPago($pago);
 

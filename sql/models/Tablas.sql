@@ -836,7 +836,7 @@ CREATE UNIQUE INDEX UI_Modulo ON Modulos(Modulo)
 -- INDEX: UI_CodigoTipo 
 --
 
-CREATE UNIQUE INDEX UI_CodigoTipo ON Pagos(Codigo, Tipo)
+CREATE INDEX IX_CodigoTipo ON Pagos(Codigo, Tipo)
 ;
 -- 
 -- INDEX: UI_Parametro 
