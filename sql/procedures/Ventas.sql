@@ -646,7 +646,7 @@ SALIR: BEGIN
     INNER JOIN  Clientes cl USING(IdCliente)
     LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
-    WHERE       p.IdVenta = pIdVenta
+    WHERE       p.Codigo = pIdVenta
     ORDER BY    p.FechaAlta;
 END$$
 DELIMITER ;

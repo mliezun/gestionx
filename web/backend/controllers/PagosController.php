@@ -101,11 +101,6 @@ class PagosController extends BaseController
         $pago->Tipo = $tipo;
 
         if ($pago->load(Yii::$app->request->post())) {
-            if ($tipo == 'V') {
-                $entidad->IdVenta = $entidad->Codigo;
-            } else {
-                $entidad->IdProveedor = $entidad->Codigo;
-            }
             switch ($pago->IdMedioPago) {
                 case 3:
                     // Tarjeta
@@ -263,17 +258,15 @@ class PagosController extends BaseController
         switch ($tipo) {
             case 'V':
                 $permiso = "Venta";
-                $entidad = new Ventas();
-                $entidad->IdVenta = $id;
 
-                $pago->Descuento = ($pago->Monto / $entidad->Monto) * 100;
-                $pago->MontoVenta = $entidad->Monto;
+                $entidad = new Ventas();
+                $entidad->IdVenta = $pago->Codigo;
                 break;
             case 'P':
                 $permiso = "Proveedor";
 
                 $entidad = new Proveedores();
-                $entidad->IdProveedor = $id;
+                $entidad->IdProveedor = $pago->Codigo;
                 break;
             default:
                 return ['error' => 'Tipo no soportado.'];
@@ -281,6 +274,11 @@ class PagosController extends BaseController
         }
 
         $entidad->Dame();
+
+        if ($tipo == 'V'){
+            $pago->Descuento = ($pago->Monto / $entidad->Monto) * 100;
+            $pago->MontoVenta = $entidad->Monto;
+        }
 
         $tributos = [];
         $remitos = [];

@@ -16,7 +16,7 @@ SALIR:BEGIN
     DECLARE pIdPago bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje text;
-    DECLARE pMontoPago decimal(12, 2)
+    DECLARE pMontoPago decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -61,7 +61,7 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pMonto = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
+        SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
 
         -- Audito Antes el Cheque
         INSERT INTO aud_Cheques
@@ -806,8 +806,8 @@ SALIR:BEGIN
 	END IF;
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SELECT INTO pMontoPago, pIdProveedor
-        SELECT Monto, Codigo FROM Pagos WHERE IdPago = pIdPago;
+        SELECT Monto, Codigo INTO pMontoPago, pIdProveedor
+        FROM Pagos WHERE IdPago = pIdPago;
 
         IF EXISTS(SELECT IdCheque FROM Pagos WHERE IdCheque IS NOT NULL AND IdPago = pIdPago) THEN
             SET pIdCheque = (SELECT IdCheque FROM Pagos WHERE IdPago = pIdPago);
