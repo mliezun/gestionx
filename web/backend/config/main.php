@@ -120,7 +120,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        'allowedIPs' => ['181.110.81.66', '186.123.83.241'],
+        'allowedIPs' => ['127.0.0.1'],
         'historySize' => 5000
     ];
 }
