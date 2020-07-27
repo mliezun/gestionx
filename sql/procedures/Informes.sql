@@ -574,6 +574,7 @@ CREATE PROCEDURE `xsp_reporte_ventas`(
 BEGIN
     DECLARE pTotal, pPagado, pDeuda DECIMAL(14,2);
     DECLARE pVentas json;
+    DECLARE pCountVentas bigint;
     SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     SET pIdPuntoVenta = COALESCE(pIdPuntoVenta, 0);
 
@@ -587,8 +588,8 @@ BEGIN
                         ELSE 'Otro'
                     END 'Tipo de Venta',
                     v.Monto 'Monto Total',
-                    COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta), 0) 'Monto Pagado',
-                    COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.IdVenta = v.IdVenta)), v.Monto) Deuda,
+                    COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V'), 0) 'Monto Pagado',
+                    COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V')), v.Monto) Deuda,
                     JSON_OBJECT(
                         "GroupBy", "MedioPago",
                         "ReduceBy", "Monto",
@@ -602,7 +603,7 @@ BEGIN
 
                             FROM Pagos p
                             INNER JOIN MediosPago mp USING(IdMedioPago)
-                            WHERE   p.IdVenta = v.IdVenta
+                            WHERE   p.Codigo = v.IdVenta AND p.Tipo = 'V'
                         )
                     ) PagosJsonGroupValues,
                     null PagosJsonGroupKeys, -- Se agrega junto con los totales
@@ -612,8 +613,6 @@ BEGIN
                     IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente
         FROM        Ventas v
         INNER JOIN  Clientes cl USING(IdCliente)
-        -- LEFT JOIN   Pagos p ON v.IdVenta = p.IdVenta
-        -- LEFT JOIN   MediosPago mp USING(IdMedioPago)
         INNER JOIN  LineasVenta lv ON v.IdVenta = lv.IdVenta
         INNER JOIN  Articulos a USING(IdArticulo)
         INNER JOIN  Proveedores pr USING(IdProveedor)
@@ -623,7 +622,7 @@ BEGIN
                     (v.FechaAlta BETWEEN pFechaInicio AND pFechaFin) AND 
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
                     AND (pTipoVenta = 'T' OR v.Tipo = pTipoVenta)
-                    AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.IdVenta = v.IdVenta AND p.IdMedioPago = pIdMedioPago))
+                    AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V' AND p.IdMedioPago = pIdMedioPago))
                     AND (pIdArticulo = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 WHERE lv2.IdVenta = v.IdVenta AND lv2.IdArticulo = pIdArticulo))
                     AND (pIdProveedor = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 INNER JOIN Articulos a2 USING(IdArticulo) INNER JOIN Proveedores prv2 USING(IdProveedor) WHERE lv2.IdVenta = v.IdVenta AND prv2.IdProveedor = pIdProveedor))
                     AND (pIdUsuario = 0 OR u.IdUsuario = pIdUsuario)
@@ -632,13 +631,13 @@ BEGIN
         ORDER BY    v.IdVenta desc;
 
 
-    SELECT  SUM(`Monto Total`), SUM(`Monto Pagado`), SUM(Deuda), JSON_ARRAYAGG(IdVenta)
-    INTO    pTotal, pPagado, pDeuda, pVentas
+    SELECT  COUNT(*), SUM(`Monto Total`), SUM(`Monto Pagado`), SUM(Deuda), JSON_ARRAYAGG(IdVenta)
+    INTO    pCountVentas, pTotal, pPagado, pDeuda, pVentas
     FROM    tmp_inf_ventas;
 
     SELECT * FROM tmp_inf_ventas
     UNION ALL
-    SELECT  0, NOW(), 'TOTALES', pTotal, pPagado, pDeuda,
+    SELECT  pCountVentas, NOW(), 'TOTALES', pTotal, pPagado, pDeuda,
             JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
@@ -651,7 +650,7 @@ BEGIN
                         ))
                     FROM Pagos p
                     INNER JOIN MediosPago mp USING(IdMedioPago)
-                    WHERE   JSON_CONTAINS(pVentas, CONCAT(p.IdVenta, ''), '$')
+                    WHERE   JSON_CONTAINS(pVentas, CONCAT(p.Codigo, ''), '$') AND p.Tipo = 'V'
                 )
             ),
             (
