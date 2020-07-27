@@ -12,7 +12,7 @@ SALIR: BEGIN
     INNER JOIN  Clientes cl USING(IdCliente)
     LEFT JOIN   Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN   Cheques ch ON p.IdCheque = ch.IdCheque
-    WHERE       p.IdVenta = pIdVenta
+    WHERE       p.Codigo = pIdVenta
                 AND (IdMedioPago = pIdMedioPago OR pIdMedioPago = 0)
     ORDER BY    p.FechaAlta;
 END$$
@@ -872,7 +872,6 @@ SALIR:BEGIN
     DECLARE pIdCheque bigint;
     DECLARE pIdRemito bigint;
     DECLARE pIdVenta bigint;
-    DECLARE pIdCliente bigint;
     DECLARE pMontoPago decimal(12, 2);
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
@@ -931,8 +930,8 @@ SALIR:BEGIN
         -- -- Borra Comprobante
         -- DELETE FROM Comprobantes WHERE IdPago = pIdPago;
 
-        SELECT INTO pIdVenta, pMontoPago
-        SELECT Codigo, Monto FROM Pagos WHERE IdPago=pIdPago;
+        SELECT Codigo, Monto INTO pIdVenta, pMontoPago
+        FROM Pagos WHERE IdPago=pIdPago;
         IF EXISTS( SELECT IdVenta FROM Ventas WHERE IdVenta=pIdVenta AND Estado='P')THEN
             -- Audito Antes la Venta
             INSERT INTO aud_Ventas
@@ -950,7 +949,7 @@ SALIR:BEGIN
 
         -- Aumenta la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			pIdCliente,
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
 			'C',
 			- pMontoPago,
 			'Borra Pago de Venta',
@@ -985,8 +984,8 @@ SALIR: BEGIN
 	SELECT p.*, mp.MedioPago, r.NroRemito, ch.NroCheque
     FROM Pagos p 
     INNER JOIN MediosPago mp USING(IdMedioPago)
-    INNER JOIN Ventas v ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
-    INNER JOIN Clientes cl USING(IdCliente)
+    -- INNER JOIN Ventas v ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
+    -- INNER JOIN Clientes cl USING(IdCliente)
     LEFT JOIN  Remitos r ON p.IdRemito = r.IdRemito
     LEFT JOIN  Cheques ch ON p.IdCheque = ch.IdCheque
     WHERE p.IdPago = pIdPago;
