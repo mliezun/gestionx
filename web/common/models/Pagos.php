@@ -7,7 +7,9 @@ use yii\base\Model;
 class Pagos extends Model
 {
     public $IdPago;
-    public $IdVenta;
+    // public $IdVenta;
+    public $Codigo;
+    public $Tipo;
     public $IdMedioPago;
     public $IdUsuario;
     public $FechaAlta;
@@ -91,27 +93,27 @@ class Pagos extends Model
         return [
             ['Monto', 'double'],
             ['Descuento', 'number', 'min' => 0, 'max' => 100],
-            [['IdVenta','IdMedioPago','NroTarjeta','Monto'],
+            [['Codigo', 'Tipo','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_ALTA_TARJETA],
-            [['IdVenta','IdMedioPago','Monto'],
+            [['Codigo', 'Tipo','IdMedioPago','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
-            [['IdVenta','IdMedioPago','IdRemito','Monto'],
+            [['Codigo', 'Tipo','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_ALTA_MERCADERIA],
-            [['IdVenta','IdMedioPago','IdCheque'],
+            [['Codigo', 'Tipo','IdMedioPago','IdCheque'],
             'required', 'on' => self::_ALTA_CHEQUE],
-            [['IdVenta','IdMedioPago','Monto','IdTipoTributo'],
+            [['Codigo', 'Tipo','IdMedioPago','Monto','IdTipoTributo'],
             'required', 'on' => self::_ALTA_RETENCION],
-            [['IdVenta','IdMedioPago'],
+            [['Codigo', 'Tipo','IdMedioPago'],
             'required', 'on' => self::_ELECCION],
-            [['IdPago','IdVenta','IdMedioPago','NroTarjeta','Monto'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','NroTarjeta','Monto'],
             'required', 'on' => self::_MODIFICAR_TARJETA],
-            [['IdPago','IdVenta','IdMedioPago','Monto'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','Monto'],
             'required', 'on' => self::_MODIFICAR_EFECTIVO],
-            [['IdPago','IdVenta','IdMedioPago','IdRemito','Monto'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','IdRemito','Monto'],
             'required', 'on' => self::_MODIFICAR_MERCADERIA],
-            [['IdPago','IdVenta','IdMedioPago','IdCheque'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','IdCheque'],
             'required', 'on' => self::_MODIFICAR_CHEQUE],
-            [['IdPago','IdVenta','IdMedioPago','IdTipoTributo','Monto'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','IdTipoTributo','Monto'],
             'required', 'on' => self::_MODIFICAR_RETENCION],
             ['Monto', 'required', 'when' => function ($model) {
                 return $model->IdMedioPago == 1 or $model->IdMedioPago == 6 or $model->IdMedioPago == 3;

@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if (/* PermisosHelper::tienePermiso('PagarVenta') && */ $model['Estado'] != 'P') : ?>
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta']]) ?>"
+                        data-modal="<?= Url::to(['/pagos/alta', 'id' => $model['IdVenta'], 'tipo' => 'V']) ?>"
                         data-hint="Nuevo Pago">
                     Nuevo Pago
                 </button>
@@ -88,14 +88,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="btn-group" role="group" aria-label="...">
                                             <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago']]) ?>"
+                                                        data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago'], 'tipo' => 'V']) ?>"
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarPagoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago']]) ?>"
+                                                        data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago'], 'tipo' => 'V']) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>

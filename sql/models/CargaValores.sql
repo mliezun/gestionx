@@ -139,6 +139,16 @@ INSERT INTO Permisos VALUES(25,1,'GestionProveedores', 'Gestión de Proveedores'
 	INSERT INTO Permisos VALUES(30,25, 'ActivarProveedor', 'Activar proveedores', 'A', NULL, '5', 'xsp_activar_proveedor', 2);
 	INSERT INTO Permisos VALUES(31,25, 'DarBajaProveedor', 'Dar de baja proveedores', 'A', NULL, '6', 'xsp_darbaja_proveedor', 2);
 	INSERT INTO Permisos VALUES(122,25, 'ListarHistorialDescuentosProveedor', 'Lista el historial de descuentos de proveedores', 'A', NULL, '7', 'xsp_listar_historial_proveedor', 2);
+	INSERT INTO Permisos VALUES(152,25, 'PagarProveedor', 'Pagar a un proveedor','A',NULL,'8',NULL, 2);
+		INSERT INTO Permisos VALUES(153,152, 'PagarProveedorEfectivo', 'Pagar a un proveedor, con efectivo','A',NULL,'1','xsp_pagar_proveedor_efectivo', 2);
+		INSERT INTO Permisos VALUES(154,152, 'PagarProveedorCheque', 'Pagar a un proveedor, con cheques','A',NULL,'2','xsp_pagar_proveedor_cheque', 2);
+		INSERT INTO Permisos VALUES(155,152, 'PagarProveedorTarjeta', 'Pagar a un proveedor, con tarjeta','A',NULL,'3','xsp_pagar_proveedor_tarjeta', 2);
+		INSERT INTO Permisos VALUES(156,152, 'PagarProveedorRetencion', 'Pagar a un proveedor, de tipo rentencion','A',NULL,'4','xsp_pagar_proveedor_retencion', 2);
+		INSERT INTO Permisos VALUES(157,152, 'ModificarPagoProveedorEfectivo', 'Modificar pagos a proveedores, con efectivo','A',NULL,'5','xsp_modificar_pago_proveedor_efectivo', 2);
+		INSERT INTO Permisos VALUES(158,152, 'ModificarPagoProveedorCheque', 'Modificar pagos a proveedores, con cheques','A',NULL,'6','xsp_modificar_pago_proveedor_cheque', 2);
+		INSERT INTO Permisos VALUES(159,152, 'ModificarPagoProveedorTarjeta', 'Modificar pagos a proveedores, con tarjeta','A',NULL,'7','xsp_modificar_pago_proveedor_tarjeta', 2);
+		INSERT INTO Permisos VALUES(160,152, 'ModificarPagoProveedorRetencion', 'Modificar pagos a proveedores, de tipo rentencion','A',NULL,'8','xsp_modificar_pago_proveedor_retencion', 2);
+		INSERT INTO Permisos VALUES(161,152, 'BorrarPagoProveedor', 'Borrar pagos a un proveedor','A',NULL,'9','xsp_borrar_pago_proveedor', 2);
 
 INSERT INTO Permisos VALUES(32,1,'GestionArticulos', 'Gestión de Articulos','A',NULL,8,NULL, 2);
 	INSERT INTO Permisos VALUES(33,32, 'AltaArticulo', 'Dar de alta articulos', 'A', NULL, '1', 'xsp_alta_articulo', 2);
@@ -212,12 +222,12 @@ INSERT INTO Permisos VALUES(75,1,'GestionVentas', 'Gestión de Ventas','A',NULL,
 		INSERT INTO Permisos VALUES(103,100, 'PagarVentaTarjeta', 'Pagar ventas ya activas, con tarjeta','A',NULL,'3','xsp_pagar_venta_tarjeta', 2);
 		INSERT INTO Permisos VALUES(104,100, 'PagarVentaMercaderia', 'Pagar ventas ya activas, con mercaderia','A',NULL,'4','xsp_pagar_venta_mercaderia', 2);
 		INSERT INTO Permisos VALUES(105,100, 'BorrarPagoVenta', 'Borrar pagos de una venta','A',NULL,'5','xsp_borrar_pago_venta', 2);
-		INSERT INTO Permisos VALUES(106,100, 'ModificarPagoCheque', 'Modificar pagos, con cheques','A',NULL,'6','xsp_modificar_pago_cheque', 2);
-		INSERT INTO Permisos VALUES(107,100, 'ModificarPagoEfectivo', 'Modificar pagos, con efectivo','A',NULL,'7','xsp_modificar_pago_efectivo', 2);
-		INSERT INTO Permisos VALUES(108,100, 'ModificarPagoTarjeta', 'Modificar pagos, con tarjeta','A',NULL,'8','xsp_modificar_pago_tarjeta', 2);
-		INSERT INTO Permisos VALUES(109,100, 'ModificarPagoMercaderia', 'Modificar pagos, con mercaderia','A',NULL,'9','xsp_modificar_pago_mercaderia', 2);
+		INSERT INTO Permisos VALUES(106,100, 'ModificarPagoVentaCheque', 'Modificar pagos, con cheques','A',NULL,'6','xsp_modificar_pago_cheque', 2);
+		INSERT INTO Permisos VALUES(107,100, 'ModificarPagoVentaEfectivo', 'Modificar pagos, con efectivo','A',NULL,'7','xsp_modificar_pago_efectivo', 2);
+		INSERT INTO Permisos VALUES(108,100, 'ModificarPagoVentaTarjeta', 'Modificar pagos, con tarjeta','A',NULL,'8','xsp_modificar_pago_tarjeta', 2);
+		INSERT INTO Permisos VALUES(109,100, 'ModificarPagoVentaMercaderia', 'Modificar pagos, con mercaderia','A',NULL,'9','xsp_modificar_pago_mercaderia', 2);
 		INSERT INTO Permisos VALUES(150,100, 'PagarVentaRetencion', 'Pagar ventas ya activas, de tipo rentencion','A',NULL,'10','xsp_pagar_venta_retencion', 2);
-		INSERT INTO Permisos VALUES(151,100, 'ModificarPagoRetencion', 'Modificar pagos, de tipo rentencion','A',NULL,'11','xsp_modificar_pago_retencion', 2);
+		INSERT INTO Permisos VALUES(151,100, 'ModificarPagoVentaRetencion', 'Modificar pagos, de tipo rentencion','A',NULL,'11','xsp_modificar_pago_retencion', 2);
 
 INSERT INTO Permisos VALUES(85,1,'GestionBancos', 'Gestión de Bancos','A',NULL,15,NULL, 2);
 	INSERT INTO Permisos VALUES(86,85, 'AltaBanco', 'Dar de alta bancos', 'A', NULL, '1', 'xsp_alta_banco', 2);
@@ -271,7 +281,7 @@ INSERT INTO Permisos VALUES(146,1,'GestionSuscripciones', 'Gestión de Suscripci
 	INSERT INTO Permisos VALUES(148,146, 'DarBajaSuscripcion', 'Dar de baja una suscripción', 'A', NULL, '2', 'xsp_inicio_darbaja_suscripcion', 1);
 	INSERT INTO Permisos VALUES(149,146, 'DarBajaPlan', 'Dar de baja un plan', 'A', NULL, '3', 'xsp_baja_plan', 0);
 
-	-- Ú 151
+	-- Ú 161
 		
 -- RolesGenericos
 INSERT INTO RolesGenericos VALUES
@@ -426,6 +436,16 @@ INSERT INTO PermisosRolGenerico VALUES(144, 1);
 INSERT INTO PermisosRolGenerico VALUES(145, 1);
 INSERT INTO PermisosRolGenerico VALUES(150, 1);
 INSERT INTO PermisosRolGenerico VALUES(151, 1);
+INSERT INTO PermisosRolGenerico VALUES(152, 1);
+INSERT INTO PermisosRolGenerico VALUES(153, 1);
+INSERT INTO PermisosRolGenerico VALUES(154, 1);
+INSERT INTO PermisosRolGenerico VALUES(155, 1);
+INSERT INTO PermisosRolGenerico VALUES(156, 1);
+INSERT INTO PermisosRolGenerico VALUES(157, 1);
+INSERT INTO PermisosRolGenerico VALUES(158, 1);
+INSERT INTO PermisosRolGenerico VALUES(159, 1);
+INSERT INTO PermisosRolGenerico VALUES(160, 1);
+INSERT INTO PermisosRolGenerico VALUES(161, 1);
 -- Permisos de Vendedor
 INSERT INTO PermisosRolGenerico VALUES(46, 2);
 INSERT INTO PermisosRolGenerico VALUES(47, 2);

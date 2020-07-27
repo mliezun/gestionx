@@ -24,7 +24,7 @@ SALIR: BEGIN
                 LEAVE SALIR;
             END IF;
 		WHEN 'C' THEN
-			IF NOT EXISTS (SELECT IdCliente FROM CLientes WHERE IdCliente = pIdEntidad AND Estado = 'A') THEN
+			IF NOT EXISTS (SELECT IdCliente FROM Clientes WHERE IdCliente = pIdEntidad AND Estado = 'A') THEN
                 SET pMensaje = 'El cliente no se encuentra activo.';
                 LEAVE SALIR;
             END IF;
@@ -78,7 +78,7 @@ SALIR: BEGIN
                 LEAVE SALIR;
             END IF;
 		WHEN 'C' THEN
-			IF NOT EXISTS (SELECT IdCliente FROM CLientes WHERE IdCliente = pIdEntidad AND Estado = 'A') THEN
+			IF NOT EXISTS (SELECT IdCliente FROM Clientes WHERE IdCliente = pIdEntidad AND Estado = 'A') THEN
                 SET pMensaje = 'El cliente no se encuentra activo.';
                 LEAVE SALIR;
             END IF;

@@ -51,8 +51,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/pagos/alta-proveedor', 'id' => $proveedor['IdProveedor']]) ?>"
-                        data-hint="Nuevo Precio por Lista">
+                        data-modal="<?= Url::to(['/pagos/alta', 'id' => $proveedor['IdProveedor'], 'tipo' => 'P']) ?>"
+                        data-hint="Nuevo Pago al Proveedor">
                     Nuevo Pago al Proveedor
                 </button>
             </div>
