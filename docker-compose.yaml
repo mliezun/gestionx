@@ -1,0 +1,12 @@
+version: "2.0"
+services:
+  web:
+    image: mliezun/generic-build-and-deploy:latest
+    ports:
+      - "5000:80"
+    volumes:
+      - ./web:/var/www/web
+      - ./configs/apache2/sites-available:/etc/apache2/sites-available
+      - ./configs/init.sh:/root/init.sh
+    command: /root/init.sh
+# docker-compose up --build

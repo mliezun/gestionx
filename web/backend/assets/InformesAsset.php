@@ -9,6 +9,7 @@ class InformesAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'css/Informes.css'
     ];
     public $js = [
         'scripts/Informes.js',

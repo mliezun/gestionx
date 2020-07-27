@@ -69,7 +69,11 @@ class InformesController extends BaseController
                             $valor = $model->{$parametro['Parametro']};
                         }
 
-                        $valores[] = "'$valor'";
+                        if (!isset($valor)) {
+                            $valores[] = "null";
+                        } else {
+                            $valores[] = "'$valor'";
+                        }
                     }
 
                     $key = $this->generarKey();

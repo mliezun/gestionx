@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use yii\web\HttpException;
 use afipsdk;
 use Yii;
+use common\utils\AfipWrapper;
 
 class ComprobanteHelper
 {
@@ -335,5 +336,27 @@ class ComprobanteHelper
         fclose($tmp_key);
 
         return $res;
+    }
+
+    /**
+     * Permite listar todos los comprobante del tipo indicado
+     * emitidos por un punto de venta.
+     */
+    public static function ListarComprobantes($cuit, $cert, $key, $production, $pv, $tipo)
+    {
+        $MAX_ITER = 1000;
+        $wrapper = new AfipWrapper($cuit, $cert, $key, $production);
+
+        $out = array();
+        for ($i = 1; $i <= $MAX_ITER; $i++) {
+            $cbteAfip = $wrapper->afip->ElectronicBilling->GetVoucherInfo($i, $pv, $tipo);
+            if (!isset($cbteAfip)) {
+                Yii::info($cbteAfip, 'Breaking');
+                break;
+            }
+            $out[] = $cbteAfip;
+        }
+        
+        return $out;
     }
 }

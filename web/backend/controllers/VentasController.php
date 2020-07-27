@@ -10,6 +10,7 @@ use common\models\GestorClientes;
 use common\models\GestorCanales;
 use common\models\GestorTiposComprobantesAfip;
 use common\models\GestorTiposTributos;
+use common\models\GestorPuntosVenta;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
 use common\components\PermisosHelper;
@@ -267,6 +268,41 @@ class VentasController extends BaseController
             'inline' => true,
             'mimeType' => 'application/pdf'
         ]);
+    }
+
+    public function actionListarComprobantes()
+    {
+        Yii::$app->response->format = 'json';
+
+        $params = Yii::$app->session->get('Parametros');
+        $cuit = $params['CUIT'];
+        $cert = $params['AFIPCERT'];
+        $key = $params['AFIPKEY'];
+
+        $gestorPV = new GestorPuntosVenta;
+        $pvs = $gestorPV->Buscar();
+
+        $comprobantes = (new GestorTiposComprobantesAfip)->Buscar();
+        $tipos = array_map(function ($comprobante) {
+            return intval($comprobante['IdTipoComprobanteAfip']);
+        }, $comprobantes);
+
+        $out = array();
+        foreach ($pvs as $pv) {
+            foreach ($tipos as $tipo) {
+                $datos = json_decode($pv['Datos']);
+                $NroPV = intval($datos->NroPuntoVenta);
+                $out = array_merge($out, ComprobanteHelper::ListarComprobantes(
+                    $cuit,
+                    $cert,
+                    $key,
+                    true,
+                    $NroPV,
+                    $tipo
+                ));
+            }
+        }
+        return $out;
     }
 
     public function actionEnviarComprobante($id)
