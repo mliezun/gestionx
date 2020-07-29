@@ -8,6 +8,7 @@ PROC: BEGIN
     */
     DECLARE pIdUsuario bigint;
     DECLARE pMensaje varchar(100);
+    DECLARE pIdEmpresa bigint;
 
     -- Manejo de errores
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
