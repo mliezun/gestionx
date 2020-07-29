@@ -360,7 +360,7 @@ CREATE TABLE Pagos(
     IdCheque          BIGINT,
     NroTarjeta        CHAR(16),
     MesVencimiento    CHAR(2),
-    AñoVencimiento    CHAR(2),
+    AnioVencimiento   CHAR(2),
     CCV               CHAR(3),
     Datos             JSON,
     PRIMARY KEY (IdPago)
