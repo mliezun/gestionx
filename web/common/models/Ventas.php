@@ -210,7 +210,7 @@ class Ventas extends Model implements IOperacionesPago
             ':app' => Yii::$app->id,
             ':idVenta' => $this->IdVenta,
             ':idart' => $IdArticulo,
-            ':consumestock' => ($this->Tipo == 'P') ? 'N' : 'S'
+            ':consumestock' => ($this->Tipo == 'C') ? 'N' : 'S'
         ]);
 
         return $query->queryScalar();
@@ -371,13 +371,13 @@ class Ventas extends Model implements IOperacionesPago
     }
 
     
-    /* 
+    /*
     Permite dar de alta un nuevo pago de una venta, utilizando efectivo a un agente de Retencion.
     Siempre y cuando el estado actual de la venta sea Activo.
     Si con este nuevo pago se termina de pagar la venta, cambiar el estado de
     la venta a Pagado.
     Devuelve OK o el mensaje de error en Mensaje.
-    
+
     xsp_pagar_venta_retencion
     */
     public function PagarRetencion(Pagos $pago)
