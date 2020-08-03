@@ -1,0 +1,8 @@
+DROP TRIGGER IF EXISTS `ExistenciasConsolidadas_BEFORE_DELETE`;
+DELIMITER $$
+CREATE DEFINER = CURRENT_USER TRIGGER `ExistenciasConsolidadas_BEFORE_DELETE` BEFORE DELETE ON `ExistenciasConsolidadas` FOR EACH ROW
+BEGIN
+    INSERT INTO aud_ExistenciasConsolidadas VALUES(0, NOW(), SUBSTRING_INDEX(USER(),'@',1), SUBSTRING_INDEX(USER(),'@',-1), NULL,
+    SUBSTRING_INDEX(USER(),'@',-1), NULL, 'B', OLD.IdArticulo, OLD.IdPuntoVenta, OLD.IdCanal, OLD.Cantidad);
+END$$
+DELIMITER ;
