@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-sm-12">
         <div class="buscar--form">
-            <?php $form = ActiveForm::begin(['layout' => 'inline', 'method' => 'GET']); ?>
+            <?php $form = ActiveForm::begin(['layout' => 'inline']); ?>
 
             <?= $form->field($busqueda, 'FechaInicio')->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Fecha desde'],
@@ -39,7 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'type' => DatePicker::TYPE_INPUT,
                 'pluginOptions' => [
                     'autoclose'=> true,
-                    'format' => 'dd/mm/yyyy'
+                    'format' => 'dd/mm/yyyy',
+                    'todayHighlight' => true,
                 ]
             ]) ?>
 
@@ -48,15 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php ActiveForm::end(); ?>
         </div>
 
-        <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
-            <div class="alta--button">
-                <button type="button" class="btn btn-primary"
-                        data-modal="<?= Url::to(['/pagos/alta', 'id' => $proveedor['IdProveedor'], 'tipo' => 'P']) ?>"
-                        data-hint="Nuevo Pago al Proveedor">
-                    Nuevo Pago al Proveedor
-                </button>
-            </div>
-        <?php endif; ?>
+        <div class="alta--button">
+            <button type="button" class="btn btn-primary"
+                    data-modal="<?= Url::to(['/pagos/alta', 'id' => $proveedor['IdProveedor'], 'tipo' => 'P']) ?>"
+                    data-hint="Nuevo Pago al Proveedor">
+                Nuevo Pago al Proveedor
+            </button>
+        </div>
 
         <div id="errores"> </div>
         
@@ -69,9 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Descuento</th>
                                 <th>Estado</th>
-                                <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
-                                    <th>Deuda</th>
-                                <?php endif; ?>
+                                <th>Deuda</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,22 +76,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td><?= Html::encode($proveedor['Proveedor']) ?></td>
                                 <td>% <?= Html::encode($proveedor['Descuento']) ?></td>
                                 <td><?= Html::encode(Proveedores::ESTADOS[$proveedor['Estado']]) ?></td>
-                                <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
-                                    <?php
-                                    $deuda = $proveedor['Deuda'] ?? 0;
-                                    $estilo = '';
-                                    if ($deuda > 0) {
-                                        $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
-                                    } elseif($deuda < 0) {
-                                        $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
-                                    } else {
-                                        $estilo = ' style="color: green; font-weight: bold" ';
-                                    }
-                                    echo "<td $estilo>";
-                                    echo Html::encode($deuda);
-                                    echo '</td>';
-                                    ?>
-                                <?php endif; ?>
+                                <?php
+                                $deuda = $proveedor['Deuda'] ?? 0;
+                                $estilo = '';
+                                if ($deuda > 0) {
+                                    $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
+                                } elseif($deuda < 0) {
+                                    $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
+                                } else {
+                                    $estilo = ' style="color: green; font-weight: bold" ';
+                                }
+                                echo "<td $estilo>";
+                                echo Html::encode($deuda);
+                                echo '</td>';
+                                ?>
                             </tr>
                         </tbody>
                     </table>

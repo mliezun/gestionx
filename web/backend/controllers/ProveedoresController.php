@@ -162,7 +162,7 @@ class ProveedoresController extends BaseController
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
 
         $busqueda = new BuscarForm();
-        if ($busqueda->load(Yii::$app->request->post(), '') && $busqueda->validate()) {
+        if ($busqueda->load(Yii::$app->request->post()) && $busqueda->validate()) {
             $fechaInicio = $busqueda->FechaInicio;
             $fechaFin = $busqueda->FechaFin;
             $historicos = $proveedor->ListarHistorialCuenta($fechaInicio, $fechaFin);

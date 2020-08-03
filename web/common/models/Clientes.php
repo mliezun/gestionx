@@ -39,6 +39,7 @@ class Clientes extends Model
     const _ALTA_JURIDICA = 'altaj';
     const _MODIFICAR_FISICA = 'modificarf';
     const _MODIFICAR_JURIDICA = 'modificarj';
+    const _ALTA_EMAIL = 'altae';
     
     const ESTADOS = [
         'A' => 'Activo',
@@ -66,6 +67,8 @@ class Clientes extends Model
                 'required', 'on' => self::_MODIFICAR_FISICA],
             [['IdCliente','IdEmpresa','RazonSocial', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_JURIDICA],
+            [['IdCliente', 'Email'],
+                'required', 'on' => self::_ALTA_EMAIL],
             [$this->attributes(), 'safe']
         ];
     }

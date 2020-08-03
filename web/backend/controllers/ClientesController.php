@@ -177,6 +177,32 @@ class ClientesController extends Controller
         }
     }
 
+    public function actionEmail($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarCliente');
+        
+        $cliente = new Clientes();
+        $cliente->IdCliente = $id;
+        $cliente->Dame();
+        $cliente->setScenario(Clientes::_ALTA_EMAIL);
+        
+        if ($cliente->load(Yii::$app->request->post()) && $cliente->validate()) {
+            $gestor = new GestorClientes();
+            $resultado = $gestor->Modificar($cliente);
+
+            Yii::$app->response->format = 'json';
+            if ($resultado == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            return $this->renderAjax('email', [
+                        'model' => $cliente
+            ]);
+        }
+    }
+
     public function actionBorrar($id)
     {
         PermisosHelper::verificarPermiso('BorrarCliente');
