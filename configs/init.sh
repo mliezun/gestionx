@@ -30,7 +30,7 @@ if [[ $SCHEMA_EXISTS -eq 0 ]]
 then
     echo "Creando schema de mysql"
     echo "CREATE SCHEMA IF NOT EXISTS gestionx; USE gestionx;" > create_schema.sql
-    cat create_schema.sql /root/sql/models/Tablas.sql /root/sql/procedures/*.sql /root/sql/Init.sql > create_db.sql
+    cat create_schema.sql /root/sql/models/Tablas.sql /root/sql/triggers/*.sql /root/sql/procedures/*.sql /root/sql/Init.sql > create_db.sql
     mysql < create_db.sql
     rm create_db.sql create_schema.sql
 fi
