@@ -240,12 +240,12 @@ class PuntosVentaController extends BaseController
         ]);
     }
 
-    public function actionTabContent($id)
+    public function actionTabContent($id, $page = null)
     {
         $nombre = Yii::$app->request->get('Nombre');
 
         $tabs = new TabsPuntosVenta($id);
 
-        return $tabs->{$nombre}();
+        return $tabs->{$nombre}($page);
     }
 }
