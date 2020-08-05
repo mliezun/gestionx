@@ -21,4 +21,22 @@ class GestorMediosPago
 
         return $clientes;*/
     }
+
+    /**
+     * Permite listar los medios de pago activos para un tipo de entidad pagable determinada.
+     * xsp_buscar_mediospago
+     *
+     */
+    public function Buscar($Tipo = 'T')
+    {
+        $sql = "call xsp_buscar_mediospago( :tipo )";
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        $query->bindValues([
+            ':tipo' => $Tipo,
+        ]);
+
+        return $query->queryAll();
+    }
 }
