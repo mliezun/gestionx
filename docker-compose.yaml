@@ -4,9 +4,15 @@ services:
     image: mliezun/generic-build-and-deploy:latest
     ports:
       - "5000:80"
+      - "3309:3306"
     volumes:
       - ./web:/var/www/web
+      - ./sql:/root/sql
       - ./configs/apache2/sites-available:/etc/apache2/sites-available
       - ./configs/init.sh:/root/init.sh
+      - datavolume:/var/lib/mysql
     command: /root/init.sh
+volumes:
+  datavolume:
 # docker-compose up --build
+# docker-compose down -v

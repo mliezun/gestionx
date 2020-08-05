@@ -79,10 +79,13 @@ class TabsPuntosVenta extends BaseController
         ]);
     }
 
-    public function Remitos()
+    public function Remitos($page = null)
     {
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+        if (isset($page)) {
+            $paginado->setPage($page);
+        }
 
         $busqueda = new BuscarForm();
 
@@ -119,10 +122,13 @@ class TabsPuntosVenta extends BaseController
         ]);
     }
 
-    public function Usuarios()
+    public function Usuarios($page = null)
     {
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+        if (isset($page)) {
+            $paginado->setPage($page);
+        }
 
         $busqueda = new BuscarForm();
 
@@ -152,10 +158,13 @@ class TabsPuntosVenta extends BaseController
         ]);
     }
 
-    public function Ventas()
+    public function Ventas($page = null)
     {
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+        if (isset($page)) {
+            $paginado->setPage($page);
+        }
 
         $busqueda = new BuscarForm();
 
@@ -198,10 +207,13 @@ class TabsPuntosVenta extends BaseController
         ]);
     }
 
-    public function Articulos()
+    public function Articulos($page = null)
     {
         $paginado = new Pagination();
         $paginado->pageSize = Yii::$app->session->get('Parametros')['CANTFILASPAGINADO'];
+        if (isset($page)) {
+            $paginado->setPage($page);
+        }
 
         $busqueda = new BuscarForm();
         

@@ -92,7 +92,7 @@ class ComprobanteHelper
 
         $datosCliente = json_decode($datos['Datos'], true);
 
-        if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT'])) {
+        if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT']) && $datosCliente['CUIT'] != '' && $datosCliente['CUIT'] != 0) {
             $datosAfip['DocTipo'] = 80;
             $datosAfip['DocNro'] = $datosCliente['CUIT'];
         }
