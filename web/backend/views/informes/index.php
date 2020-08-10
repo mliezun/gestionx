@@ -37,9 +37,11 @@ Yii::info($reportes);
 
 <div style="margin-bottom: 30px">
     <?php foreach ($reportes as $r): ?>
-    <a data-hint="<?= $r['Ayuda'] ?>" href="<?= URL::to(['/informes', 'id' => $r['IdModeloReporte']]) ?>">
-        <?= $r['NombreMenu'] ?>
-    </a>
+    <div style="margin-bottom: 10px">
+        <a class="btn btn-secondary" data-hint="<?= $r['Ayuda'] ?>" href="<?= URL::to(['/informes', 'id' => $r['IdModeloReporte']]) ?>">
+            <?= $r['NombreMenu'] ?>
+        </a>
+    </div>
     <?php endforeach; ?>
 </div>
 
