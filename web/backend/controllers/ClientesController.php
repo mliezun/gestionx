@@ -8,6 +8,7 @@ use common\models\Clientes;
 use common\models\GestorClientes;
 use common\models\GestorListasPrecio;
 use common\models\GestorTiposDocAfip;
+use common\models\GestorTiposTributos;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
@@ -319,18 +320,23 @@ class ClientesController extends Controller
             $fechaInicio = $busqueda->FechaInicio;
             $fechaFin = $busqueda->FechaFin;
             $historicos = $cliente->ListarHistorialCuenta($fechaInicio, $fechaFin);
+            $pagos = $cliente->BuscarPagos($fechaInicio, $fechaFin);
         } else {
             $busqueda->FechaInicio = FechaHelper::formatearDateLocal(date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . "-1 month")));
             $busqueda->FechaFin = FechaHelper::dateActualLocal();
             $historicos = $cliente->ListarHistorialCuenta($busqueda->FechaInicio, $busqueda->FechaFin);
+            $pagos = $cliente->BuscarPagos($busqueda->FechaInicio, $busqueda->FechaFin);
         }
 
+        $tributos = ArrayHelper::map((new GestorTiposTributos)->Buscar(), 'IdTipoTributo', 'TipoTributo');
         $paginado->totalCount = count($historicos);
         $historicos = array_slice($historicos, $paginado->page * $paginado->pageSize, $paginado->pageSize);
 
         return $this->render('cuentas', [
             'busqueda' => $busqueda,
             'models' => $historicos,
+            'pagos' => $pagos,
+            'tributos' => $tributos,
             'cliente' => $cliente,
             'paginado' => $paginado,
         ]);

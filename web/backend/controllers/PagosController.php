@@ -183,13 +183,17 @@ class PagosController extends BaseController
             $tributos = (new GestorTiposTributos)->Buscar();
             $cheques = [];
             $remitos = [];
-            if ($tipo == 'V') {
-                // Cheques del cliente
-                $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
-                $pago->MontoVenta = $entidad->Monto;
-                $remitos = (new GestorRemitos())->Buscar($entidad->IdPuntoVenta, '', 'A', 0, 0, 'N');
-            } else {
-                $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
+            switch ($tipo) {
+                case 'V':
+                    $pago->MontoVenta = $entidad->Monto;
+                    $remitos = (new GestorRemitos())->Buscar($entidad->IdPuntoVenta, '', 'A', 0, 0, 'N');
+                case 'C':
+                    // Cheques del cliente
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
+                    break;
+                default:
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
+                    break;
             }
 
             $pago->setScenario(Pagos::_ELECCION);
@@ -276,7 +280,7 @@ class PagosController extends BaseController
             case 'C':
                 $permiso = "Cliente";
                 $entidad = new Clientes();
-                $entidad->IdCliente = $id;
+                $entidad->IdCliente = $pago->Codigo;
                 break;
             default:
                 return ['error' => 'Tipo no soportado.'];
@@ -331,7 +335,12 @@ class PagosController extends BaseController
                 // Cheque
                 PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Cheque');
                 $pago->setScenario(Pagos::_MODIFICAR_CHEQUE);
-                $cheques = (new GestorCheques())->Buscar();
+                if ($tipo == 'V' or $tipo == 'C') {
+                    // Cheques del cliente
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
+                } else {
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
+                }
                 $cheque = new Cheques();
                 $cheque->IdCheque = $pago->IdCheque;
                 $cheque->Dame();

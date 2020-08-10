@@ -3059,7 +3059,9 @@ btn-link
     border-bottom: 1px solid #e6e6f2;
 }
 
-.card-title {}
+.card-title {
+    margin-bottom: 0;
+}
 
 .card-subtitle {
     font-size: 14px;

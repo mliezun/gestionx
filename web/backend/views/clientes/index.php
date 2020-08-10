@@ -117,13 +117,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="fas fa-money-bill-alt" style="color: green"></i>
                                                 </a>
                                             <?php endif; ?>
-                                            <?php if (Yii::$app->user->identity->IdEmpresa == 1) : ?>
-                                                <a class="btn btn-default"
-                                                        href="<?= Url::to(['clientes/cuentas', 'id' => $model['IdCliente']]) ?>"
-                                                        data-hint="Historial de Cuenta">
-                                                    <i class="fas fa-list-alt" style="color: limegreen"></i>
-                                                </a>
-                                            <?php endif; ?>
+                                            <a class="btn btn-default"
+                                                    href="<?= Url::to(['clientes/cuentas', 'id' => $model['IdCliente']]) ?>"
+                                                    data-hint="Historial de Cuenta">
+                                                <i class="fas fa-list-alt" style="color: limegreen"></i>
+                                            </a>
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarCliente')): ?>
                                                     <button type="button" class="btn btn-default"

@@ -187,6 +187,28 @@ class Clientes extends Model implements IOperacionesPago
         return $query->queryAll();
     }
 
+    /**
+     * Permite buscar los pagos de un cliente, entre 2 fechas.
+     * Permitiendo filtrar por medio de pago (0 para listar todos).
+     * 
+     * xsp_buscar_pagos_cliente
+     */
+    public function BuscarPagos($FechaInicio = null, $FechaFin = null, $IdMedioPago = 0)
+    {
+        $sql = "call xsp_buscar_pagos_cliente( :id, :IdMedioPago, :fechainicio, :fechafin)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdCliente,
+            ':IdMedioPago' => $IdMedioPago,
+            ':fechainicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechafin' => FechaHelper::formatearDateMysql($FechaFin),
+        ]);
+
+        return $query->queryAll();
+    }
+
     // Alta de Pagos
     public function PagarEfectivo(Pagos $pago)
     {
