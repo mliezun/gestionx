@@ -155,11 +155,11 @@ Yii::info($reportes);
 
         <div class="clearfix"></div>
 
-        <div id="doublescroll" class="table-responsive top10" v-show="!cargando">
+        <div style="max-width: 80vw; z-index: -1" v-show="!cargando">
             <?php if (isset($tabla)) : ?>
             <?php if (count($tabla) > 0): ?>
-            <table class="table table-bordered table-hover  table-condensed ">
-                <thead>
+            <table id="tabla-informe" class="table table-bordered table-hover table-condensed ">
+                <thead style="background-color: white">
                     <tr>
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
                         <th>

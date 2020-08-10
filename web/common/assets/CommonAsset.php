@@ -24,5 +24,6 @@ class CommonAsset extends AssetBundle
         'yii\bootstrap4\BootstrapAsset',
         'yii\bootstrap4\BootstrapPluginAsset',
         'common\assets\BowerAsset',
+        'common\assets\TableAsset',
     ];
 }
