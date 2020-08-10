@@ -31,8 +31,6 @@ function buscar_hojas($menu)
 }
 
 $reportes = buscar_hojas($menu);
-
-Yii::info($reportes);
 ?>
 
 <div style="margin-bottom: 30px">
