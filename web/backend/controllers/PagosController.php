@@ -89,6 +89,11 @@ class PagosController extends BaseController
                 $entidad = new Proveedores();
                 $entidad->IdProveedor = $id;
                 break;
+            case 'C':
+                $permiso = "Cliente";
+                $entidad = new Clientes();
+                $entidad->IdCliente = $id;
+                break;
             default:
                 return ['error' => 'Tipo no soportado.'];
                 break;
@@ -114,7 +119,7 @@ class PagosController extends BaseController
                     break;
                 case 8:
                     // Descuento
-                    if ($tipo == 'P') {
+                    if ($tipo == 'P' || $tipo == 'C') {
                         Yii::$app->response->format = 'json';
                         return ['error' => 'Medio de Pago no soportado.'];
                     }
@@ -131,7 +136,7 @@ class PagosController extends BaseController
                     $resultado = $entidad->PagarEfectivo($pago);
                     break;
                 case 2:
-                    if ($tipo == 'P') {
+                    if ($tipo == 'P' || $tipo == 'C') {
                         Yii::$app->response->format = 'json';
                         return ['error' => 'Medio de Pago no soportado.'];
                     }
@@ -173,19 +178,22 @@ class PagosController extends BaseController
                 return ['error' => $resultado];
             }
         } else {
-            $medios = (new GestorMediosPago)->Listar();
+            // $medios = (new GestorMediosPago)->Listar();
+            $medios = (new GestorMediosPago)->Buscar($tipo);
             $tributos = (new GestorTiposTributos)->Buscar();
             $cheques = [];
             $remitos = [];
-            if ($tipo == 'V') {
-                // Cheques del cliente
-                $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
-                $pago->MontoVenta = $entidad->Monto;
-                $remitos = (new GestorRemitos())->Buscar($entidad->IdPuntoVenta, '', 'A', 0, 0, 'N');
-            } else {
-                $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
-                array_splice($medios, 4, 1);
-                array_splice($medios, 2, 1);
+            switch ($tipo) {
+                case 'V':
+                    $pago->MontoVenta = $entidad->Monto;
+                    $remitos = (new GestorRemitos())->Buscar($entidad->IdPuntoVenta, '', 'A', 0, 0, 'N');
+                case 'C':
+                    // Cheques del cliente
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
+                    break;
+                default:
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
+                    break;
             }
 
             $pago->setScenario(Pagos::_ELECCION);
@@ -201,6 +209,7 @@ class PagosController extends BaseController
         }
     }
 
+    // NO SE USA
     public function actionEleccion($id)
     {
         // PermisosHelper::verificarPermiso('PagarVenta');
@@ -268,6 +277,11 @@ class PagosController extends BaseController
                 $entidad = new Proveedores();
                 $entidad->IdProveedor = $pago->Codigo;
                 break;
+            case 'C':
+                $permiso = "Cliente";
+                $entidad = new Clientes();
+                $entidad->IdCliente = $pago->Codigo;
+                break;
             default:
                 return ['error' => 'Tipo no soportado.'];
                 break;
@@ -292,7 +306,7 @@ class PagosController extends BaseController
                 break;
             case 8:
                 // Descuento
-                if ($tipo == 'P') {
+                if ($tipo == 'P' || $tipo == 'C') {
                     Yii::$app->response->format = 'json';
                     return ['error' => 'Medio de Pago no soportado.'];
                 }
@@ -304,7 +318,7 @@ class PagosController extends BaseController
                 $pago->setScenario(Pagos::_MODIFICAR_EFECTIVO);
                 break;
             case 2:
-                if ($tipo == 'P') {
+                if ($tipo == 'P' || $tipo == 'C') {
                     Yii::$app->response->format = 'json';
                     return ['error' => 'Medio de Pago no soportado.'];
                 }
@@ -321,7 +335,12 @@ class PagosController extends BaseController
                 // Cheque
                 PermisosHelper::verificarPermiso('ModificarPago'.$permiso.'Cheque');
                 $pago->setScenario(Pagos::_MODIFICAR_CHEQUE);
-                $cheques = (new GestorCheques())->Buscar();
+                if ($tipo == 'V' or $tipo == 'C') {
+                    // Cheques del cliente
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T', $entidad->IdCliente);
+                } else {
+                    $cheques = (new GestorCheques())->Buscar('', '', '', 'D', 'T');
+                }
                 $cheque = new Cheques();
                 $cheque->IdCheque = $pago->IdCheque;
                 $cheque->Dame();
@@ -384,6 +403,10 @@ class PagosController extends BaseController
             case 'P':
                 $permiso = "Proveedor";
                 $entidad = new Proveedores();
+                break;
+            case 'C':
+                $permiso = "Cliente";
+                $entidad = new Clientes();
                 break;
             default:
                 return ['error' => 'Tipo no soportado.'];

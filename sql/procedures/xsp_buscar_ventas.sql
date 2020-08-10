@@ -14,7 +14,7 @@ BEGIN
         SET pFechaHasta = NOW();
 	END IF;
     SELECT	v.*, u.Usuario, (IF(c.Tipo = 'F',CONCAT(c.Apellidos,', ',c.Nombres),c.RazonSocial)) Cliente, tca.TipoComprobanteAfip, tt.TipoTributo,
-            c.Observaciones ObservacionesCliente, ca.Canal
+            c.Observaciones ObservacionesCliente, c.Datos->>'$.Email' EmailCliente, ca.Canal
     FROM	Ventas v
     INNER JOIN Clientes c USING (IdCliente)
     INNER JOIN Canales ca USING (IdCanal)

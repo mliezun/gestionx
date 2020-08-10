@@ -172,11 +172,19 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
                                                     <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
-                                                        <button type="button" class="btn btn-default"
-                                                                data-ajax="<?= Url::to(['/ventas/enviar-comprobante', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Enviar Factura">
-                                                            <i class="fas fa-envelope-square"></i>
-                                                        </button>
+                                                        <?php if ($model['EmailCliente'] == 'null' OR $model['EmailCliente'] == '' OR $model['EmailCliente'] == NULL) : ?>
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-modal="<?= Url::to(['/clientes/email', 'id' => $model['IdCliente']]) ?>"
+                                                                    data-hint="Cargar Email">
+                                                                <i class="fas fa-mail-bulk" style="color: red"></i>
+                                                            </button>
+                                                        <?php else : ?>
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-ajax="<?= Url::to(['/ventas/enviar-comprobante', 'id' => $model['IdVenta']]) ?>"
+                                                                    data-hint="Enviar Factura">
+                                                                <i class="fas fa-mail-bulk" style="color: green"></i>
+                                                            </button>
+                                                        <?php endif; ?>
                                                         <a class="btn btn-default"
                                                                 href="<?= Url::to(['/ventas/comprobante', 'id' => $model['IdVenta']]) ?>"
                                                                 target="_blank"

@@ -10,6 +10,7 @@ SALIR:BEGIN
     */
     DECLARE pIdUsuario bigint;
 	DECLARE pUsuario varchar(30);
+    DECLARE pMonto decimal(12, 2);
     DECLARE pMensaje varchar(100);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -55,11 +56,26 @@ SALIR:BEGIN
                     Monto = 0
             WHERE   IdVenta = pIdVenta;
         ELSE
+            SET pMonto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta);
             -- Activa Venta
             UPDATE  Ventas 
             SET     Estado = 'A',
-                    Monto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta)
+                    Monto = pMonto
             WHERE   IdVenta = pIdVenta;
+
+            -- Aumenta la deuda del Cliente
+            CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+                (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
+                'C',
+                pMonto,
+                'Activa un venta',
+                NULL,
+                pIP, pUserAgent, pAplicacion, pMensaje);
+            IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+                SELECT pMensaje Mensaje; 
+                ROLLBACK;
+                LEAVE SALIR;
+            END IF;
         END IF;
 
         -- Audito Venta Después

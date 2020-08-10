@@ -1,10 +1,11 @@
 <?php
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 use yii\base\Model;
 
-class Clientes extends Model
+class Clientes extends Model implements IOperacionesPago
 {
     public $IdCliente;
     public $IdEmpresa;
@@ -22,6 +23,7 @@ class Clientes extends Model
     //Derivados
     public $Lista;
     public $TipoDocAfip;
+    public $Deuda;
 
     // DatosJSON
     public $CUIT;
@@ -39,6 +41,7 @@ class Clientes extends Model
     const _ALTA_JURIDICA = 'altaj';
     const _MODIFICAR_FISICA = 'modificarf';
     const _MODIFICAR_JURIDICA = 'modificarj';
+    const _ALTA_EMAIL = 'altae';
     
     const ESTADOS = [
         'A' => 'Activo',
@@ -66,6 +69,8 @@ class Clientes extends Model
                 'required', 'on' => self::_MODIFICAR_FISICA],
             [['IdCliente','IdEmpresa','RazonSocial', 'IdListaPrecio', 'IdTipoDocAfip'],
                 'required', 'on' => self::_MODIFICAR_JURIDICA],
+            [['IdCliente', 'Email'],
+                'required', 'on' => self::_ALTA_EMAIL],
             [$this->attributes(), 'safe']
         ];
     }
@@ -157,6 +162,269 @@ class Clientes extends Model
             ':userAgent' => Yii::$app->request->userAgent,
             ':app' => Yii::$app->id,
             ':idcliente' => $this->IdCliente
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /*
+    * Permite listar el historial de descuentos de un cliente.
+    *
+    * xsp_listar_historial_cuenta_cliente
+    */
+    public function ListarHistorialCuenta($FechaInicio = null, $FechaFin = null)
+    {
+        $sql = 'CALL xsp_listar_historial_cuenta_cliente( :id, :fechainicio, :fechafin)';
+        
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdCliente,
+            ':fechainicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechafin' => FechaHelper::formatearDateMysql($FechaFin),
+        ]);
+        
+        return $query->queryAll();
+    }
+
+    /**
+     * Permite buscar los pagos de un cliente, entre 2 fechas.
+     * Permitiendo filtrar por medio de pago (0 para listar todos).
+     * 
+     * xsp_buscar_pagos_cliente
+     */
+    public function BuscarPagos($FechaInicio = null, $FechaFin = null, $IdMedioPago = 0)
+    {
+        $sql = "call xsp_buscar_pagos_cliente( :id, :IdMedioPago, :fechainicio, :fechafin)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdCliente,
+            ':IdMedioPago' => $IdMedioPago,
+            ':fechainicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechafin' => FechaHelper::formatearDateMysql($FechaFin),
+        ]);
+
+        return $query->queryAll();
+    }
+
+    // Alta de Pagos
+    public function PagarEfectivo(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_cliente_efectivo( :token, :idCliente, :idmediopago, :monto, 
+        :fechadebe, :fechapago, :observaciones, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idCliente' => $this->IdCliente,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function PagarTarjeta(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_cliente_tarjeta( :token, :id, :idmediopago, :monto, "
+        .":fechadebe, :fechapago, :observaciones,"
+        .":NroTarjeta, :MesVencimiento, :AnioVencimiento, :CCV , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':id' => $this->IdCliente,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+            ':NroTarjeta' => $pago->NroTarjeta,
+            ':MesVencimiento' => $pago->MesVencimiento,
+            ':AnioVencimiento' => $pago->AnioVencimiento,
+            ':CCV' => $pago->CCV,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function PagarCheque(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_cliente_cheque( :token, :idCliente, :idmediopago, "
+        .":fechadebe, :fechapago, :IdCheque, :observaciones,"
+        .":IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idCliente' => $this->IdCliente,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':IdCheque' => $pago->IdCheque,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function PagarMercaderia(Pagos $pago)
+    {
+        return "Medio de Pago no soportado";
+    }
+
+    public function PagarRetencion(Pagos $pago)
+    {
+        $sql = "call xsp_pagar_cliente_retencion( :token, :idCliente, :idmediopago, :idtipotributo, :monto, 
+        :fechadebe, :fechapago, :observaciones, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idCliente' => $this->IdCliente,
+            ':idmediopago' => $pago->IdMedioPago,
+            ':idtipotributo' => $pago->IdTipoTributo,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    // Modificacion de Pagos
+    public function ModificarPagoEfectivo(Pagos $pago)
+    {
+        $sql = "call xsp_modificar_pago_cliente_efectivo( :token, :idpago, :monto, "
+        .":fechadebe, :fechapago, :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function ModificarPagoTarjeta(Pagos $pago)
+    {
+        $sql = "call xsp_modificar_pago_cliente_tarjeta( :token, :idpago, :monto, "
+        .":fechadebe, :fechapago, :observaciones, :NroTarjeta, :MesVencimiento, :AnioVencimiento, :CCV , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+            ':NroTarjeta' => $pago->NroTarjeta,
+            ':MesVencimiento' => $pago->MesVencimiento,
+            ':AnioVencimiento' => $pago->AnioVencimiento,
+            ':CCV' => $pago->CCV,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function ModificarPagoCheque(Pagos $pago)
+    {
+        $sql = "call xsp_modificar_pago_cliente_cheque( :token, :idpago, "
+        .":fechadebe, :fechapago, :IdCheque, :observaciones, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
+            ':IdCheque' => $pago->IdCheque,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function ModificarPagoMercaderia(Pagos $pago)
+    {
+        return "Medio de Pago no soportado";
+    }
+
+    public function ModificarPagoRetencion(Pagos $pago)
+    {
+        $sql = "call xsp_modificar_pago_cliente_retencion( :token, :idpago, :idtipotributo, :monto, "
+        .":fechadebe, :fechapago, :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
+            ':idtipotributo' => $pago->IdTipoTributo,
+            ':monto' => $pago->Monto,
+            ':fechadebe' => FechaHelper::formatearDateMysql($pago->FechaDebe),
+            ':fechapago' => FechaHelper::formatearDateMysql($pago->FechaPago),
+            ':observaciones' => $pago->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    public function BorrarPago(Pagos $pago)
+    {
+        $sql = "call xsp_borrar_pago_cliente( :token, :idpago, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idpago' => $pago->IdPago,
         ]);
 
         return $query->queryScalar();
