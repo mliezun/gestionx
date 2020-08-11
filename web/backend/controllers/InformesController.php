@@ -67,7 +67,7 @@ class InformesController extends BaseController
                         } elseif ($parametro['Tipo'] == 'H') {
                             $valor = FechaHelper::formatearDatetimeMysql($model->{$parametro['Parametro']});
                         } elseif ($parametro['Tipo'] == 'A') {
-                            $valor = intval($valor);
+                            $valor = intval($model->{$parametro['Parametro']});
                         } else {
                             $valor = $model->{$parametro['Parametro']};
                         }
