@@ -99,6 +99,7 @@ $proveedor = new Proveedores();
                                                 <?php if ($model['Estado'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarRemito')): ?>
                                                         <button type="button" class="btn btn-default"
+                                                                data-mensaje="¿Desea activar el remito?"
                                                                 data-ajax="<?= Url::to(['remitos/activar', 'id' => $model['IdRemito']]) ?>"
                                                                 data-hint="Activar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
@@ -107,6 +108,7 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el remito?"
                                                             data-ajax="<?= Url::to(['remitos/dar-baja', 'id' => $model['IdRemito']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -115,6 +117,7 @@ $proveedor = new Proveedores();
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarRemito')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el remito?"
                                                         data-ajax="<?= Url::to(['remitos/borrar', 'id' => $model['IdRemito']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

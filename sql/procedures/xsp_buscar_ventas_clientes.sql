@@ -28,7 +28,7 @@ BEGIN
                     'MesVencimiento', p.MesVencimiento,
                     'AnioVencimiento', p.AnioVencimiento,
                     'CCV', p.CCV
-                ), ']') Pagos, SUM(p.Monto) MontoPagos
+                ), ']') Pagos, SUM(COALESCE(p.Monto, 0)) MontoPagos
     FROM        Clientes c
     INNER JOIN  Ventas v USING(IdCliente)
     LEFT JOIN   Pagos p ON v.IdVenta = p.Codigo AND p.Tipo = 'V'
@@ -37,7 +37,7 @@ BEGIN
                 AND (v.Estado = pEstadoVenta OR pEstadoVenta = 'T')
                 AND (v.FechaAlta BETWEEN pFechaInicio AND (pFechaFin + INTERVAL 1 DAY))
     GROUP BY    c.IdCliente, v.IdVenta
-    HAVING      pMora = 'N' OR (v.Estado = 'A' AND v.Monto > SUM(p.Monto))
+    HAVING      pMora = 'N' OR (v.Estado = 'A' AND v.Monto > SUM(COALESCE(p.Monto, 0)))
     ORDER BY    v.FechaAlta DESC; -- pMora = 'S' => (MontoVenta < SUM(MontoPago))
 END$$
 

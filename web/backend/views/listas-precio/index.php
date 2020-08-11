@@ -79,6 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarListaPrecio')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar la lista de precios?"
                                                             data-ajax="<?= Url::to(['/listas-precio/activar', 'id' => $model['IdListaPrecio']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -94,6 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarListaPrecio')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar la lista de precios?"
                                                         data-ajax="<?= Url::to(['/listas-precio/borrar', 'id' => $model['IdListaPrecio']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

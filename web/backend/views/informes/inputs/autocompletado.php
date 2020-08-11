@@ -26,7 +26,7 @@ SCRIPT;
 
 $form->field($model, $parametro['Parametro'])->widget(Select2::classname(), [
                             'theme' => Select2::THEME_DEFAULT,
-    'options' => ['placeholder' => ' '],
+    'options' => ['placeholder' => 'Ingresar más de 4 caracteres.'],
     'pluginOptions' => [
         'minimumInputLength' => 4,
         'allowClear' => true,

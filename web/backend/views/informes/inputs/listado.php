@@ -9,10 +9,6 @@ use yii\helpers\ArrayHelper;
 $gestor = new \common\models\GestorReportes();
 $opciones = $gestor->LlenarListadoParametro($parametro['IdModeloReporte'], $parametro['NroParametro']);
 $opciones = ArrayHelper::map($opciones, 'Id', 'Nombre');
-
-if ($parametro['ListaTieneTodos'] == 'S') {
-    $opciones = ArrayHelper::merge($opciones, ['T' => "Todos"]);
-}
 ?>
 
 <?= $form->field($model, $parametro['Parametro'])->dropDownList($opciones)->hint($parametro['ToolTipText'])->label($parametro['Etiqueta']);

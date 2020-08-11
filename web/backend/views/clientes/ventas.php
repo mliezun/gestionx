@@ -139,6 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php if ($model['EstadoVenta'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
+                                                                data-mensaje="¿Desea activar la venta?"
                                                                 data-ajax="<?= Url::to(['ventas/activar', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Completar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>

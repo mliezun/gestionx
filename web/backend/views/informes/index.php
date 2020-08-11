@@ -31,15 +31,15 @@ function buscar_hojas($menu)
 }
 
 $reportes = buscar_hojas($menu);
-
-Yii::info($reportes);
 ?>
 
 <div style="margin-bottom: 30px">
     <?php foreach ($reportes as $r): ?>
-    <a data-hint="<?= $r['Ayuda'] ?>" href="<?= URL::to(['/informes', 'id' => $r['IdModeloReporte']]) ?>">
-        <?= $r['NombreMenu'] ?>
-    </a>
+    <div style="margin-bottom: 10px">
+        <a class="btn btn-secondary" data-hint="<?= $r['Ayuda'] ?>" href="<?= URL::to(['/informes', 'id' => $r['IdModeloReporte']]) ?>">
+            <?= $r['NombreMenu'] ?>
+        </a>
+    </div>
     <?php endforeach; ?>
 </div>
 
@@ -153,11 +153,11 @@ Yii::info($reportes);
 
         <div class="clearfix"></div>
 
-        <div id="doublescroll" class="table-responsive top10" v-show="!cargando">
+        <div style="max-width: 80vw; z-index: -1" v-show="!cargando">
             <?php if (isset($tabla)) : ?>
             <?php if (count($tabla) > 0): ?>
-            <table class="table table-bordered table-hover  table-condensed ">
-                <thead>
+            <table id="tabla-informe" class="table table-bordered table-hover table-condensed ">
+                <thead style="background-color: white">
                     <tr>
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
                         <th>

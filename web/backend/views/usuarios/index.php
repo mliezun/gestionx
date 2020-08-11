@@ -92,6 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('RestablecerPassword')): ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea restablecer el password del usuario?"
                                                         data-ajax="<?= Url::to(['usuarios/restablecer-pass', 'id' => $model['IdUsuario']]) ?>"
                                                         data-hint="Restablecer Password">
                                                     <i class="fas fa-key"></i>
@@ -100,6 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarUsuario')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el usuario?"
                                                             data-ajax="<?= Url::to(['usuarios/activar', 'id' => $model['IdUsuario']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -108,6 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaUsuario')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el usuario?"
                                                             data-ajax="<?= Url::to(['usuarios/dar-baja', 'id' => $model['IdUsuario']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -116,6 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('TODO:BorrarUsuario')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el usuario?"
                                                         data-ajax="<?= Url::to(['usuarios/borrar', 'id' => $model['IdUsuario']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

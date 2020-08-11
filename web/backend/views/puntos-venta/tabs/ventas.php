@@ -149,13 +149,15 @@ $proveedor = new Proveedores();
                                                 <?php if ($model['Estado'] == 'E') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarVenta')): ?>
                                                         <button type="button" class="btn btn-default"
+                                                                data-mensaje="¿Desea cobrar la venta?"
                                                                 data-ajax="<?= Url::to(['ventas/activar', 'id' => $model['IdVenta']]) ?>"
-                                                                data-hint="Completar">
+                                                                data-hint="Cobrar">
                                                             <i class="fa fa-check-circle" style="color: green"></i>
                                                         </button>
                                                     <?php endif; ?>
                                                     <?php if (PermisosHelper::tienePermiso('BorrarVenta') && $anulable == 'S') : ?>
                                                         <button type="button" class="btn btn-default"
+                                                                data-mensaje="¿Desea borrar la venta?"
                                                                 data-ajax="<?= Url::to(['/ventas/borrar', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Borrar">
                                                             <i class="fa fa-trash"></i>
@@ -201,6 +203,7 @@ $proveedor = new Proveedores();
                                                     <?php endif; ?>
                                                     <?php if (PermisosHelper::tienePermiso('DevolucionVenta') && $anulable == 'N') : ?>
                                                         <button type="button" class="btn btn-default"
+                                                                data-mensaje="¿Desea devolver la venta?"
                                                                 data-ajax="<?= Url::to(['ventas/devolucion', 'id' => $model['IdVenta']]) ?>"
                                                                 data-hint="Devolucion">
                                                             <i class="fa fa-undo-alt"></i>
@@ -209,6 +212,7 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaVenta') && $model['Estado'] == 'E') : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja la venta?"
                                                             data-ajax="<?= Url::to(['ventas/dar-baja', 'id' => $model['IdVenta']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>

@@ -65,8 +65,8 @@ BEGIN
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
                     AND (pTipoVenta = 'T' OR v.Tipo = pTipoVenta)
                     AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V' AND p.IdMedioPago = pIdMedioPago))
-                    AND (pIdArticulo = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 WHERE lv2.IdVenta = v.IdVenta AND lv2.IdArticulo = pIdArticulo))
-                    AND (pIdProveedor = 0 OR EXISTS (SELECT 1 FROM LineasVenta lv2 INNER JOIN Articulos a2 USING(IdArticulo) INNER JOIN Proveedores prv2 USING(IdProveedor) WHERE lv2.IdVenta = v.IdVenta AND prv2.IdProveedor = pIdProveedor))
+                    AND (pIdArticulo = 0 OR lv.IdArticulo = pIdArticulo)
+                    AND (pIdProveedor = 0 OR pr.IdProveedor = pIdProveedor)
                     AND (pIdUsuario = 0 OR u.IdUsuario = pIdUsuario)
                     AND (pIdCliente = 0 OR cl.IdCliente = pIdCliente)
         GROUP BY    v.IdVenta

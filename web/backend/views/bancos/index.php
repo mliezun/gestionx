@@ -73,6 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarBanco')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el banco?"
                                                             data-ajax="<?= Url::to(['bancos/activar', 'id' => $model['IdBanco']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -81,6 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaBanco')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar baja el banco?"
                                                             data-ajax="<?= Url::to(['bancos/dar-baja', 'id' => $model['IdBanco']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -89,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarBanco')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el banco?"
                                                         data-ajax="<?= Url::to(['bancos/borrar', 'id' => $model['IdBanco']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
