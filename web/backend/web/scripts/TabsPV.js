@@ -88,7 +88,8 @@ var TabsPV = {
             e.stopImmediatePropagation();
             return false;
           });
-          Main.init();
+          // inicializar tooltips y dialogos de confirmacion
+          Main.initUI();
         },
         submitBuscar: function (form) {
           var _this = this;
