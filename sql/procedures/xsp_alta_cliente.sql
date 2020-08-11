@@ -97,6 +97,19 @@ SALIR:BEGIN
 
         SET pIdCliente = LAST_INSERT_ID();
 
+        -- Se crea la cuenta corriente al Cliente
+		CALL xsp_alta_cuenta_corriente(pIdUsuario, 
+			pIdCliente,
+			'C',
+			'Alta del Cliente',
+			NULL,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
 		-- Audita
 		INSERT INTO aud_Clientes
 		SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',

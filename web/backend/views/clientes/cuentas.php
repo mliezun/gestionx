@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Proveedores;
+use common\models\Clientes;
 use common\components\PermisosHelper;
 use common\components\FechaHelper;
 use kartik\date\DatePicker;
@@ -12,10 +12,10 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $form ActiveForm */
-$this->title = 'Cuenta del Proveedor: '. $proveedor['Proveedor'];
+$this->title = 'Cuenta del Cliente: '. Clientes::Nombre($cliente);
 $this->params['breadcrumbs'][] = [
-    'label' => 'Proveedores',
-    'link' => '/proveedores'
+    'label' => 'Clientes',
+    'link' => '/clientes'
 ];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -51,9 +51,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="alta--button">
             <button type="button" class="btn btn-primary"
-                    data-modal="<?= Url::to(['/pagos/alta', 'id' => $proveedor['IdProveedor'], 'tipo' => 'P']) ?>"
-                    data-hint="Nuevo Pago al Proveedor">
-                Nuevo Pago al Proveedor
+                    data-modal="<?= Url::to(['/pagos/alta', 'id' => $cliente['IdCliente'], 'tipo' => 'C']) ?>"
+                    data-hint="Nuevo Pago del Cliente">
+                Nuevo Pago del Cliente
             </button>
         </div>
 
@@ -61,26 +61,38 @@ $this->params['breadcrumbs'][] = $this->title;
         
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><?= Html::encode("Proveedor") ?></h3>
+                <h3 class="card-title"><?= Html::encode("Cliente") ?></h3>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table">
                         <thead class="bg-light">
                             <tr class="border-0">
-                                <th>Proveedor</th>
-                                <th>Descuento</th>
+                                <th>Cliente</th>
+                                <th>Documento</th>
+                                <th>Datos</th>
+                                <th>Tipo</th>
                                 <th>Estado</th>
                                 <th>Deuda</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><?= Html::encode($proveedor['Proveedor']) ?></td>
-                                <td>% <?= Html::encode($proveedor['Descuento']) ?></td>
-                                <td><?= Html::encode(Proveedores::ESTADOS[$proveedor['Estado']]) ?></td>
+                                <td><?= Html::encode(Clientes::Nombre($cliente)) ?></td>
+                                <td><?= Html::encode($cliente['TipoDocAfip']) ?>: <?= Html::encode($cliente['Documento']) ?></td>
+                                <td>
+                                    <ul>
+                                    <?php foreach (json_decode($cliente['Datos']) as $dato => $valor): ?>
+                                        <?php if (isset($valor) && $valor != ''): ?>
+                                            <li><?= Html::encode($dato) ?>: <?= Html::encode($valor) ?></li>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                    </ul>
+                                </td>
+                                <td><?= Html::encode(Clientes::TIPOS[$cliente['Tipo']]) ?></td>
+                                <td><?= Html::encode(Clientes::ESTADOS[$cliente['Estado']]) ?></td>
                                 <?php
-                                $deuda = $proveedor['Deuda'] ?? 0;
+                                $deuda = $cliente['Deuda'] ?? 0;
                                 $estilo = '';
                                 if ($deuda > 0) {
                                     $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
@@ -102,9 +114,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php if (count($pagos) > 0): ?>
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><?= Html::encode("Pagos al Proveedor") ?></h3>
-            </div>
+        <div class="card-header">
+                    <h3 class="card-title"><?= Html::encode("Pagos del Cliente") ?></h3>
+                </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table">
@@ -140,9 +152,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php if ($pago['MedioPago'] == 'Retencion') : ?>
                                             <li><?= Html::encode('Tipo de Tributo') ?>: <?= Html::encode($tributos[json_decode($pago['Datos'])->IdTipoTributo]) ?></li>
                                         <?php endif; ?>
-                                        <?php if ($pago['MedioPago'] == 'Descuento') : ?>
-                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode( ($pago['Monto'] / $model['Monto']) * 100 ) ?></li>
-                                        <?php endif; ?>
                                         </ul>
                                     </td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($pago['FechaAlta'])) ?></td>
@@ -151,14 +160,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="btn-group" role="group" aria-label="...">
                                             <?php if (PermisosHelper::tienePermiso('PagarVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago'], 'tipo' => 'P']) ?>"
+                                                        data-modal="<?= Url::to(['pagos/editar', 'id' => $pago['IdPago'], 'tipo' => 'C']) ?>"
                                                         data-hint="Modificar">
                                                     <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                 </button>
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarPagoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
-                                                        data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago'], 'tipo' => 'P']) ?>"
+                                                        data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago'], 'tipo' => 'C']) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -214,7 +223,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['Fecha'])) ?></td>
                                         <td><?= Html::encode($model['Motivo']) ?></td>
-                                        <td><?= Html::encode( - floatval($model['Monto']) ) ?></td>
+                                        <td><?= Html::encode( - floatval($model['Monto'])) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

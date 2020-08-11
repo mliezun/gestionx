@@ -462,4 +462,26 @@ class Proveedores extends Model implements IOperacionesPago
 
         return $query->queryScalar();
     }
+
+    /**
+     * Permite buscar los pagos a un provedor, entre 2 fechas.
+     * Permitiendo filtrar por medio de pago (0 para listar todos).
+     * 
+     * xsp_buscar_pagos_proveedor
+     */
+    public function BuscarPagos($FechaInicio = null, $FechaFin = null, $IdMedioPago = 0)
+    {
+        $sql = "call xsp_buscar_pagos_proveedor( :id, :IdMedioPago, :fechainicio, :fechafin)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':id' => $this->IdProveedor,
+            ':IdMedioPago' => $IdMedioPago,
+            ':fechainicio' => FechaHelper::formatearDateMysql($FechaInicio),
+            ':fechafin' => FechaHelper::formatearDateMysql($FechaFin),
+        ]);
+
+        return $query->queryAll();
+    }
 }

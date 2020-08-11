@@ -159,7 +159,7 @@ SALIR:BEGIN
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
 			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
 			'C',
-			pDiferencia,
+			- pDiferencia,
 			'Modifica Pago de Venta',
 			NULL,
 			pIP, pUserAgent, pAplicacion, pMensaje);
