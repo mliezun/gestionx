@@ -120,6 +120,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarCliente')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el cliente?"
                                                             data-ajax="<?= Url::to(['clientes/activar', 'id' => $model['IdCliente']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -128,6 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaCliente')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el cliente?"
                                                             data-ajax="<?= Url::to(['clientes/dar-baja', 'id' => $model['IdCliente']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -136,6 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarCliente')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el cliente?"
                                                         data-ajax="<?= Url::to(['clientes/borrar', 'id' => $model['IdCliente']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

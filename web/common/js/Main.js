@@ -11,6 +11,21 @@ var Main = {
         return $(this).data("hint");
       },
     },
+    confirm: {
+      rootSelector: "[data-mensaje]",
+      title: function () {
+        return "Confirmar operación";
+      },
+      content: function () {
+        return $(this)[0].$target.data("mensaje");
+      },
+      buttons: {
+        Aceptar: function () {
+          Main.ajax($(this)[0].$target, true);
+        },
+        Cancelar: function () {},
+      },
+    },
   },
   selectores: {
     tooltip: "[data-hint]",
@@ -93,6 +108,9 @@ var Main = {
     $(".tooltip").remove();
 
     $(_this.selectores.tooltip).tooltip(_this.opciones.tooltip);
+
+    // Mensaje pidiendo confirmación en las acciones con data-mensaje
+    $(_this.selectores.confirm).confirm(_this.opciones.confirm);
 
     // Configuración por defecto de Select2
     if ($.fn.select2) $.fn.select2.defaults.set("selectOnClose", true);
@@ -274,9 +292,14 @@ var Main = {
     $(".modal-backdrop").remove();
   },
   // Hacer request con ajax en los elementos con data-ajax=url. Evita recarga y muestra mensaje de éxito si hay data-success
-  ajax: function (elemento) {
+  ajax: function (elemento, confirmado) {
     var url = $(elemento).data("ajax");
     var success = $(elemento).data("success");
+
+    var mensajeConfirmacion = $(elemento).data("mensaje");
+    if (mensajeConfirmacion && !confirmado) {
+      return;
+    }
 
     $.get(url)
       .done(function (data) {

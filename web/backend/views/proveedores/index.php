@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $estilo = '';
                                         if ($deuda > 0) {
                                             $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
-                                        } elseif($deuda < 0) {
+                                        } elseif ($deuda < 0) {
                                             $deuda = - $deuda . " a favor";
                                             $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
                                         } else {
@@ -115,6 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarProveedor')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el proveedor?"
                                                             data-ajax="<?= Url::to(['proveedores/activar', 'id' => $model['IdProveedor']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -123,6 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaProveedor')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el proveedor?"
                                                             data-ajax="<?= Url::to(['proveedores/dar-baja', 'id' => $model['IdProveedor']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -138,6 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarProveedor')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el proveedor?"
                                                         data-ajax="<?= Url::to(['proveedores/borrar', 'id' => $model['IdProveedor']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

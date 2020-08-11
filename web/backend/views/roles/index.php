@@ -84,6 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('ClonarRol')): ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea clonar el rol?"
                                                         data-modal="<?= Url::to(['/roles/clonar', 'id' => $model['IdRol']]) ?>" 
                                                         data-hint="Clonar">
                                                     <i class="fa fa-copy"></i>
@@ -92,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarRol')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el rol?"
                                                             data-ajax="<?= Url::to(['roles/activar', 'id' => $model['IdRol']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -100,6 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaRol')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el rol?"
                                                             data-ajax="<?= Url::to(['roles/dar-baja', 'id' => $model['IdRol']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -108,6 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarRol')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el rol?"
                                                         data-ajax="<?= Url::to(['roles/borrar', 'id' => $model['IdRol']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

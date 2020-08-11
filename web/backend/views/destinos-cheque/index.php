@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php if ($model['Estado'] == 'B') : ?>
                                             <?php if (PermisosHelper::tienePermiso('ActivarDestinoCheque')): ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea activar el destino de cheque?"
                                                         data-ajax="<?= Url::to(['destinos-cheque/activar', 'id' => $model['IdDestinoCheque']]) ?>"
                                                         data-hint="Activar">
                                                     <i class="fa fa-check-circle" style="color: green"></i>
@@ -83,6 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php else : ?>
                                             <?php if (PermisosHelper::tienePermiso('DarBajaDestinoCheque')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea dar de baja el destino de cheque?"
                                                         data-ajax="<?= Url::to(['destinos-cheque/dar-baja', 'id' => $model['IdDestinoCheque']]) ?>"
                                                         data-hint="Dar baja">
                                                     <i class="fa fa-minus-circle" style="color: red"></i>
@@ -91,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?php endif; ?>
                                         <?php if (PermisosHelper::tienePermiso('BorrarDestinoCheque')) : ?>
                                             <button type="button" class="btn btn-default"
+                                                    data-mensaje="¿Desea borrar el destino de cheque?"
                                                     data-ajax="<?= Url::to(['destinos-cheque/borrar', 'id' => $model['IdDestinoCheque']]) ?>"
                                                     data-hint="Borrar">
                                                 <i class="fa fa-trash"></i>

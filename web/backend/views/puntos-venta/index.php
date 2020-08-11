@@ -92,6 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B' || $model['Estado'] == 'S') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarPuntoVenta')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el punto de venta?"
                                                             data-ajax="<?= Url::to(['puntos-venta/activar', 'id' => $model['IdPuntoVenta']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -100,6 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaPuntoVenta')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el punto de venta?"
                                                             data-ajax="<?= Url::to(['puntos-venta/dar-baja', 'id' => $model['IdPuntoVenta']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -108,6 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarPuntoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el punto de venta?"
                                                         data-ajax="<?= Url::to(['puntos-venta/borrar', 'id' => $model['IdPuntoVenta']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

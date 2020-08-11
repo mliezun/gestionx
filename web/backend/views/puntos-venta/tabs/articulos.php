@@ -94,6 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($puntoventa['IdPuntoVenta'] == $recti['IdPuntoVentaDestino']) : ?>
                                                 <?php if ($recti['Estado'] == 'P' && PermisosHelper::tienePermiso('ConfirmarRectificacion')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea confirmar la rectificación?"
                                                             data-ajax="<?= Url::to(['rectificaciones/confirmar', 'id' => $recti['IdRectificacionPV']]) ?>"
                                                             data-hint="Confirmar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -102,6 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if ($recti['Estado'] == 'P' && PermisosHelper::tienePermiso('BorrarRectificacion')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea borrar la rectificación?"
                                                             data-ajax="<?= Url::to(['rectificaciones/borrar', 'idPv' => $puntoventa['IdPuntoVenta'], 'idRec' => $recti['IdRectificacionPV']]) ?>"
                                                             data-hint="Borrar">
                                                         <i class="fa fa-trash"></i>
@@ -109,6 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php endif; ?>
                                                 <?php if ($recti['Estado'] == 'P' && PermisosHelper::tienePermiso('DevolucionRectificacion')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea devolver la rectificación?"
                                                             data-ajax="<?= Url::to(['rectificaciones/devolver', 'idPv' => $puntoventa['IdPuntoVenta'], 'idRec' => $recti['IdRectificacionPV']]) ?>"
                                                             data-hint="Devolver">
                                                         <i class="fa fa-undo-alt"></i>

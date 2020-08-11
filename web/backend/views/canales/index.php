@@ -76,6 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php if ($model['Estado'] == 'B') : ?>
                                                 <?php if (PermisosHelper::tienePermiso('ActivarCanal')): ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea activar el canal?"
                                                             data-ajax="<?= Url::to(['canales/activar', 'id' => $model['IdCanal']]) ?>"
                                                             data-hint="Activar">
                                                         <i class="fa fa-check-circle" style="color: green"></i>
@@ -84,6 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php else : ?>
                                                 <?php if (PermisosHelper::tienePermiso('DarBajaCanal')) : ?>
                                                     <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea dar de baja el canal?"
                                                             data-ajax="<?= Url::to(['canales/dar-baja', 'id' => $model['IdCanal']]) ?>"
                                                             data-hint="Dar baja">
                                                         <i class="fa fa-minus-circle" style="color: red"></i>
@@ -92,6 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarCanal')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el canal?"
                                                         data-ajax="<?= Url::to(['canales/borrar', 'id' => $model['IdCanal']]) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>

@@ -71,6 +71,7 @@ use yii\widgets\LinkPager;
                             
                                             <?php if (PermisosHelper::tienePermiso('DesasignarUsuarioPuntoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea quitar el usuario del punto de venta?"
                                                         data-ajax="<?= Url::to(['puntos-venta/desasignar-usuario', 'id' => $model['IdUsuario']]) ?>"
                                                         data-hint="Quitar">
                                                     <i class="fa fa-minus-circle" style="color: red"></i>

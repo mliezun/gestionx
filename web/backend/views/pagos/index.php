@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <li><?= Html::encode('Tipo de Tributo') ?>: <?= Html::encode($tributos[json_decode($pago['Datos'])->IdTipoTributo]) ?></li>
                                         <?php endif; ?>
                                         <?php if ($pago['MedioPago'] == 'Descuento') : ?>
-                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode( ($pago['Monto'] / $model['Monto']) * 100 ) ?></li>
+                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode(($pago['Monto'] / $model['Monto']) * 100) ?></li>
                                         <?php endif; ?>
                                         </ul>
                                     </td>
@@ -95,6 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                             <?php if (PermisosHelper::tienePermiso('BorrarPagoVenta')) : ?>
                                                 <button type="button" class="btn btn-default"
+                                                        data-mensaje="¿Desea borrar el pago?"
                                                         data-ajax="<?= Url::to(['pagos/borrar', 'id' => $pago['IdPago'], 'tipo' => 'V']) ?>"
                                                         data-hint="Borrar">
                                                     <i class="fa fa-trash"></i>
