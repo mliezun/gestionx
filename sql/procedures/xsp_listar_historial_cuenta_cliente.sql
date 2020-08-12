@@ -5,8 +5,14 @@ SALIR: BEGIN
 	/*
 	Permite listar el historial de descuentos de un cliente.
 	*/
-    SET pFechaInicio = COALESCE(pFechaInicio, NOW() - INTERVAL 1 MONTH);
-    SET pFechaFin = COALESCE(pFechaFin, NOW());
+    DECLARE pFechaAux date;
+    SET pFechaInicio = COALESCE(pFechaInicio, '1900-01-01');
+    SET pFechaFin = COALESCE(pFechaFin, '9999-12-31');
+    IF pFechaFin < pFechaInicio THEN
+        SET pFechaAux = pFechaFin;
+        SET pFechaFin = pFechaInicio;
+        SET pFechaInicio = pFechaAux;
+    END IF;
 
     SELECT      c.IdCliente, hcc.*
     FROM        Clientes c
