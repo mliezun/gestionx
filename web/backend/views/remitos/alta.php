@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 use kartik\select2\Select2;
+use kartik\date\DatePicker;
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -30,30 +31,49 @@ use kartik\select2\Select2;
             <?= Html::activeHiddenInput($model, 'IdRemito') ?>
 
             <?= Html::activeHiddenInput($model, 'IdEmpresa') ?>
-            
-            <?= $form->field($model, 'IdProveedor')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
-                'language' => 'es',
-                'options' => ['placeholder' => 'Proveedor'],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ]) ?>
-            
-            <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
-                <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
-                    'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+
+            <?php if (!isset($model['IdRemito'])): ?>
+                <?= $form->field($model, 'IdProveedor')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map($proveedores, 'IdProveedor', 'Proveedor'),
                     'language' => 'es',
-                    'options' => ['placeholder' => 'Canal'],
+                    'options' => ['placeholder' => 'Proveedor'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
                 ]) ?>
+                
+                <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
+                    <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [
+                        'data' => ArrayHelper::map($canales, 'IdCanal', 'Canal'),
+                        'language' => 'es',
+                        'options' => ['placeholder' => 'Canal'],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]) ?>
+                <?php endif; ?>
+            <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'IdProveedor') ?>
+
+                <?= Html::activeHiddenInput($model, 'IdCanal') ?>
             <?php endif; ?>
+            
 
             <?= $form->field($model, 'NroRemito') ?>
 
             <?= $form->field($model, 'CAI') ?>
+
+            <?= $form->field($model, 'NroFactura') ?>
+
+            <?= $form->field($model, 'FechaFacturado')->widget(DatePicker::classname(), [
+                'options' => ['placeholder' => 'Fecha de Facturación'],
+                'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+                'pluginOptions' => [
+                    'autoclose'=> true,
+                    'format' => 'dd/mm/yyyy',
+                    'todayHighlight' => true,
+                ]
+            ]) ?>
 
             <?= $form->field($model, 'Observaciones')->textArea() ?>
         </div>

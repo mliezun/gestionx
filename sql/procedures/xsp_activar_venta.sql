@@ -68,7 +68,7 @@ SALIR:BEGIN
                 (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
                 'C',
                 pMonto,
-                'Activa un venta',
+                'Nueva Venta',
                 NULL,
                 pIP, pUserAgent, pAplicacion, pMensaje);
             IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN

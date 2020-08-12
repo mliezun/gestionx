@@ -1,7 +1,7 @@
 DROP PROCEDURE IF EXISTS `xsp_modifica_remito`;
 DELIMITER $$
 CREATE PROCEDURE `xsp_modifica_remito`(pToken varchar(500), pIdRemito bigint, pIdEmpresa int, pIdProveedor bigint,
-pIdCanal bigint, pNroRemito bigint, pCAI bigint, pObservaciones text, 
+pIdCanal bigint, pNroRemito bigint, pCAI bigint, pNroFactura bigint, pFechaFacturado datetime, pObservaciones text, 
 pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50))
 SALIR: BEGIN
 	/*
@@ -38,13 +38,19 @@ SALIR: BEGIN
         SELECT 'Debe ingresar el canal.' Mensaje;
         LEAVE SALIR;
 	END IF;
-	IF (pNroRemito IS NULL) THEN
-        SELECT 'Debe ingresar el numero del remito.' Mensaje;
-        LEAVE SALIR;
+	IF (pNroRemito IS NULL OR pNroRemito = 0) THEN
+        SET pNroRemito = NULL;
 	END IF;
+	IF (pNroFactura IS NULL OR pNroFactura = 0) THEN
+        SET pNroFactura = NULL;
+	END IF;
+	-- IF (pNroRemito IS NULL) THEN
+    --     SELECT 'Debe ingresar el numero del remito.' Mensaje;
+    --     LEAVE SALIR;
+	-- END IF;
 	-- IF (pCAI IS NULL OR pCAI = 0) THEN
-  --       SELECT 'Debe ingresar el CAI.' Mensaje;
-  --       LEAVE SALIR;
+    --     SELECT 'Debe ingresar el CAI.' Mensaje;
+    --     LEAVE SALIR;
 	-- END IF;
 	-- Control de Parámetros incorrectos
 	IF NOT EXISTS(SELECT Empresa FROM Empresas E WHERE E.IdEmpresa = pIdEmpresa) THEN
@@ -59,9 +65,11 @@ SALIR: BEGIN
 		SELECT 'El Canal no existe o no se encuentra activo.' Mensaje;
 		LEAVE SALIR;
 	END IF;
-    IF EXISTS(SELECT NroRemito FROM Remitos WHERE IdRemito != pIdRemito AND NroRemito = pNroRemito AND IdProveedor=pIdProveedor) THEN
-		SELECT 'El numero de remito ya existe.' Mensaje;
-		LEAVE SALIR;
+	IF (pNroRemito IS NOT NULL) THEN
+		IF EXISTS(SELECT NroRemito FROM Remitos WHERE IdRemito != pIdRemito AND NroRemito = pNroRemito AND IdProveedor=pIdProveedor) THEN
+			SELECT 'El numero de remito ya existe.' Mensaje;
+			LEAVE SALIR;
+		END IF;
 	END IF;
 	-- IF EXISTS(SELECT CAI FROM Remitos WHERE IdRemito != pIdRemito AND CAI = pCAI AND IdProveedor=pIdProveedor) THEN
 	-- 	SELECT 'El CAI ya existe.' Mensaje;
@@ -86,14 +94,16 @@ SALIR: BEGIN
     SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'A',
 		Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
     -- Modifica
-    UPDATE Remitos
-		SET		NroRemito=pNroRemito,
-					IdCanal=pIdCanal,
-					IdProveedor=pIdProveedor,
-					CAI=pCAI,
-					Observaciones=pObservaciones
-		WHERE	IdRemito=pIdRemito;
-		-- Despues
+    UPDATE	Remitos
+	SET		NroRemito=pNroRemito,
+			IdCanal=pIdCanal,
+			IdProveedor=pIdProveedor,
+			CAI=pCAI,
+			NroFactura=pNroFactura,
+			FechaFacturado=pFechaFacturado,
+			Observaciones=pObservaciones
+	WHERE	IdRemito=pIdRemito;
+	-- Despues
     INSERT INTO aud_Remitos
     SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'D',
 		Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;

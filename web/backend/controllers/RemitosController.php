@@ -9,6 +9,7 @@ use common\models\GestorProveedores;
 use common\models\GestorCanales;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -72,6 +73,7 @@ class RemitosController extends BaseController
         } else {
             $remito->IdRemito = $id;
             $remito->Dame();
+            $remito->FechaFacturado = FechaHelper::formatearDateLocal($remito->FechaFacturado);
 
             $proveedores = (new GestorProveedores())->Buscar();
 

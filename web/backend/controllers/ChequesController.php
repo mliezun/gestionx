@@ -11,6 +11,7 @@ use common\models\Cheques;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -147,6 +148,7 @@ class ChequesController extends BaseController
 
         $cheque->IdCheque = $id;
         $cheque->Dame();
+        $cheque->FechaVencimiento = FechaHelper::formatearDateLocal($cheque->FechaVencimiento);
 
         $gestorBancos = new GestorBancos;
         $bancos = $gestorBancos->Buscar();

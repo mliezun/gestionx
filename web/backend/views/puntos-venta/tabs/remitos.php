@@ -58,8 +58,8 @@ use yii\widgets\LinkPager;
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
                         data-modal="<?= Url::to(['/remitos/alta','id' => $puntoventa['IdPuntoVenta']]) ?>"
-                        data-hint="Nuevo Remito">
-                    Nuevo Remito
+                        data-hint="Nuevo Remito o Ingreso">
+                    Nuevo Remito o Ingreso
                 </button>
             </div>
         <?php endif; ?>
@@ -89,7 +89,13 @@ use yii\widgets\LinkPager;
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['NroRemito']) ?></td>
+                                    <td>
+                                        <?php if ($model['NroRemito'] == '' OR $model['NroRemito'] == NULL) : ?>
+                                            <?= Html::encode("-") ?>
+                                        <?php else: ?>
+                                            <?= Html::encode($model['NroRemito']) ?>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= Html::encode($model['NroFactura']) ?></td>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>

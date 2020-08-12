@@ -223,7 +223,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['Fecha'])) ?></td>
                                         <td><?= Html::encode($model['Motivo']) ?></td>
-                                        <td><?= Html::encode( - floatval($model['Monto'])) ?></td>
+                                        <td><?= Html::encode( floatval($model['Monto']) ) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

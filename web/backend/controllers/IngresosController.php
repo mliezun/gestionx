@@ -28,7 +28,7 @@ class IngresosController extends BaseController
             $pv->Dame();
             $anterior = [
                 'label' => "Punto de Venta: " . $pv->PuntoVenta,
-                'link' => Url::to(['/puntos-venta/operaciones', 'id' => $ingreso->IdPuntoVenta])
+                'link' => Url::to(['/puntos-venta/operaciones', 'id' => $ingreso->IdPuntoVenta, 'tab' => 'Remitos'])
             ];
             $remito = new Remitos();
             $remito->IdRemito = $ingreso->IdRemito;

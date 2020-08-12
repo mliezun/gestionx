@@ -36,6 +36,7 @@ class Remitos extends Model
     {
         return [
             'IdProveedor' => 'Proveedor',
+            'FechaFacturado' => 'Fecha de Facturación',
             'IdCanal' => 'Canal'
         ];
     }
@@ -43,9 +44,10 @@ class Remitos extends Model
     public function rules()
     {
         return [
-            [['IdEmpresa', 'IdProveedor', 'IdCanal','NroRemito'],
+            [['NroRemito', 'NroFactura'], 'integer', 'min' => 0],
+            [['IdEmpresa', 'IdProveedor', 'IdCanal'],
                 'required', 'on' => self::_ALTA],
-            [['IdRemito', 'NroRemito'],
+            [['IdRemito'],
                 'required', 'on' => self::_MODIFICAR],
             [$this->attributes(), 'safe']
         ];
