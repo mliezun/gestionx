@@ -20,6 +20,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="row">
     <div class="col-sm-12">
+        <?php if (PermisosHelper::tienePermiso('AltaRemito')) : ?>
+            <div style="float: right;">
+                <button type="button" class="btn btn-default"
+                        data-modal="<?= Url::to(['/rectificaciones/correccion', 'id' => $puntoventa['IdPuntoVenta']]) ?>"
+                        data-hint="Corrección de existencias">
+                    Corrección de existencias
+                </button>
+            </div>
+        <?php endif; ?>
         <div class="buscar--form">
             <?php $form = ActiveForm::begin(['layout' => 'inline',]); ?>
 
@@ -47,10 +56,10 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?php if (PermisosHelper::tienePermiso('AltaRectificacion')) : ?>
             <div class="alta--button">
-                <button type="button" class="btn btn-primary"
+                <button type="button" class="btn btn-secondary"
                         data-modal="<?= Url::to(['/rectificaciones/alta', 'id' => $puntoventa['IdPuntoVenta']]) ?>"
-                        data-hint="Nueva Rectificación">
-                    Nueva Rectificación
+                        data-hint="Enviar a Punto de Venta">
+                    Enviar a Punto de Venta
                 </button>
             </div>
         <?php endif; ?>

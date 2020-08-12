@@ -16,7 +16,7 @@ use yii\web\JsExpression;
     <div class="modal-content">
 
         <div class="modal-header">
-            <h5 class="modal-title"><?= ('Nueva Rectificación') ?></h5>
+            <h5 class="modal-title"><?= Html::encode($titulo) ?></h5>
             <button type="button" class="close" onclick="Main.modalClose()">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -46,6 +46,7 @@ use yii\web\JsExpression;
                 ],
             ]) ?>
 
+            <?php if ($model->getScenario() == RectificacionesPV::_ALTA): ?>
             <?= $form->field($model, 'IdPuntoVentaDestino')->widget(Select2::classname(), [
                 'data' => ArrayHelper::map($puntosventa, 'IdPuntoVenta', 'PuntoVenta'),
                 'language' => 'es',
@@ -54,6 +55,7 @@ use yii\web\JsExpression;
                     'allowClear' => true
                 ],
             ]) ?>
+            <?php endif; ?>
 
             <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
                 <?= $form->field($model, 'IdCanal')->widget(Select2::classname(), [

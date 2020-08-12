@@ -25,6 +25,7 @@ class RectificacionesPV extends Model
     public $Canal;
     
     const _ALTA = 'alta';
+    const _CORRECCION = 'correccion';
     
     const ESTADOS = [
         'P' => 'Pendiente',
@@ -36,8 +37,8 @@ class RectificacionesPV extends Model
     public function rules()
     {
         return [
-            [['IdArticulo','Cantidad'],
-                'required', 'on' => self::_ALTA],
+            [['IdArticulo', 'IdPuntoVentaDestino', 'Cantidad'], 'required', 'on' => self::_ALTA],
+            [['IdArticulo', 'Cantidad'], 'required', 'on' => self::_CORRECCION],
             [$this->attributes(), 'safe']
         ];
     }
