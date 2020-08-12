@@ -28,9 +28,9 @@ BEGIN
                         WHEN 'C' THEN 'Cotizacion'
                         ELSE 'Otro'
                     END 'Tipo de Venta',
-                    v.Monto 'Monto Total',
-                    COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V'), 0) 'Monto Pagado',
-                    COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V')), v.Monto) Deuda,
+                    v.Monto '$ Monto Total',
+                    COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V'), 0) '$ Monto Pagado',
+                    COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V')), v.Monto) '$ Deuda',
                     JSON_OBJECT(
                         "GroupBy", "MedioPago",
                         "ReduceBy", "Monto",
@@ -38,7 +38,7 @@ BEGIN
                         "Values", (
                             SELECT 
                                 JSON_ARRAYAGG(JSON_OBJECT(
-                                    'MedioPago', mp.MedioPago,
+                                    'MedioPago', CONCAT('$ ', mp.MedioPago),
                                     'Monto', p.Monto
                                 ))
 
@@ -50,7 +50,7 @@ BEGIN
                     null PagosJsonGroupKeys, -- Se agrega junto con los totales
                     SUM(lv.Cantidad) `Cantidad de Articulos`,
                     GROUP_CONCAT(CONCAT(lv.Cantidad, ' x ', a.Articulo)) Articulos,
-                    GROUP_CONCAT(pr.Proveedor) Proveedores, pv.PuntoVenta,
+                    GROUP_CONCAT(pr.Proveedor) Proveedores, pv.PuntoVenta 'Punto de Venta',
                     CONCAT(u.Nombres, ' ', u.Apellidos) Vendedor,
                     IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente
         FROM        Ventas v
@@ -73,7 +73,7 @@ BEGIN
         ORDER BY    v.IdVenta desc;
 
 
-    SELECT  COUNT(*), SUM(`Monto Total`), SUM(`Monto Pagado`), SUM(Deuda),
+    SELECT  COUNT(*), SUM(`$ Monto Total`), SUM(`$ Monto Pagado`), SUM(`$ Deuda`),
             JSON_ARRAYAGG(IdVenta), SUM(`Cantidad de Articulos`)
     INTO    pCountVentas, pTotal, pPagado, pDeuda, pVentas, pCantidadArticulos
     FROM    tmp_inf_ventas;
@@ -88,7 +88,7 @@ BEGIN
                 "Values", (
                     SELECT
                         JSON_ARRAYAGG(JSON_OBJECT(
-                            'MedioPago', mp.MedioPago,
+                            'MedioPago', CONCAT('$ ', mp.MedioPago),
                             'Monto', p.Monto
                         ))
                     FROM Pagos p
@@ -97,7 +97,7 @@ BEGIN
                 )
             ),
             (
-                SELECT JSON_ARRAYAGG(MedioPago) FROM MediosPago WHERE Estado = "A"
+                SELECT JSON_ARRAYAGG(CONCAT('$ ', MedioPago)) FROM MediosPago WHERE Estado = "A"
             ), pCantidadArticulos, NULL, NULL, NULL, NULL, NULL
     ORDER BY Fecha desc;
 

@@ -3,9 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
-use common\components\NinjaArrayHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\NinjaArrayHelper;
+use common\helpers\FormatoHelper;
 
 \backend\assets\InformesAsset::register($this);
 $this->registerJs('Informes.init()');
@@ -162,7 +163,6 @@ $reportes = buscar_hojas($menu);
                         <?php foreach ($tabla[0] as $titulo => $valor): ?>
                         <th>
                             <?php
-                            $patrones = [$reporte['Procedimiento'] . '.Columnas', 'columnas_informe'];
                             echo Html::encode($titulo)
                             ?>
                         </th>
@@ -175,16 +175,11 @@ $reportes = buscar_hojas($menu);
                         <?php foreach ($fila as $columna => $celda): ?>
                         <td>
                             <?php
-                                $patrones = [$reporte['Procedimiento'] . '.' . $columna];
-                                if (strpos($columna, '$') !== false) {
-                                    $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.$', '$']);
-                                } elseif (strpos($columna, '%') !== false) {
-                                    $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.%', '%']);
-                                } elseif (strpos($columna, '#') !== false) {
-                                    $patrones = array_merge($patrones, [$reporte['Procedimiento'] . '.#', '#']);
-                                }
+                                
                                 if (strpos($columna, 'Fecha') !== false) {
                                     echo isset($celda) ? FechaHelper::formatearDatetimeLocal($celda) : '';
+                                } elseif (substr($columna, 0, 1) === '$') {
+                                    echo FormatoHelper::formatearMonto($celda);
                                 } else {
                                     echo isset($celda) ? $celda : '';
                                 }
