@@ -2,8 +2,9 @@
 
 use common\models\Articulos;
 use common\models\GestorArticulos;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -95,10 +96,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
-                                        <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                        <td><?= Html::encode(FormatoHelper::formatearMonto($model['PrecioCosto'])) ?></td>
                                     <?php endif; ?>
                                     <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
-                                        <td><?= Html::encode($valor) ?></td>
+                                        <td><?= Html::encode(FormatoHelper::formatearMonto($valor)) ?></td>
                                     <?php endforeach; ?>
                                     <td>
                                     <?php foreach (json_decode($model['Existencias'], true) as $existencias): ?>

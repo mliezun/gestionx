@@ -1,8 +1,9 @@
 <?php
 
 use common\models\Proveedores;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -67,14 +68,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $estilo = '';
                                     if ($deuda > 0) {
                                         $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
-                                    } elseif($deuda < 0) {
+                                    } elseif ($deuda < 0) {
                                         $deuda = - $deuda . " a favor";
                                         $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
                                     } else {
                                         $estilo = ' style="font-weight: bold" ';
                                     }
                                     echo "<td $estilo>";
-                                    echo Html::encode($deuda);
+                                    echo Html::encode(FormatoHelper::formatearMonto($deuda));
                                     echo '</td>';
                                     ?>
                                     <td>

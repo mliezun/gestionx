@@ -3,8 +3,9 @@
 use common\models\Ventas;
 use common\models\PuntosVenta;
 use common\models\Proveedores;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -116,7 +117,7 @@ $proveedor = new Proveedores();
                                 <tr>
                                     <td><?= Html::encode($model['Cliente'] . ($model['ObservacionesCliente'] ? " [{$model['ObservacionesCliente']}]" : '')) ?></td>
                                     <td><?= Html::encode($model['Usuario']) ?></td>
-                                    <td><?= Html::encode($model['Monto']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($model['Monto'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['Tipo']]) ?></td>
                                     <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
@@ -174,7 +175,7 @@ $proveedor = new Proveedores();
                                                 <?php endif; ?>
                                                 <?php if ($model['Estado'] == 'A' || $model['Estado'] == 'P') :?>
                                                     <?php if (PermisosHelper::tienePermiso('AltaVenta')) : ?>
-                                                        <?php if ($model['EmailCliente'] == 'null' OR $model['EmailCliente'] == '' OR $model['EmailCliente'] == NULL) : ?>
+                                                        <?php if ($model['EmailCliente'] == 'null' or $model['EmailCliente'] == '' or $model['EmailCliente'] == null) : ?>
                                                             <button type="button" class="btn btn-default"
                                                                     data-modal="<?= Url::to(['/clientes/email', 'id' => $model['IdCliente']]) ?>"
                                                                     data-hint="Cargar Email">

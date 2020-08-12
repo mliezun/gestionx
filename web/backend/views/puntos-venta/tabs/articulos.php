@@ -1,7 +1,8 @@
 <?php
 
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use common\models\RectificacionesPV;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
@@ -160,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
                                     <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
-                                        <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                        <td><?= Html::encode(FormatoHelper::formatearMonto($model['PrecioCosto'])) ?></td>
                                     <?php endif; ?>
                                     <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
                                         <td><?= Html::encode($model['Canal']) ?></td>

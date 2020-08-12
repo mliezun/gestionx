@@ -1,8 +1,9 @@
 <?php
 
 use common\models\Proveedores;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
@@ -84,13 +85,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $estilo = '';
                                 if ($deuda > 0) {
                                     $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
-                                } elseif($deuda < 0) {
+                                } elseif ($deuda < 0) {
                                     $estilo = ' style="color: green; font-weight: bold; font-size: 20px" ';
                                 } else {
                                     $estilo = ' style="color: green; font-weight: bold" ';
                                 }
                                 echo "<td $estilo>";
-                                echo Html::encode($deuda);
+                                echo Html::encode(FormatoHelper::formatearMonto($deuda));
                                 echo '</td>';
                                 ?>
                             </tr>
@@ -122,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($pagos as $pago): ?>
                                 <tr>
                                     <td><?= Html::encode($pago['MedioPago']) ?></td>
-                                    <td><?= Html::encode($pago['Monto']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($pago['Monto'])) ?></td>
                                     <td>
                                         <ul>
                                         <?php if ($pago['MedioPago'] == 'Tarjeta') : ?>
@@ -141,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <li><?= Html::encode('Tipo de Tributo') ?>: <?= Html::encode($tributos[json_decode($pago['Datos'])->IdTipoTributo]) ?></li>
                                         <?php endif; ?>
                                         <?php if ($pago['MedioPago'] == 'Descuento') : ?>
-                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode( ($pago['Monto'] / $model['Monto']) * 100 ) ?></li>
+                                            <li><?= Html::encode('Descuento') ?>: % <?= Html::encode(($pago['Monto'] / $model['Monto']) * 100) ?></li>
                                         <?php endif; ?>
                                         </ul>
                                     </td>
@@ -214,7 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['Fecha'])) ?></td>
                                         <td><?= Html::encode($model['Motivo']) ?></td>
-                                        <td><?= Html::encode( - floatval($model['Monto']) ) ?></td>
+                                        <td><?= Html::encode(FormatoHelper::formatearMonto(floatval($model['Monto']))) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

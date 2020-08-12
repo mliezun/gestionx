@@ -2,8 +2,9 @@
 
 use common\models\PreciosArticulos;
 use common\models\Articulos;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -56,11 +57,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <td><?= Html::encode($model['Codigo']) ?></td>
                                     <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <td><?= Html::encode($model['PrecioCosto']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($model['PrecioCosto'])) ?></td>
                                     <td>
                                         <ul>
                                         <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
-                                            <li><?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?></li>
+                                            <li><?= Html::encode($nombre) ?>: <?= Html::encode(FormatoHelper::formatearMonto($valor)) ?></li>
                                         <?php endforeach; ?>
                                         </ul>
                                     </td>
@@ -91,7 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($precios as $precio): ?>
                                 <tr>
                                     <td><?= Html::encode($precio['Lista']) ?></td>
-                                    <td><?= Html::encode($precio['PrecioVenta']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($precio['PrecioVenta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($precio['FechaAlta'])) ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="...">

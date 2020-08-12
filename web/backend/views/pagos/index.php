@@ -1,8 +1,9 @@
 <?php
 
 use common\models\Pagos;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php foreach ($pagos as $pago): ?>
                                 <tr>
                                     <td><?= Html::encode($pago['MedioPago']) ?></td>
-                                    <td><?= Html::encode($pago['Monto']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($pago['Monto'])) ?></td>
                                     <td>
                                         <ul>
                                         <?php if ($pago['MedioPago'] == 'Tarjeta') : ?>
@@ -134,13 +135,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php if ($model['Estado'] != 'P') : ?>
         <div class="lineas--bottom">
             <div class="lineas--total">
-                Total de la Venta: <?= Html::encode($model['Monto']) ?>
+                Total de la Venta: <?= Html::encode(FormatoHelper::formatearMonto($model['Monto'])) ?>
             </div>
             <div class="lineas--total">
-                Restante: <?= Html::encode($model['Monto'] - $model['MontoPagado']) ?>
+                Restante: <?= Html::encode(FormatoHelper::formatearMonto($model['Monto'] - $model['MontoPagado'])) ?>
             </div>
             <div class="lineas--total">
-                Total de los Pagos: <?= Html::encode($model['MontoPagado']) ?>
+                Total de los Pagos: <?= Html::encode(FormatoHelper::formatearMonto($model['MontoPagado'])) ?>
             </div>
         </div>
         <?php else: ?>

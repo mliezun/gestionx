@@ -2,8 +2,9 @@
 
 use common\models\Clientes;
 use common\models\Ventas;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -96,8 +97,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAltaVenta'])) ?></td>
                                     <td><?= Html::encode(Ventas::TIPOS[$model['TipoVenta']]) ?></td>
                                     <td><?= Html::encode(Ventas::ESTADOS[$model['EstadoVenta']]) ?></td>
-                                    <td><?= Html::encode($model['Monto']) ?></td>
-                                    <td><?= Html::encode($model['MontoPagos']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($model['Monto'])) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($model['MontoPagos'])) ?></td>
                                     <?php
                                         $deuda = $model['Monto'] - $model['MontoPagos'];
                                         $estilo = '';
@@ -105,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $estilo = ' style="color: red; font-weight: bold; font-size: 20px" ';
                                         }
                                         echo "<td $estilo>";
-                                        echo Html::encode($deuda);
+                                        echo Html::encode(FormatoHelper::formatearMonto($deuda));
                                         echo '</td>';
                                     ?>
                                     <td><?= Html::encode($model['ObservacionesVenta']) ?></td>
