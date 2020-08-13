@@ -13,7 +13,7 @@ class FormatoHelper
     public static function formatearMonto($monto)
     {
         return number_format(
-            $monto,
+            floatval($monto),
             self::FORMATO_MONTO['decimals'],
             self::FORMATO_MONTO['dec_point'],
             self::FORMATO_MONTO['thousands_sep'],

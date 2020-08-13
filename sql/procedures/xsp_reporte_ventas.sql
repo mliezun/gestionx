@@ -28,6 +28,7 @@ BEGIN
                         WHEN 'C' THEN 'Cotizacion'
                         ELSE 'Otro'
                     END 'Tipo de Venta',
+                    SUM(lv.Cantidad) `Cantidad de Articulos`,
                     v.Monto '$ Monto Total',
                     COALESCE((SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V'), 0) '$ Monto Pagado',
                     COALESCE((v.Monto - (SELECT SUM(p.Monto) FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V')), v.Monto) '$ Deuda',
@@ -48,7 +49,6 @@ BEGIN
                         )
                     ) PagosJsonGroupValues,
                     null PagosJsonGroupKeys, -- Se agrega junto con los totales
-                    SUM(lv.Cantidad) `Cantidad de Articulos`,
                     GROUP_CONCAT(CONCAT(lv.Cantidad, ' x ', a.Articulo)) Articulos,
                     GROUP_CONCAT(pr.Proveedor) Proveedores, pv.PuntoVenta 'Punto de Venta',
                     CONCAT(u.Nombres, ' ', u.Apellidos) Vendedor,
@@ -80,7 +80,7 @@ BEGIN
 
     SELECT * FROM tmp_inf_ventas
     UNION ALL
-    SELECT  pCountVentas, NOW(), 'TOTALES', pTotal, pPagado, pDeuda,
+    SELECT  pCountVentas, NOW(), 'TOTALES', pCantidadArticulos, pTotal, pPagado, pDeuda,
             JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
@@ -98,7 +98,7 @@ BEGIN
             ),
             (
                 SELECT JSON_ARRAYAGG(CONCAT('$ ', MedioPago)) FROM MediosPago WHERE Estado = "A"
-            ), pCantidadArticulos, NULL, NULL, NULL, NULL, NULL
+            ), NULL, NULL, NULL, NULL, NULL
     ORDER BY Fecha desc;
 
     
