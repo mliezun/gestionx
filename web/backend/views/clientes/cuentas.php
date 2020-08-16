@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Datos</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
-                                <th>Deuda</th>
+                                <th>$ Deuda</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -215,7 +215,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr class="border-0">
                                     <th>Fecha</th>
                                     <th>Motivo</th>
-                                    <th>Monto</th>
+                                    <th style="text-align: center">$ Monto</th>
+                                    <th style="text-align: center">$ Deuda</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -223,7 +224,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['Fecha'])) ?></td>
                                         <td><?= Html::encode($model['Motivo']) ?></td>
-                                        <td><?= Html::encode( floatval($model['Monto']) ) ?></td>
+                                        <td style="text-align: center"><?= Html::encode( floatval($model['Monto']) ) ?></td>
+                                        <td style="text-align: center"><?= Html::encode( floatval($model['Deuda']) ) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

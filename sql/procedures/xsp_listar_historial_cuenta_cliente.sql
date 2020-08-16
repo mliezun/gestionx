@@ -14,12 +14,13 @@ SALIR: BEGIN
         SET pFechaInicio = pFechaAux;
     END IF;
 
-    SELECT      c.IdCliente, hcc.*
+    SELECT      c.IdCliente, hcc.*, SUM(hcc.Monto) OVER w AS Deuda
     FROM        Clientes c
     INNER JOIN  CuentasCorrientes cc ON cc.IdEntidad = c.IdCliente AND cc.Tipo = 'C'
     INNER JOIN  HistorialCuentasCorrientes hcc USING(IdCuentaCorriente)
     WHERE       c.IdCliente = pIdCliente
                 AND hcc.Fecha BETWEEN CONCAT(pFechaInicio, ' 00:00:00') AND CONCAT(pFechaFin, ' 23:59:59')
+    WINDOW w as (ORDER BY hcc.Fecha ASC)
     ORDER BY 	hcc.Fecha DESC;
 END$$
 

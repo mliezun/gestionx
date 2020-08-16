@@ -86,6 +86,16 @@ SALIR:BEGIN
 			LEAVE SALIR;
 		END IF;
 
+        -- Pagos las ventas pendientes del cliente
+		CALL xsp_pagar_ventas_cuenta_corriente(pIdUsuario, 
+			pIdCliente, pMontoPago, 'Pago Automatico', pFechaPago,
+			pIP, pUserAgent, pAplicacion, pMensaje);
+		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+			SELECT pMensaje Mensaje; 
+			ROLLBACK;
+			LEAVE SALIR;
+		END IF;
+
         SELECT 'OK' Mensaje;
 	COMMIT;
 END$$

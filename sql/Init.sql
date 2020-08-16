@@ -559,8 +559,9 @@ INSERT INTO MediosPago VALUES(5,'Cheque','A');
 INSERT INTO MediosPago VALUES(6,'Deposito','A');
 INSERT INTO MediosPago VALUES(7,'Retencion','A');
 INSERT INTO MediosPago VALUES(8,'Descuento','A');
-INSERT INTO MediosPago VALUES(8,'Nota de credito','B');
-INSERT INTO MediosPago VALUES(8,'Nota de debito','B');
+INSERT INTO MediosPago VALUES(9,'Nota de credito','B');
+INSERT INTO MediosPago VALUES(10,'Nota de debito','B');
+INSERT INTO MediosPago VALUES(11,'Debito de Cuenta Corriente','B');
 
 INSERT INTO TiposComprobante VALUES(1,'Factura A','A');
 INSERT INTO TiposComprobante VALUES(6,'Factura B','A');

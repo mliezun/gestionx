@@ -9,8 +9,11 @@ SALIR:BEGIN
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
     DECLARE pIdUsuario bigint;
+    DECLARE pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMonto decimal(12, 2);
+    DECLARE pMontoAFavor decimal(12, 2);
+    DECLARE pMontoPago decimal(12, 2);
     DECLARE pMensaje varchar(100);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -56,25 +59,48 @@ SALIR:BEGIN
                     Monto = 0
             WHERE   IdVenta = pIdVenta;
         ELSE
+            SET pIdCliente = (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta);
             SET pMonto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta);
-            -- Activa Venta
-            UPDATE  Ventas 
-            SET     Estado = 'A',
-                    Monto = pMonto
-            WHERE   IdVenta = pIdVenta;
+            SET pMontoAFavor = (SELECT IF(Monto < 0, - Monto, 0) FROM CuentasCorrientes WHERE IdEntidad = pIdCliente AND Tipo = 'C');
 
             -- Aumenta la deuda del Cliente
             CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-                (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-                'C',
-                pMonto,
-                'Nueva Venta',
-                NULL,
+                pIdCliente,'C', pMonto,
+                'Nueva Venta', NULL,
                 pIP, pUserAgent, pAplicacion, pMensaje);
             IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
                 SELECT pMensaje Mensaje; 
                 ROLLBACK;
                 LEAVE SALIR;
+            END IF;
+
+            IF pMontoAFavor > 0 THEN
+                SET pMontoPago = IF((pMontoAFavor - pMonto) < 0, pMontoAFavor, pMonto);
+
+                -- Inserto el pago
+                INSERT INTO Pagos VALUES (0, pIdVenta, 'V', 11, -- Medio de Pago Debito de Cuenta Corriente
+                pIdUsuario, NOW(), NULL,
+                NOW(), NULL, pMontoPago, 'Pago Automatico',
+                NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+                -- Audito el pago
+                INSERT INTO aud_Pagos
+                SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
+                Pagos.* FROM Pagos WHERE IdPago = LAST_INSERT_ID();
+            END IF;
+
+            IF pMontoPago = pMonto THEN
+                -- Paga Venta
+                UPDATE  Ventas 
+                SET     Estado = 'P',
+                        Monto = pMonto
+                WHERE   IdVenta = pIdVenta;
+            ELSE
+                -- Activa Venta
+                UPDATE  Ventas 
+                SET     Estado = 'A',
+                        Monto = pMonto
+                WHERE   IdVenta = pIdVenta;
             END IF;
         END IF;
 

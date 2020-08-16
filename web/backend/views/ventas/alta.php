@@ -74,7 +74,7 @@ $this->registerJs('
 
             <?= $form->field($model, 'IdTipoComprobanteAfip')->dropDownList(ArrayHelper::map($comprobantes, 'IdTipoComprobanteAfip', 'TipoComprobanteAfip'), ['prompt' => 'Tipo de Comprobante']) ?>
 
-            <?= $form->field($model, 'Observaciones') ?>
+            <?= $form->field($model, 'Observaciones')->textarea() ?>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" onclick="Main.modalClose()">Cerrar</button>

@@ -23,7 +23,7 @@ SALIR: BEGIN
     WHERE       p.Codigo = pIdCliente
                 AND (IdMedioPago = pIdMedioPago OR pIdMedioPago = 0)
                 AND p.FechaAlta BETWEEN CONCAT(pFechaInicio, ' 00:00:00') AND CONCAT(pFechaFin, ' 23:59:59')
-    ORDER BY    p.FechaAlta;
+    ORDER BY    p.FechaAlta DESC;
 END$$
 
 DELIMITER ;
