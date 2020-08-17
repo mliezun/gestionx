@@ -349,7 +349,7 @@ class Ventas extends Model implements IOperacionesPago
     public function PagarMercaderia(Pagos $pago)
     {
         $sql = "call xsp_pagar_venta_mercaderia( :token, :idventa, :idmediopago,"
-        .":fechadebe, :fechapago, :IdRemito, :observaciones,"
+        .":fechadebe, :fechapago, :IdArticulo, :monto, :cantidad, :observaciones,"
         .":IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
@@ -361,7 +361,9 @@ class Ventas extends Model implements IOperacionesPago
             ':app' => Yii::$app->id,
             ':idventa' => $this->IdVenta,
             ':idmediopago' => $pago->IdMedioPago,
-            ':IdRemito' => $pago->IdRemito,
+            ':IdArticulo' => $pago->IdArticulo,
+            ':monto' => $pago->Monto,
+            ':cantidad' => $pago->Cantidad,
             ':fechadebe' => $pago->FechaDebe,
             ':fechapago' => $pago->FechaPago,
             ':observaciones' => $pago->Observaciones,

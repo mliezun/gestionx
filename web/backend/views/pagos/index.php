@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Pagos;
+use common\models\Ingresos;
 use common\helpers\PermisosHelper;
 use common\helpers\FechaHelper;
 use common\helpers\FormatoHelper;
@@ -70,7 +71,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <li><?= Html::encode('CCV') ?>: <?= Html::encode($pago['CCV']) ?></li>
                                         <?php endif; ?>
                                         <?php if ($pago['MedioPago'] == 'Mercaderia') : ?>
-                                            <li><?= Html::encode('Nro de Remito') ?>: <?= Html::encode($pago['NroRemito']) ?></li>
+                                            <?php
+                                                $lineas = [];
+                                                $ingreso = new Ingresos;
+                                                $ingreso->setAttributes(json_decode($pago['Datos'], true));
+                                                $lineas = $ingreso->DameLineas();
+                                            ?>
+                                            <?php foreach ($lineas as $linea): ?>
+                                                <li><?= Html::encode('Articulo') ?>: <?= Html::encode($linea['Articulo']) ?></li>
+                                                <li><?= Html::encode('Cantidad') ?>: <?= Html::encode($linea['Cantidad']) ?></li>
+                                                <li><?= Html::encode('Precio') ?>: <?= Html::encode(FormatoHelper::formatearMonto($linea['Precio'])) ?></li>
+                                            <?php endforeach; ?>
                                         <?php endif; ?>
                                         <?php if ($pago['MedioPago'] == 'Cheque') : ?>
                                             <li><?= Html::encode('Nro de Cheque') ?>: <?= Html::encode($pago['NroCheque']) ?></li>

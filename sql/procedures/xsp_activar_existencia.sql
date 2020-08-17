@@ -15,6 +15,11 @@ SALIR: BEGIN
 		SET pMensaje = 'Error en la transacción interna. Contáctese con el administrador.';
 	END;
 
+    IF pIdIngreso IS NULL OR pIdIngreso = 0 THEN
+        SET pMensaje = 'Debe indicar los artículos a ingresar.';
+        LEAVE SALIR;
+    END IF;
+
     IF NOT EXISTS (SELECT IdIngreso FROM Ingresos WHERE IdIngreso = pIdIngreso AND Estado = 'E') THEN
         SET pMensaje = 'No se puede activar, no está en modo edición.';
         LEAVE SALIR;
@@ -32,10 +37,11 @@ SALIR: BEGIN
     IF (SELECT IdRemito FROM Ingresos WHERE IdIngreso = pIdIngreso) IS NULL THEN
         -- Es un ingreso de Cliente
         SET pIdCanal = (
-            SELECT v.IdCanal FROM Ingresos i
-            INNER JOIN Clientes c ON i.IdCliente = c.IdCliente
-            INNER JOIN Ventas v ON v.IdCliente = c.IdCliente
-            WHERE i.IdIngreso = pIdIngreso
+            SELECT      v.IdCanal
+            FROM        Ventas v
+            INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
+            INNER JOIN  Ingresos i ON p.IdMedioPago = 2 AND p.Datos->>'$.IdIngreso' = i.IdIngreso
+            WHERE       i.IdIngreso = pIdIngreso
         );
     ELSE
         -- Es un ingreso de Remito
