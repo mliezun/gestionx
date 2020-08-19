@@ -184,11 +184,13 @@ INSERT INTO Permisos VALUES(46,1,'GestionRemitos', 'Gestión de Remitos','A',NUL
 	INSERT INTO Permisos VALUES(49,46, 'BuscarRemitos', 'Buscar remitos', 'A', NULL, '3', 'xsp_buscar_remitos', 2);
 	INSERT INTO Permisos VALUES(50,46, 'ActivarRemito', 'Activar remitos', 'A', NULL, '4', 'xsp_activar_remito', 2);
 	INSERT INTO Permisos VALUES(51,46, 'DarBajaRemito', 'Dar de baja remitos', 'A', NULL, '5', 'xsp_darbaja_remito', 2);
+	INSERT INTO Permisos VALUES(174,46, 'IngresarRemito', 'Ingresa remitos', 'A', NULL, '6', 'xsp_ingresar_remito', 2);
 
 
 INSERT INTO Permisos VALUES(52,1,'GestionExistencias', 'Gestión de Existencias','A',NULL,11,NULL, 2);
 	INSERT INTO Permisos VALUES(53,52,'AltaLineaExistencia', 'Dar de alta líneas de existencias','A',NULL,'1','xsp_alta_linea_existencia', 2);
 	INSERT INTO Permisos VALUES(54,52,'BorrarLineaExistencia', 'Quitar líneas de existencias','A',NULL,'2','xsp_borrar_linea_existencia', 2);
+	INSERT INTO Permisos VALUES(175,52,'ModificarLineaExistencia', 'Modificar líneas de existencias','A',NULL,'3','xsp_modificar_linea_existencia', 2);
 
 INSERT INTO Permisos VALUES(59,1,'GestionTiposGravamenes', 'Gestión de Tipos de Gravamenes','A',NULL,12,NULL, 2);
 	INSERT INTO Permisos VALUES(60,59, 'AltaTipoGravamen', 'Dar de alta tipos de gravamenes', 'A', NULL, '1', 'xsp_alta_tipogravamen', 2);
@@ -293,7 +295,7 @@ INSERT INTO Permisos VALUES(146,1,'GestionSuscripciones', 'Gestión de Suscripci
 	INSERT INTO Permisos VALUES(148,146, 'DarBajaSuscripcion', 'Dar de baja una suscripción', 'A', NULL, '2', 'xsp_inicio_darbaja_suscripcion', 1);
 	INSERT INTO Permisos VALUES(149,146, 'DarBajaPlan', 'Dar de baja un plan', 'A', NULL, '3', 'xsp_baja_plan', 0);
 
-	-- Ú 173
+	-- Ú 175
 		
 -- RolesGenericos
 INSERT INTO RolesGenericos VALUES
@@ -470,6 +472,8 @@ INSERT INTO PermisosRolGenerico VALUES(170, 1);
 INSERT INTO PermisosRolGenerico VALUES(171, 1);
 INSERT INTO PermisosRolGenerico VALUES(172, 1);
 INSERT INTO PermisosRolGenerico VALUES(173, 1);
+INSERT INTO PermisosRolGenerico VALUES(174, 1);
+INSERT INTO PermisosRolGenerico VALUES(175, 1);
 -- Permisos de Vendedor
 INSERT INTO PermisosRolGenerico VALUES(46, 2);
 INSERT INTO PermisosRolGenerico VALUES(47, 2);
@@ -538,6 +542,8 @@ INSERT INTO PermisosRolGenerico VALUES(136, 2);
 INSERT INTO PermisosRolGenerico VALUES(145, 2);
 INSERT INTO PermisosRolGenerico VALUES(150, 2);
 INSERT INTO PermisosRolGenerico VALUES(151, 2);
+INSERT INTO PermisosRolGenerico VALUES(174, 2);
+INSERT INTO PermisosRolGenerico VALUES(175, 2);
 
 -- Genero datos de empresa inicial
 call xsp_generar_datos_empresa(1, @mensaje);

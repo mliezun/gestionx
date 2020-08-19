@@ -74,6 +74,33 @@ class IngresosController extends BaseController
         return ['error' => null];
     }
 
+    public function actionEditarLinea($id)
+    {
+        PermisosHelper::verificarPermiso('ModificarLineaExistencia');
+        Yii::$app->response->format = 'json';
+
+        $ingreso = new Ingresos();
+
+        $ingreso->IdIngreso = $id;
+
+        $linea = new LineasForm();
+
+        if ($linea->load(Yii::$app->request->post()) && $linea->validate(null, false)) {
+            $resultado = $ingreso->EditarLinea($linea);
+        } else {
+            $resultado = implode(' ', $linea->getErrorSummary(false));
+            if (trim($resultado) == '') {
+                $resultado = "Los valores indicados no son correctos.";
+            }
+        }
+
+        if (substr($resultado, 0, 2) != 'OK') {
+            return ['error' => $resultado];
+        }
+
+        return ['error' => null];
+    }
+
     public function actionQuitarLinea($id)
     {
         PermisosHelper::verificarPermiso('BorrarLineaExistencia');

@@ -28,6 +28,7 @@ class Remitos extends Model
     const ESTADOS = [
         'A' => 'Activo',
         'E' => 'Edicion',
+        'I' => 'Ingresado',
         'B' => 'Baja',
         'T' => 'Todos'
     ];
@@ -88,6 +89,29 @@ class Remitos extends Model
             ':app' => Yii::$app->id,
             ':idremito' => $this->IdRemito,
             ':observaciones' => $this->Observaciones,
+        ]);
+
+        return $query->queryScalar();
+    }
+
+    /**
+     * Permite cambiar el estado del Remito a Ingresado siempre y cuando el estado actual sea Edicion.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_ingresar_remito
+     */
+    public function Ingresar()
+    {
+        $sql = "call xsp_ingresar_remito( :token, :idremito, :observaciones , :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':idremito' => $this->IdRemito,
+            ':observaciones' => $this->Observaciones,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
         ]);
 
         return $query->queryScalar();

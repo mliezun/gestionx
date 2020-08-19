@@ -106,6 +106,24 @@ class RemitosController extends BaseController
         }
     }
 
+    public function actionIngresar($id)
+    {
+        PermisosHelper::verificarPermiso('IngresarRemito');
+
+        Yii::$app->response->format = 'json';
+        
+        $remito = new Remitos();
+        $remito->IdRemito = $id;
+
+        $resultado = $remito->Ingresar();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
     public function actionDarBaja($id)
     {
         PermisosHelper::verificarPermiso('DarBajaRemito');

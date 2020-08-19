@@ -115,7 +115,7 @@ use yii\widgets\LinkPager;
                                                     <i class="fas fa-clipboard-list"></i>
                                                 </a>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E') :?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I' ) :?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
@@ -123,9 +123,18 @@ use yii\widgets\LinkPager;
                                                         <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                     </button>
                                                 <?php endif; ?>
+                                                <?php if ($model['Estado'] == 'E' and PermisosHelper::tienePermiso('IngresarRemito')) : ?>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea cargas las líneas el remito?<br/>
+                                                            Solo se ingresara en stock las líneas cargadas."
+                                                            data-ajax="<?= Url::to(['remitos/ingresar', 'id' => $model['IdRemito']]) ?>"
+                                                            data-hint="Cargar líneas">
+                                                        <i class="fas fa-level-down-alt" style="color: DarkOrange"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'A') : ?>
-                                                <?php if ($model['Estado'] == 'E') :?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'A' or $model['Estado'] == 'I') : ?>
+                                                <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarRemito')): ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-mensaje="¿Desea confirmar el remito?"
