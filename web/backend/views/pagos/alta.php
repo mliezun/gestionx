@@ -5,6 +5,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
+use yii\web\JsExpression;
 use kartik\select2\Select2;
 use kartik\money\MaskMoney;
 use backend\assets\PagosAsset;
@@ -54,13 +55,21 @@ $this->registerJs("Pagos.init();");
 
             <?= $form->field($model, 'CCV') ?>
 
-            <?= $form->field($model, 'IdRemito')->widget(Select2::classname(), [
-                'data' => ArrayHelper::map($remitos, 'IdRemito', 'NroRemito'),
+            <?= $form->field($model, 'IdArticulo')->widget(Select2::classname(), [
                 'language' => 'es',
-                'options' => ['placeholder' => 'Nro de Remito'],
+                'options' => ['placeholder' => 'Articulo'],
                 'pluginOptions' => [
-                    'allowClear' => true
-                ]
+                    'allowClear' => true,
+                    'minimumInputLength' => 3,
+                    'ajax' => [
+                        'url' => '/articulos/autocompletar',
+                        'dataType' => 'json',
+                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                    ],
+                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                    'templateResult' => new JsExpression('function(res) { return res.text; }'),
+                    'templateSelection' => new JsExpression('function (res) { return res.text; }'),
+                ],
             ]) ?>
 
             <?= $form->field($model, 'IdCheque')->widget(Select2::classname(), [
@@ -72,7 +81,7 @@ $this->registerJs("Pagos.init();");
                 ]
             ]) ?>
 
-            <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname()) 
+            <?php // $form->field($model, 'Monto')->widget(MaskMoney::classname())
             ?>
 
             <?= $form->field($model, 'Descuento', [
@@ -80,6 +89,8 @@ $this->registerJs("Pagos.init();");
             ]) ?>
 
             <?= $form->field($model, 'Monto') ?>
+
+            <?= $form->field($model, 'Cantidad') ?>
 
             <?= $form->field($model, 'IdTipoTributo')->dropDownList(ArrayHelper::map($tributos, 'IdTipoTributo', 'TipoTributo')) ?>
 

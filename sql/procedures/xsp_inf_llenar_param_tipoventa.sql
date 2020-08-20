@@ -17,8 +17,11 @@ BEGIN
 	SELECT 'B' Id, 'Préstamo' Nombre
     UNION
 	SELECT 'G' Id, 'Garantía' Nombre
+	UNION
+	SELECT 'Z' Id, 'Todas las ventas' Nombre
     UNION
-	SELECT 'T' Id, 'Todas' Nombre;
+	SELECT 'T' Id, 'Todas' Nombre
+	;
     
     SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END$$

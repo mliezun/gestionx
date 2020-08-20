@@ -5,7 +5,8 @@ use common\models\HistorialPrecios;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use common\components\FechaHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 
 /* @var $this View */
@@ -39,7 +40,7 @@ use yii\web\View;
                             <tbody>
                                 <?php foreach ($models as $k=>$model): ?>
                                     <tr>
-                                        <td><?= Html::encode($model['Precio']) ?></td>
+                                        <td><?= Html::encode(FormatoHelper::formatearMonto($model['Precio'])) ?></td>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                         <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaFin'])) ?></td>
                                         <td>

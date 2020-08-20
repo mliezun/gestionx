@@ -10,7 +10,7 @@ SALIR:BEGIN
     */
     DECLARE pIdUsuario bigint;
     DECLARE pIdCheque bigint;
-    DECLARE pIdRemito bigint;
+    DECLARE pIdRemito, pIdIngreso bigint;
     DECLARE pIdVenta bigint;
     DECLARE pMontoPago decimal(12, 2);
 	DECLARE pUsuario varchar(30);
@@ -47,20 +47,15 @@ SALIR:BEGIN
             Cheques.* FROM Cheques WHERE IdCheque = pIdCheque;
         END IF;
 
-        IF EXISTS(SELECT IdRemito FROM Pagos WHERE IdRemito IS NOT NULL AND IdPago = pIdPago) THEN
-            SET pIdRemito = (SELECT IdRemito FROM Pagos WHERE IdPago = pIdPago);
-            -- Audito Antes el Remito
-            INSERT INTO aud_Remitos
-            SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'BORRA_PAGO', 'A',
-            Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
-            -- Modifico Remito
-            UPDATE  Remitos 
-            SET	    IdCliente=NULL
-            WHERE   IdRemito=pIdRemito;
-            -- Audito Despues el Remito
-            INSERT INTO aud_Remitos
-            SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'BORRA_PAGO', 'D',
-            Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
+        -- Mercaderia
+        IF EXISTS(SELECT 1 FROM Pagos WHERE IdMedioPago = 2 AND IdPago = pIdPago) THEN
+            SET pIdIngreso = (SELECT Datos->>'$.IdIngreso' FROM Pagos WHERE IdPago = pIdPago);
+            CALL xsp_darbaja_existencia(pIdUsuario, pIdIngreso, pIP, pUserAgent, pAplicacion, pMensaje);
+            IF pMensaje IS NULL OR pMensaje != 'OK' THEN
+                SELECT COALESCE(pMensaje, 'Error en la transacción interna. Contáctese con el administrador.') Mensaje;
+                ROLLBACK;
+                LEAVE SALIR;
+            END IF;
         END IF;
 
         -- -- Audito Comprobante

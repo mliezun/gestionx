@@ -67,6 +67,9 @@ var TabsPV = {
               _this.setContent(data);
             });
           } else {
+            if (this.query && this.query.tab !== Nombre) {
+              this.query.page = 1;
+            }
             this.setQuery("tab", Nombre);
           }
         },
@@ -85,6 +88,8 @@ var TabsPV = {
             e.stopImmediatePropagation();
             return false;
           });
+          // inicializar tooltips y dialogos de confirmacion
+          Main.initUI();
         },
         submitBuscar: function (form) {
           var _this = this;

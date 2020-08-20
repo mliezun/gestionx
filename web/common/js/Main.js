@@ -103,14 +103,20 @@ var Main = {
       }
     });
   },
-  initAjax: function () {
+  initUI: function () {
     var _this = Main;
+
     $(".tooltip").remove();
 
     $(_this.selectores.tooltip).tooltip(_this.opciones.tooltip);
 
     // Mensaje pidiendo confirmación en las acciones con data-mensaje
     $(_this.selectores.confirm).confirm(_this.opciones.confirm);
+  },
+  initAjax: function () {
+    var _this = Main;
+
+    _this.initUI();
 
     // Configuración por defecto de Select2
     if ($.fn.select2) $.fn.select2.defaults.set("selectOnClose", true);

@@ -17,6 +17,7 @@ class Pagos extends Model
     public $FechaPago;
     public $FechaAnula;
     public $Monto;
+    public $Cantidad;
     public $Observaciones;
     public $IdRemito;
     public $IdCheque;
@@ -25,6 +26,7 @@ class Pagos extends Model
     public $AnioVencimiento;
     public $CCV;
     public $Datos;
+    public $IdArticulo;
 
     //Derivados
     public $IdTipoComprobante;
@@ -76,7 +78,7 @@ class Pagos extends Model
     public function attributeLabels()
     {
         return [
-            'IdRemito' => 'Remito',
+            'IdArticulo' => 'Artículo',
             'NroRemito' => 'Nro de Remito',
             'NroCheque' => 'Nro de Cheque',
             'IdCheque' => 'Cheque',
@@ -97,7 +99,7 @@ class Pagos extends Model
             'required', 'on' => self::_ALTA_TARJETA],
             [['Codigo', 'Tipo','IdMedioPago','Monto'],
             'required', 'on' => self::_ALTA_EFECTIVO],
-            [['Codigo', 'Tipo','IdMedioPago','IdRemito','Monto'],
+            [['Codigo', 'Tipo','IdMedioPago','IdArticulo','Monto'],
             'required', 'on' => self::_ALTA_MERCADERIA],
             [['Codigo', 'Tipo','IdMedioPago','IdCheque'],
             'required', 'on' => self::_ALTA_CHEQUE],
@@ -109,18 +111,19 @@ class Pagos extends Model
             'required', 'on' => self::_MODIFICAR_TARJETA],
             [['IdPago','Codigo', 'Tipo','IdMedioPago','Monto'],
             'required', 'on' => self::_MODIFICAR_EFECTIVO],
-            [['IdPago','Codigo', 'Tipo','IdMedioPago','IdRemito','Monto'],
+            [['IdPago','Codigo', 'Tipo','IdMedioPago','IdArticulo','Monto','Cantidad'],
             'required', 'on' => self::_MODIFICAR_MERCADERIA],
             [['IdPago','Codigo', 'Tipo','IdMedioPago','IdCheque'],
             'required', 'on' => self::_MODIFICAR_CHEQUE],
             [['IdPago','Codigo', 'Tipo','IdMedioPago','IdTipoTributo','Monto'],
             'required', 'on' => self::_MODIFICAR_RETENCION],
             ['Monto', 'required', 'when' => function ($model) {
-                return $model->IdMedioPago == 1 or $model->IdMedioPago == 6 or $model->IdMedioPago == 3;
+                return $model->IdMedioPago == 1 or $model->IdMedioPago == 6 or $model->IdMedioPago == 3 or $model->IdMedioPago == 2;
             }, 'whenClient' => "function (attribute, value) { 
                 return parseInt($('ventas-idmediopago').val()) == 1 
                 || parseInt($('ventas-idmediopago').val()) == 6
-                || parseInt($('ventas-idmediopago').val()) == 3;
+                || parseInt($('ventas-idmediopago').val()) == 3
+                || parseInt($('ventas-idmediopago').val()) == 2;
             }"],
             [$this->attributes(), 'safe']
         ];

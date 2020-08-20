@@ -2,8 +2,9 @@
 
 use common\models\Cheques;
 use common\models\GestorCheques;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -95,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= Html::encode($model['Banco']) ?></td>
                                     <td><?= Html::encode($model['Destino']) ?></td>
                                     <td><?= Html::encode($model['NroCheque']) ?></td>
-                                    <td><?= Html::encode($model['Importe']) ?></td>
+                                    <td><?= Html::encode(FormatoHelper::formatearMonto($model['Importe'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
                                     <td><?= Html::encode(FechaHelper::formatearDateLocal($model['FechaVencimiento'])) ?></td>
                                     <td><?= Html::encode(Cheques::ESTADOS[$model['Estado']]) ?></td>

@@ -1,8 +1,19 @@
 DROP PROCEDURE IF EXISTS `xsp_pagar_venta_mercaderia`;
 DELIMITER $$
-CREATE PROCEDURE `xsp_pagar_venta_mercaderia`(pToken varchar(500), pIdVenta bigint, pIdMedioPago smallint,
-pFechaDebe datetime, pFechaPago datetime, pIdRemito bigint, pObservacionesPago text,
-pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50))
+CREATE PROCEDURE `xsp_pagar_venta_mercaderia`(
+    pToken varchar(500),
+    pIdVenta bigint,
+    pIdMedioPago smallint,
+    pFechaDebe datetime,
+    pFechaPago datetime,
+    pIdArticulo bigint,
+    pMontoPago decimal(12, 2),
+    pCantidad decimal(12, 2),
+    pObservacionesPago text,
+    pIP varchar(40),
+    pUserAgent varchar(255),
+    pAplicacion varchar(50)
+)
 SALIR:BEGIN
 	/*
     * Permite dar de alta un nuevo pago de una venta, utilizando mercaderia asosiada a un Remito.
@@ -10,12 +21,9 @@ SALIR:BEGIN
     * Si con este nuevo pago se termina de pagar la venta, cambiar el estado de la venta a Pagado.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
-    DECLARE pIdPago bigint;
-    DECLARE pIdCliente bigint;
+	DECLARE pIdUsuario, pIdIngreso, pIdPago, pIdCliente, pIdPuntoVenta, pIdEmpresa bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
-    DECLARE pMontoPago decimal(12,2);
     DECLARE pMensaje text;
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -34,6 +42,14 @@ SALIR:BEGIN
         SELECT 'Debe indicar la venta.' Mensaje;
         LEAVE SALIR;
 	END IF;
+    IF (pMontoPago IS NULL OR pMontoPago <= 0) THEN
+        SELECT 'El monto debe ser mayor a 0.' Mensaje;
+        LEAVE SALIR;
+	END IF;
+    IF (pCantidad IS NULL OR pCantidad <= 0) THEN
+        SELECT 'La cantidad debe ser mayor a 0.' Mensaje;
+        LEAVE SALIR;
+	END IF;
     -- IF (pIdTipoComprobante IS NULL OR pIdTipoComprobante = 0) THEN
     --     SELECT 'Debe indicar el tipo de comprobante.' Mensaje;
     --     LEAVE SALIR;
@@ -42,8 +58,8 @@ SALIR:BEGIN
         SELECT 'Debe indicar la medio de pago.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF (pIdRemito IS NULL OR pIdRemito = 0) THEN
-        SELECT 'Debe ingresar el remito.' Mensaje;
+    IF (pIdArticulo IS NULL OR pIdArticulo = 0) THEN
+        SELECT 'Debe ingresar el artículo.' Mensaje;
         LEAVE SALIR;
 	END IF;
     -- Control de Parametros incorrectos
@@ -59,20 +75,13 @@ SALIR:BEGIN
 		SELECT 'El medio de pago no se encuentra activo.' Mensaje;
         LEAVE SALIR;
 	END IF;
-    IF NOT EXISTS(SELECT Estado FROM Remitos WHERE IdRemito = pIdRemito AND Estado = 'A') THEN
-        SELECT 'El remito no existe, o no se encuentra activo.' Mensaje;
-        LEAVE SALIR;
-    END IF;
-    IF NOT EXISTS(SELECT IdCliente FROM Remitos WHERE IdRemito = pIdRemito AND IdCliente IS NULL) THEN
-        SELECT 'El remito ya esta utilizado en otro pago.' Mensaje;
+    IF NOT EXISTS(SELECT 1 FROM Articulos WHERE IdArticulo = pIdArticulo AND Estado = 'A') THEN
+        SELECT 'El artículo no existe, o no se encuentra activo.' Mensaje;
         LEAVE SALIR;
     END IF;
     IF (pFechaPago IS NULL) THEN
         SET pFechaPago = NOW();
 	END IF;
-
-    SET pMontoPago = (SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
-        INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito);
 
     IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V')
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
@@ -87,6 +96,10 @@ SALIR:BEGIN
     --     SELECT 'No se puede activar, se debe ingresar la maxima fecha de deuda.' Mensaje;
     --     LEAVE SALIR;
     -- END IF;
+
+    -- Obtengo datos necesarios de la db
+    SELECT IdPuntoVenta, IdCliente INTO pIdPuntoVenta, pIdCliente FROM Ventas WHERE IdVenta = pIdVenta;
+    SELECT IdEmpresa INTO pIdEmpresa FROM Usuarios WHERE IdUsuario = pIdUsuario;
 
 
     START TRANSACTION;
@@ -109,31 +122,42 @@ SALIR:BEGIN
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGA', 'D',
             Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
         END IF;
-        SET pIdCliente = (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta);
 
-        -- Antes Remito
-        INSERT INTO aud_Remitos
-        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'A',
-        Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
-        -- Modifica Remito
-        UPDATE Remitos
-		SET		IdCliente=pIdCliente
-		WHERE	IdRemito=pIdRemito;
-		-- Despues Remito
-        INSERT INTO aud_Remitos
-        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA', 'D',
-        Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
+        -- Agrego ingreso del artículo
+        INSERT INTO Ingresos SELECT 0, pIdPuntoVenta, pIdEmpresa, pIdCliente, NULL, pIdUsuario, NOW(), 'E', NULL;
+
+        SET pIdIngreso = LAST_INSERT_ID();
+
+        INSERT INTO aud_Ingresos
+        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I', Ingresos.*
+        FROM Ingresos WHERE IdIngreso = pIdIngreso;
+
+        -- NroLinea = 1
+        INSERT INTO LineasIngreso SELECT pIdIngreso, 1, pIdArticulo, pCantidad, pMontoPago/pCantidad;
+
+        INSERT INTO aud_LineasIngreso
+        SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I', LineasIngreso.*
+        FROM LineasIngreso WHERE IdIngreso = pIdIngreso AND NroLinea = 1;
+        -- Fin ingreso del artículo
 
         -- Inserto el pago
         INSERT INTO Pagos VALUES (0, pIdVenta, 'V', pIdMedioPago, pIdUsuario, NOW(), pFechaDebe,
         pFechaPago, NULL, pMontoPago, pObservacionesPago,
-        NULL, pIdRemito, NULL, NULL, NULL, NULL, NULL);
+        NULL, NULL, NULL, NULL, NULL, NULL, JSON_OBJECT('IdIngreso', pIdIngreso));
 
         SET pIdPago = LAST_INSERT_ID();
         -- Audito el pago
         INSERT INTO aud_Pagos
         SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'ALTA', 'I',
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
+
+        -- Agrego ingreso al stock (SE NECESITA EL PAGO INSERTADO)
+        call xsp_activar_existencia(pIdUsuario, pIdIngreso, pIP, pUserAgent, pAplicacion, pMensaje);
+        IF pMensaje IS NULL OR pMensaje != 'OK' THEN
+            SELECT COALESCE(pMensaje, 'Error en la transacción interna. Contáctese con el administrador.') Mensaje;
+            ROLLBACK;
+            LEAVE SALIR;
+        END IF;
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 

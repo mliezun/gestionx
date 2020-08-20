@@ -2,8 +2,9 @@
 
 use common\models\Articulos;
 use common\models\GestorArticulos;
-use common\components\PermisosHelper;
-use common\components\FechaHelper;
+use common\helpers\PermisosHelper;
+use common\helpers\FechaHelper;
+use common\helpers\FormatoHelper;
 use yii\web\View;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -11,6 +12,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\widgets\LinkPager;
+
+\backend\assets\ArticulosAsset::register($this);
+$this->registerJs('Articulos.init()');
+
 
 /* @var $this View */
 /* @var $form ActiveForm */
@@ -64,116 +69,110 @@ $this->params['breadcrumbs'][] = $this->title;
         <div id="errores"> </div>
         
         <?php if (count($models) > 0): ?>
-        <div class="card">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="bg-light">
-                            <tr class="border-0">
-                                <th>Articulo</th>
-                                <th>Proveedor</th>
-                                <th>Codigo</th>
-                                <th>Descripcion</th>
-                                <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
-                                    <th>Precio de compra</th>
-                                <?php endif; ?>
-                                <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
-                                    <th><?= Html::encode('Precio ' . $nombre) ?></th>
-                                <?php endforeach; ?>
-                                <th>Existencias</th>
-                                <th>IVA</th>
-                                <th>Fecha de alta</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($models as $k=>$model): ?>
-                                <tr>
-                                    <td><?= Html::encode($model['Articulo']) ?></td>
-                                    <td><?= Html::encode($model['Proveedor']) ?></td>
-                                    <td><?= Html::encode($model['Codigo']) ?></td>
-                                    <td><?= Html::encode($model['Descripcion']) ?></td>
-                                    <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
-                                        <td><?= Html::encode($model['PrecioCosto']) ?></td>
-                                    <?php endif; ?>
-                                    <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
-                                        <td><?= Html::encode($valor) ?></td>
-                                    <?php endforeach; ?>
-                                    <td>
-                                    <?php foreach (json_decode($model['Existencias'], true) as $existencias): ?>
-                                    <div>
-                                        <strong><?= Html::encode("{$existencias['PuntoVenta']}") ?>:</strong>
-                                            <?= Html::encode("{$existencias['Cantidad']}") ?>
-                                            </div>
-                                    <?php endforeach; ?>
-                                    </td>
-                                    <td><?= Html::encode($model['TipoIVA']) ?></td>
-                                    <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
-                                    <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
-                                    <td>
+        <table class="table" id="tabla-articulos">
+            <thead class="bg-light">
+                <tr class="border-0">
+                    <th>Articulo</th>
+                    <th>Proveedor</th>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
+                        <th>Precio de compra</th>
+                    <?php endif; ?>
+                    <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
+                        <th><?= Html::encode('Precio ' . $nombre) ?></th>
+                    <?php endforeach; ?>
+                    <th>Existencias</th>
+                    <th>IVA</th>
+                    <th>Fecha de alta</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody style="background-color: white">
+                <?php foreach ($models as $k=>$model): ?>
+                    <tr>
+                        <td><?= Html::encode($model['Articulo']) ?></td>
+                        <td><?= Html::encode($model['Proveedor']) ?></td>
+                        <td><?= Html::encode($model['Codigo']) ?></td>
+                        <td><?= Html::encode($model['Descripcion']) ?></td>
+                        <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
+                            <td><?= Html::encode(FormatoHelper::formatearMonto($model['PrecioCosto'])) ?></td>
+                        <?php endif; ?>
+                        <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
+                            <td><?= Html::encode(FormatoHelper::formatearMonto($valor)) ?></td>
+                        <?php endforeach; ?>
+                        <td>
+                        <?php foreach (json_decode($model['Existencias'], true) as $existencias): ?>
+                        <div>
+                            <strong><?= Html::encode("{$existencias['PuntoVenta']}") ?>:</strong>
+                                <?= Html::encode("{$existencias['Cantidad']}") ?>
+                                </div>
+                        <?php endforeach; ?>
+                        </td>
+                        <td><?= Html::encode($model['TipoIVA']) ?></td>
+                        <td><?= Html::encode(FechaHelper::formatearDatetimeLocal($model['FechaAlta'])) ?></td>
+                        <td><?= Html::encode(Articulos::ESTADOS[$model['Estado']]) ?></td>
+                        <td>
 
-                                        <div class="btn-group" role="group" aria-label="...">
-                            
-                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['articulos/editar', 'id' => $model['IdArticulo']]) ?>"
-                                                        data-hint="Modificar">
-                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
-                                                <a class="btn btn-default"
-                                                        href="<?= Url::to(['/precios-articulos', 'id' => $model['IdArticulo']]) ?>"
-                                                        data-hint="Listas de Precio">
-                                                    <i class="fas fa-list-alt" style="color: green"></i>
-                                                </a>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('ListarHistorialPreciosArticulo')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-modal="<?= Url::to(['articulos/historial', 'id' => $model['IdArticulo']]) ?>"
-                                                        data-hint="Historial de Precios">
-                                                    <i class="fas fa-history" style="color: tomato"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'B') : ?>
-                                                <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-mensaje="¿Desea activar el artículo?"
-                                                            data-ajax="<?= Url::to(['articulos/activar', 'id' => $model['IdArticulo']]) ?>"
-                                                            data-hint="Activar">
-                                                        <i class="fa fa-check-circle" style="color: green"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                            <?php else : ?>
-                                                <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-mensaje="¿Desea dar de baja el artículo?"
-                                                            data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"
-                                                            data-hint="Dar baja">
-                                                        <i class="fa fa-minus-circle" style="color: red"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
-                                            <?php if (PermisosHelper::tienePermiso('TODO:BorrarArticulo')) : ?>
-                                                <button type="button" class="btn btn-default"
-                                                        data-mensaje="¿Desea borrar el artículo?"
-                                                        data-ajax="<?= Url::to(['articulos/borrar', 'id' => $model['IdArticulo']]) ?>"
-                                                        data-hint="Borrar">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            <?php endif; ?>
-                                            
-                                        </div>
-                                    </td> 
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="pull-right">
+                            <div class="btn-group" role="group" aria-label="...">
+                
+                                <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
+                                    <button type="button" class="btn btn-default"
+                                            data-modal="<?= Url::to(['articulos/editar', 'id' => $model['IdArticulo']]) ?>"
+                                            data-hint="Modificar">
+                                        <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <?php if (PermisosHelper::tienePermiso('ModificarArticulo')) : ?>
+                                    <a class="btn btn-default"
+                                            href="<?= Url::to(['/precios-articulos', 'id' => $model['IdArticulo']]) ?>"
+                                            data-hint="Listas de Precio">
+                                        <i class="fas fa-list-alt" style="color: green"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <?php if (PermisosHelper::tienePermiso('ListarHistorialPreciosArticulo')) : ?>
+                                    <button type="button" class="btn btn-default"
+                                            data-modal="<?= Url::to(['articulos/historial', 'id' => $model['IdArticulo']]) ?>"
+                                            data-hint="Historial de Precios">
+                                        <i class="fas fa-history" style="color: tomato"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <?php if ($model['Estado'] == 'B') : ?>
+                                    <?php if (PermisosHelper::tienePermiso('ActivarArticulo')): ?>
+                                        <button type="button" class="btn btn-default"
+                                                data-mensaje="¿Desea activar el artículo?"
+                                                data-ajax="<?= Url::to(['articulos/activar', 'id' => $model['IdArticulo']]) ?>"
+                                                data-hint="Activar">
+                                            <i class="fa fa-check-circle" style="color: green"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php else : ?>
+                                    <?php if (PermisosHelper::tienePermiso('DarBajaArticulo')) : ?>
+                                        <button type="button" class="btn btn-default"
+                                                data-mensaje="¿Desea dar de baja el artículo?"
+                                                data-ajax="<?= Url::to(['articulos/dar-baja', 'id' => $model['IdArticulo']]) ?>"
+                                                data-hint="Dar baja">
+                                            <i class="fa fa-minus-circle" style="color: red"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <?php if (PermisosHelper::tienePermiso('TODO:BorrarArticulo')) : ?>
+                                    <button type="button" class="btn btn-default"
+                                            data-mensaje="¿Desea borrar el artículo?"
+                                            data-ajax="<?= Url::to(['articulos/borrar', 'id' => $model['IdArticulo']]) ?>"
+                                            data-hint="Borrar">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                <?php endif; ?>
+                                
+                            </div>
+                        </td> 
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="pull-right" style="margin-top: 20px">
             <?=
             LinkPager::widget([
                 'pagination' => $paginado,

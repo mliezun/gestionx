@@ -52,7 +52,51 @@ class RectificacionesController extends BaseController
             $canales = GestorCanales::Buscar();
 
             return $this->renderAjax('alta', [
-                'titulo' => 'Alta rectificación',
+                'titulo' => 'Enviar a Punto de Venta',
+                'model' => $rectificacionesPV,
+                'canales' => $canales,
+                'puntosventa' => $puntosventa
+            ]);
+        }
+    }
+
+    public function actionCorreccion($id)
+    {
+        PermisosHelper::verificarPermiso('AltaRemito');
+
+        $rectificacionesPV = new RectificacionesPV();
+        $rectificacionesPV->setScenario(RectificacionesPV::_CORRECCION);
+
+        $puntoventa = new PuntosVenta();
+        $puntoventa->IdPuntoVenta = $id;
+        
+        if ($rectificacionesPV->load(Yii::$app->request->post()) && $rectificacionesPV->validate()) {
+            $rectificacionesPV->IdCanal = $rectificacionesPV->IdCanal ?? Yii::$app->session->get('Parametros')['CANALPORDEFECTO'];
+
+            $resultado = $puntoventa->AltaRectificacion($rectificacionesPV);
+
+            Yii::$app->response->format = 'json';
+            if (substr($resultado, 0, 2) == 'OK') {
+                return ['error' => null];
+            } else {
+                return ['error' => $resultado];
+            }
+        } else {
+            $puntosventa = GestorPuntosVenta::Buscar();
+            $clave = null;
+            foreach ($puntosventa as $i => $pv) {
+                if ($pv['IdPuntoVenta'] == $id) {
+                    $clave = $i;
+                }
+            }
+            if (isset($clave)) {
+                unset($puntosventa[$clave]);
+            }
+
+            $canales = GestorCanales::Buscar();
+
+            return $this->renderAjax('alta', [
+                'titulo' => 'Corrección de existencias',
                 'model' => $rectificacionesPV,
                 'canales' => $canales,
                 'puntosventa' => $puntosventa

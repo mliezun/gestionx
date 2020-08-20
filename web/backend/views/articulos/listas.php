@@ -4,6 +4,7 @@ use common\models\Articulos;
 use common\models\GestorTiposGravamenes;
 use common\models\GestorProveedores;
 use common\models\GestorListasPrecio;
+use common\helpers\FormatoHelper;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -49,7 +50,7 @@ $listas = (new GestorListasPrecio)->Buscar();
             <?= Html::activeHiddenInput($model, 'Gravamenes') ?>
 
             <?php foreach (json_decode($model['PreciosVenta']) as $nombre => $valor): ?>
-                <?= Html::encode($nombre) ?>: <?= Html::encode($valor) ?>
+                <?= Html::encode($nombre) ?>: <?= Html::encode(FormatoHelper::formatearMonto($valor)) ?>
             <?php endforeach; ?>
 
             <?= $form->field($model, 'PreciosVenta')->checkboxList(ArrayHelper::map($listas, 'IdListaPrecio', 'Lista')) ?>

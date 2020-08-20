@@ -16,20 +16,26 @@ var Pagos = {
             $(".field-pagos-aniovencimiento").hide();
             $("#pagos-ccv").val("");
             $(".field-pagos-ccv").hide();
-            $("#pagos-idremito").val(0);
-            $(".field-pagos-idremito").hide();
+            $("#pagos-idarticulo").val(0);
+            $(".field-pagos-idarticulo").hide();
             $("#pagos-idcheque").val(0);
             $(".field-pagos-idcheque").hide();
             $("#pagos-idtipotributo").val(0);
             $(".field-pagos-idtipotributo").hide();
             $(".field-pagos-descuento").hide();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").hide();
+
             return true;
           // Mercaderia
           case 2:
-            $(".field-pagos-idremito").show();
+            $(".field-pagos-idarticulo").show();
 
             $("#pagos-monto").val(0);
-            $(".field-pagos-monto").hide();
+            $(".field-pagos-monto").show();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").show();
+            // $(".field-pagos-monto").hide();
             $("#pagos-nrotarjeta").val("");
             $(".field-pagos-nrotarjeta").hide();
             $("#pagos-mesvencimiento").val("");
@@ -52,13 +58,15 @@ var Pagos = {
             $(".field-pagos-aniovencimiento").show();
             $(".field-pagos-ccv").show();
 
-            $("#pagos-idremito").val(0);
-            $(".field-pagos-idremito").hide();
+            $("#pagos-idarticulo").val(0);
+            $(".field-pagos-idarticulo").hide();
             $("#pagos-idcheque").val(0);
             $(".field-pagos-idcheque").hide();
             $("#pagos-idtipotributo").val(0);
             $(".field-pagos-idtipotributo").hide();
             $(".field-pagos-descuento").hide();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").hide();
             return true;
           // Cheque
           case 5:
@@ -74,11 +82,13 @@ var Pagos = {
             $(".field-pagos-aniovencimiento").hide();
             $("#pagos-ccv").val("");
             $(".field-pagos-ccv").hide();
-            $("#pagos-idremito").val(0);
-            $(".field-pagos-idremito").hide();
+            $("#pagos-idarticulo").val(0);
+            $(".field-pagos-idarticulo").hide();
             $("#pagos-idtipotributo").val(0);
             $(".field-pagos-idtipotributo").hide();
             $(".field-pagos-descuento").hide();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").hide();
             return true;
           // Retencion
           case 7:
@@ -93,11 +103,13 @@ var Pagos = {
             $(".field-pagos-aniovencimiento").hide();
             $("#pagos-ccv").val("");
             $(".field-pagos-ccv").hide();
-            $("#pagos-idremito").val(0);
-            $(".field-pagos-idremito").hide();
+            $("#pagos-idarticulo").val(0);
+            $(".field-pagos-idarticulo").hide();
             $("#pagos-idcheque").val(0);
             $(".field-pagos-idcheque").hide();
             $(".field-pagos-descuento").hide();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").hide();
             return true;
           // Descuento
           case 8:
@@ -112,12 +124,14 @@ var Pagos = {
             $(".field-pagos-aniovencimiento").hide();
             $("#pagos-ccv").val("");
             $(".field-pagos-ccv").hide();
-            $("#pagos-idremito").val(0);
-            $(".field-pagos-idremito").hide();
+            $("#pagos-idarticulo").val(0);
+            $(".field-pagos-idarticulo").hide();
             $("#pagos-idcheque").val(0);
             $(".field-pagos-idcheque").hide();
             $("#pagos-idtipotributo").val(0);
             $(".field-pagos-idtipotributo").hide();
+            $("#pagos-cantidad").val(0);
+            $(".field-pagos-cantidad").hide();
             return true;
           default:
             break;
@@ -137,8 +151,10 @@ var Pagos = {
         $(".field-pagos-ccv").hide();
 
         // Mercaderia
-        $("#pagos-idremito").val(0);
-        $(".field-pagos-idremito").hide();
+        $("#pagos-idarticulo").val(0);
+        $(".field-pagos-idarticulo").hide();
+        $("#pagos-cantidad").val(0);
+        $(".field-pagos-cantidad").hide();
 
         // Cheque
         $("#pagos-idcheque").val(0);
@@ -157,11 +173,12 @@ var Pagos = {
       $("#pagos-idmediopago").change(function () {
         controlarTipoPago();
         $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-cantidad");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-nrotarjeta");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-mesvencimiento");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-aniovencimiento");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
-        $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idarticulo");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
@@ -170,11 +187,12 @@ var Pagos = {
       $("#pagos-idmediopago").keyup(function () {
         controlarTipoPago();
         $("#w0").yiiActiveForm("validateAttribute", "pagos-monto");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-cantidad");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-nrotarjeta");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-mesvencimiento");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-aniovencimiento");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-ccv");
-        $("#w0").yiiActiveForm("validateAttribute", "pagos-idremito");
+        $("#w0").yiiActiveForm("validateAttribute", "pagos-idarticulo");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idcheque");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-idtipotributo");
         $("#w0").yiiActiveForm("validateAttribute", "pagos-descuento");
