@@ -58,8 +58,8 @@ use yii\widgets\LinkPager;
             <div class="alta--button">
                 <button type="button" class="btn btn-primary"
                         data-modal="<?= Url::to(['/remitos/alta','id' => $puntoventa['IdPuntoVenta']]) ?>"
-                        data-hint="Nuevo Remito">
-                    Nuevo Remito
+                        data-hint="Nuevo Remito o Ingreso">
+                    Nuevo Remito o Ingreso
                 </button>
             </div>
         <?php endif; ?>
@@ -89,7 +89,13 @@ use yii\widgets\LinkPager;
                         <tbody>
                             <?php foreach ($models as $model): ?>
                                 <tr>
-                                    <td><?= Html::encode($model['NroRemito']) ?></td>
+                                    <td>
+                                        <?php if ($model['NroRemito'] == '' OR $model['NroRemito'] == NULL) : ?>
+                                            <?= Html::encode("-") ?>
+                                        <?php else: ?>
+                                            <?= Html::encode($model['NroRemito']) ?>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= Html::encode($model['NroFactura']) ?></td>
                                     <td><?= Html::encode($model['Proveedor']) ?></td>
                                     <?php if (Yii::$app->session->get('Parametros')['CANTCANALES'] > 1) : ?>
@@ -109,7 +115,7 @@ use yii\widgets\LinkPager;
                                                     <i class="fas fa-clipboard-list"></i>
                                                 </a>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E') :?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I' ) :?>
                                                 <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
@@ -117,9 +123,18 @@ use yii\widgets\LinkPager;
                                                         <i class="fa fa-edit" style="color: dodgerblue"></i>
                                                     </button>
                                                 <?php endif; ?>
+                                                <?php if ($model['Estado'] == 'E' and PermisosHelper::tienePermiso('IngresarRemito')) : ?>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-mensaje="¿Desea cargas las líneas el remito?<br/>
+                                                            Solo se ingresara en stock las líneas cargadas."
+                                                            data-ajax="<?= Url::to(['remitos/ingresar', 'id' => $model['IdRemito']]) ?>"
+                                                            data-hint="Cargar líneas">
+                                                        <i class="fas fa-level-down-alt" style="color: DarkOrange"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'A') : ?>
-                                                <?php if ($model['Estado'] == 'E') :?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'A' or $model['Estado'] == 'I') : ?>
+                                                <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I') :?>
                                                     <?php if (PermisosHelper::tienePermiso('ActivarRemito')): ?>
                                                         <button type="button" class="btn btn-default"
                                                                 data-mensaje="¿Desea confirmar el remito?"

@@ -59,7 +59,7 @@ class GestorCheques
             ':iddestino' => ($cheque->IdDestinoCheque == '') ? null : $cheque->IdDestinoCheque,
             ':nrocheque' => $cheque->NroCheque,
             ':importe' => $cheque->Importe,
-            ':fechavenc' => $cheque->FechaVencimiento,
+            ':fechavenc' => FechaHelper::formatearDateMysql($cheque->FechaVencimiento),
             ':observaciones' => $cheque->Obversaciones,
         ]);
 

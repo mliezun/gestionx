@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\FechaHelper;
 use Yii;
 
 class GestorRemitos
@@ -14,7 +15,7 @@ class GestorRemitos
     public function Alta(Remitos $remito, $PuntoVenta)
     {
         $sql = "call xsp_alta_remito( :token, :idempresa, :idproveedor, :idpuntoventa, :idcanal,
-        :nroremito, :cai, :observaciones , :IP, :userAgent, :app)";
+        :nroremito, :cai, :nrofactura, :fechafactura, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -27,8 +28,10 @@ class GestorRemitos
             ':idproveedor' => $remito->IdProveedor,
             ':idcanal' => $remito->IdCanal,
             ':idpuntoventa' => $PuntoVenta,
-            ':nroremito' => $remito->NroRemito,
+            ':nroremito' => $remito->NroRemito == "" ? NULL : $remito->NroRemito,
             ':cai' => $remito->CAI == "" ? NULL : $remito->CAI,
+            ':nrofactura' => $remito->NroFactura == "" ? NULL : $remito->NroFactura,
+            ':fechafactura' => FechaHelper::formatearDateMysql($remito->FechaFacturado),
             ':observaciones' => $remito->Observaciones,
         ]);
 
@@ -42,7 +45,8 @@ class GestorRemitos
      */
     public function Modificar($remito)
     {
-        $sql = "call xsp_modifica_remito( :token, :idremito, :idempresa, :idproveedor, :idcanal, :nroremito, :cai, :observaciones , :IP, :userAgent, :app)";
+        $sql = "call xsp_modifica_remito( :token, :idremito, :idempresa, :idproveedor, :idcanal,
+        :nroremito, :cai, :nrofactura, :fechafactura, :observaciones , :IP, :userAgent, :app)";
 
         $query = Yii::$app->db->createCommand($sql);
         
@@ -55,8 +59,10 @@ class GestorRemitos
             ':idempresa' => Yii::$app->user->identity->IdEmpresa,
             ':idproveedor' => $remito->IdProveedor,
             ':idcanal' => $remito->IdCanal,
-            ':nroremito' => $remito->NroRemito,
+            ':nroremito' => $remito->NroRemito == "" ? NULL : $remito->NroRemito,
             ':cai' => $remito->CAI == "" ? NULL : $remito->CAI,
+            ':nrofactura' => $remito->NroFactura == "" ? NULL : $remito->NroFactura,
+            ':fechafactura' => FechaHelper::formatearDateMysql($remito->FechaFacturado),
             ':observaciones' => $remito->Observaciones,
         ]);
 

@@ -125,6 +125,30 @@ class Ingresos extends Model
         return $query->queryScalar();
     }
 
+    /**
+     * Permite editar el precio de una línea de ingreso a una existencia que se encuentre en estado Ingresado.
+     * Devuelve OK o el mensaje de error en Mensaje.
+     * xsp_modificar_linea_existencia
+     */
+    public function EditarLinea(LineasForm $linea)
+    {
+        $sql = "call xsp_modificar_linea_existencia( :token, :idIngreso, :idart, :precio, :IP, :userAgent, :app)";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':token' => Yii::$app->user->identity->Token,
+            ':IP' => Yii::$app->request->userIP,
+            ':userAgent' => Yii::$app->request->userAgent,
+            ':app' => Yii::$app->id,
+            ':idIngreso' => $this->IdIngreso,
+            ':idart' => $linea->IdArticulo,
+            ':precio' => $linea->Precio
+        ]);
+
+        return $query->queryScalar();
+    }
+
     public function DameLineas()
     {
         $sql = "call xsp_dame_lineas_ingreso( :idIngreso )";

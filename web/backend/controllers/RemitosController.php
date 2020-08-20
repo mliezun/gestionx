@@ -9,6 +9,7 @@ use common\models\GestorProveedores;
 use common\models\GestorCanales;
 use common\models\forms\BuscarForm;
 use common\components\PermisosHelper;
+use common\components\FechaHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -72,6 +73,7 @@ class RemitosController extends BaseController
         } else {
             $remito->IdRemito = $id;
             $remito->Dame();
+            $remito->FechaFacturado = FechaHelper::formatearDateLocal($remito->FechaFacturado);
 
             $proveedores = (new GestorProveedores())->Buscar();
 
@@ -96,6 +98,24 @@ class RemitosController extends BaseController
         $remito->IdRemito = $id;
 
         $resultado = $remito->Activar();
+
+        if ($resultado == 'OK') {
+            return ['error' => null];
+        } else {
+            return ['error' => $resultado];
+        }
+    }
+
+    public function actionIngresar($id)
+    {
+        PermisosHelper::verificarPermiso('IngresarRemito');
+
+        Yii::$app->response->format = 'json';
+        
+        $remito = new Remitos();
+        $remito->IdRemito = $id;
+
+        $resultado = $remito->Ingresar();
 
         if ($resultado == 'OK') {
             return ['error' => null];

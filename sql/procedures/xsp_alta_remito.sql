@@ -1,7 +1,8 @@
 DROP PROCEDURE IF EXISTS `xsp_alta_remito`;
 DELIMITER $$
 CREATE PROCEDURE `xsp_alta_remito`(pToken varchar(500), pIdEmpresa int, pIdProveedor bigint,
-pIdPuntoVenta bigint, pIdCanal bigint, pNroRemito bigint, pCAI bigint, pObservaciones text,
+pIdPuntoVenta bigint, pIdCanal bigint, pNroRemito bigint, pCAI bigint,
+pNroFactura bigint, pFechaFactura datetime, pObservaciones text,
 pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50))
 SALIR:BEGIN
 	/**
@@ -43,12 +44,18 @@ SALIR:BEGIN
         LEAVE SALIR;
 	END IF;
 	IF (pNroRemito IS NULL OR pNroRemito = 0) THEN
-        SELECT 'Debe ingresar el numero del remito.' Mensaje;
-        LEAVE SALIR;
+        SET pNroRemito = NULL;
 	END IF;
+	IF (pNroFactura IS NULL OR pNroFactura = 0) THEN
+        SET pNroFactura = NULL;
+	END IF;
+	-- IF (pNroRemito IS NULL OR pNroRemito = 0) THEN
+	-- 	SELECT 'Debe ingresar el numero del remito.' Mensaje;
+    --     LEAVE SALIR;
+	-- END IF;
 	-- IF (pCAI IS NULL OR pCAI = 0) THEN
-  --       SELECT 'Debe ingresar el CAI.' Mensaje;
-  --       LEAVE SALIR;
+    --     SELECT 'Debe ingresar el CAI.' Mensaje;
+    --     LEAVE SALIR;
 	-- END IF;
 	-- Control de Parametros incorrectos
 	IF NOT EXISTS(SELECT Empresa FROM Empresas E WHERE E.IdEmpresa = pIdEmpresa) THEN
@@ -63,9 +70,11 @@ SALIR:BEGIN
 		SELECT 'El Canal no existe o no se encuentra activo.' Mensaje;
 		LEAVE SALIR;
 	END IF;
-    IF EXISTS(SELECT NroRemito FROM Remitos WHERE NroRemito = pNroRemito AND IdProveedor=pIdProveedor) THEN
-		SELECT 'El numero de remito ya existe.' Mensaje;
-		LEAVE SALIR;
+	IF (pNroRemito IS NOT NULL AND pNroRemito != 0) THEN
+		IF EXISTS(SELECT NroRemito FROM Remitos WHERE NroRemito = pNroRemito AND IdProveedor=pIdProveedor) THEN
+			SELECT 'El numero de remito ya existe.' Mensaje;
+			LEAVE SALIR;
+		END IF;
 	END IF;
 	-- IF EXISTS(SELECT CAI FROM Remitos WHERE CAI = pCAI AND IdProveedor=pIdProveedor) THEN
 	-- 	SELECT 'El CAI ya existe.' Mensaje;
@@ -75,7 +84,7 @@ SALIR:BEGIN
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
         INSERT INTO Remitos SELECT 0, pIdProveedor, NULL, pIdEmpresa, pIdCanal, pNroRemito, pCAI,
-		NULL, NOW(), NULL, 'E', pObservaciones;
+		pNroFactura, NOW(), pFechaFactura, 'E', pObservaciones;
 		SET pIdRemito = LAST_INSERT_ID();
 		-- Instancia un nuevo ingreso
 		CALL xsp_alta_existencia(pIdUsuario, pIdPuntoVenta, NULL, pIdRemito, NULL, pIP, pUserAgent, pAplicacion, pMensaje);

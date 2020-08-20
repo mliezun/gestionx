@@ -10,7 +10,6 @@ SALIR: BEGIN
 	*/
     DECLARE pIdCuentaCorriente bigint;
     DECLARE pUsuario varchar(30);
-    DECLARE pIdCanal bigint;
 	-- Manejo de error en la transacción
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN

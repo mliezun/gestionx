@@ -12,7 +12,8 @@ BEGIN
 	INNER JOIN	Proveedores p USING(IdProveedor)
 	INNER JOIN	Canales c USING(IdCanal)
     WHERE		r.IdEmpresa = pIdEmpresa
-				AND CONCAT(r.NroRemito,'') LIKE CONCAT('%', pCadena, '%')
+				AND (r.NroRemito IS NULL OR CONCAT(r.NroRemito,'') LIKE CONCAT('%', pCadena, '%'))
+				-- AND (r.CAI IS NULL OR CONCAT(r.CAI,'') LIKE CONCAT('%', pCadena, '%'))
                 AND (r.Estado = pEstado OR pEstado = 'T')
 				AND (r.IdProveedor = pIdProveedor OR pIdProveedor=0)
 				AND (i.IdPuntoVenta = pIdPuntoVenta OR pIdPuntoVenta=0)
