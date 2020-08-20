@@ -6,7 +6,7 @@ use common\models\Ingresos;
 use common\models\PuntosVenta;
 use common\models\Remitos;
 use common\models\forms\LineasForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use yii\helpers\Url;
 use Yii;
 

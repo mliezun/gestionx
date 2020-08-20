@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use common\models\forms\BuscarForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;

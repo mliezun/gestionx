@@ -9,9 +9,9 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\HttpException;
 use common\models\GestorReportes;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\components\AppHelper;
-use common\components\FechaHelper;
+use common\helpers\FechaHelper;
 use common\components\CmdHelper;
 
 class InformesController extends BaseController

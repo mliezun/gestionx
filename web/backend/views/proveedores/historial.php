@@ -5,7 +5,7 @@ use common\models\HistorialDescuentos;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use common\components\FechaHelper;
+use common\helpers\FechaHelper;
 use yii\web\View;
 
 /* @var $this View */

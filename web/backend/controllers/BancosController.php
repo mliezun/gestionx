@@ -6,7 +6,7 @@ use common\models\GestorBancos;
 use common\models\Bancos;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;

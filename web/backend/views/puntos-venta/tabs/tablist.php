@@ -1,6 +1,6 @@
 <?php
 
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 
 ?>
 

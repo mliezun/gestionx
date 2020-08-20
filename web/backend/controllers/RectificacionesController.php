@@ -8,7 +8,7 @@ use common\models\GestorPuntosVenta;
 use common\models\GestorArticulos;
 use common\models\GestorCanales;
 use common\models\forms\BuscarForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;

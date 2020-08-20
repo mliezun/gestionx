@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use common\components\InformesHelper;
+use common\helpers\InformesHelper;
 use yii\base\Model;
 use Yii;
 

@@ -9,7 +9,7 @@ use common\models\Remitos;
 use common\models\GestorRemitos;
 use common\models\GestorUsuarios;
 use common\models\forms\BuscarForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;

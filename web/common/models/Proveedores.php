@@ -1,7 +1,7 @@
 <?php
 namespace common\models;
 
-use common\components\FechaHelper;
+use common\helpers\FechaHelper;
 use Yii;
 use yii\base\Model;
 

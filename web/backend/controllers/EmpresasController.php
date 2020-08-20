@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use common\models\GestorEmpresas;
 use common\models\EmpresasModel;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\components\CmdHelper;
 use Yii;
 
