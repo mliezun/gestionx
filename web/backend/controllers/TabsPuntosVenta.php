@@ -97,7 +97,8 @@ class TabsPuntosVenta extends BaseController
             $canal = $busqueda->Combo3 ? $busqueda->Combo3 : 0;
             $remitos = $gestor->Buscar($this->IdPuntoVenta, $busqueda->Cadena, $estado, $proveedor, $canal, 'S');
         } else {
-            $remitos = $gestor->Buscar($this->IdPuntoVenta);
+            $busqueda->Combo2 = 'T';
+            $remitos = $gestor->Buscar($this->IdPuntoVenta, '', $busqueda->Combo2);
         }
 
         $paginado->totalCount = count($remitos);

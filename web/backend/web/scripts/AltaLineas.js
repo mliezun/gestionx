@@ -25,6 +25,7 @@ var AltaLineas = {
       },
       mounted: function () {
         this.configurarAjax();
+        this.actualizarLineas();
       },
       methods: {
         limpiar: function () {
@@ -52,6 +53,11 @@ var AltaLineas = {
             );
           });
           this.lineas = listadoFinal;
+        },
+        actualizarLineas: function () {
+          for (let i = 0; i < this.lineas.length; i++) {
+            $(this.$refs.precio[i]).val(this.lineas[i].Precio);
+          }
         },
         agregar: function () {
           this.doAgregar();
@@ -123,6 +129,37 @@ var AltaLineas = {
               );
             });
         },
+        editarLinea: function (i) {
+          var _this = this;
+          var uri =
+            urlBase + "/editar-linea/" + id;
+          var precio = $(this.$refs.precio[i]).val();
+          $.post(urlBase + "/editar-linea/" + id, {
+            LineasForm: {
+              IdArticulo: _this.lineas[i].IdArticulo,
+              Cantidad: _this.lineas[i].Cantidad,
+              Precio: precio,
+            },
+          })
+            .done(function (data) {
+              if (data.error) {
+                _this.mostrarMensaje("danger", data.error, "ban");
+              } else {
+                _this.mostrarMensaje("success", "Actualizado", "check");
+                _this.lineas[i].Precio = precio;
+                _this.limpiar();
+                _this.actualizarLineas();
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+              _this.mostrarMensaje(
+                "danger",
+                "Error en la comunicación con el servidor.",
+                "ban"
+              );
+            });
+        },
         mostrarMensaje: function (tipo, mensaje, icono) {
           var html =
             '<div id="mensaje" class="alert alert-' +
@@ -155,6 +192,50 @@ var AltaLineas = {
           var _this = this;
           var uri =
             (model.IdRemito ? "/remitos" : urlBase) + "/activar/" + idPadre;
+          $.ajax(uri)
+            .done(function (data) {
+              if (data.error) {
+                _this.mostrarMensaje("danger", data.error, "ban");
+              } else {
+                if (model.IdVenta) {
+                  window.open("/pagos/" + id, "_self");
+                } else {
+                  window.open(
+                    "/puntos-venta/operaciones/" +
+                      _this.ingreso.IdPuntoVenta +
+                      "?tab=" +
+                      (model.IdRemito ? "Remitos" : "Ventas"),
+                    "_self"
+                  );
+                }
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+              _this.mostrarMensaje(
+                "danger",
+                "Error en la comunicación con el servidor.",
+                "ban"
+              );
+            });
+        },
+        ingresar: function () {
+          // Si hay una línea en borrador, intento agregarla
+          var idArticulo = $(this.$refs.articulo).val();
+          if (idArticulo) {
+            this.doAgregar((err) => {
+              if (!err) {
+                this.doIngresar();
+              }
+            });
+          } else {
+            this.doIngresar();
+          }
+        },
+        doIngresar: function () {
+          var _this = this;
+          var uri =
+            (model.IdRemito ? "/remitos" : urlBase) + "/ingresar/" + idPadre;
           $.ajax(uri)
             .done(function (data) {
               if (data.error) {

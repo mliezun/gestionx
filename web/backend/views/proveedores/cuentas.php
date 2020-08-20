@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'FechaInicio')->widget(DatePicker::classname(), [
             'options' => ['placeholder' => 'Fecha desde'],
-            'type' => DatePicker::TYPE_INPUT,
+            'type' => DatePicker::TYPE_COMPONENT_PREPEND,
             'pluginOptions' => [
                 'autoclose'=> true,
                 'format' => 'dd/mm/yyyy'
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($busqueda, 'FechaFin')->widget(DatePicker::classname(), [
                 'options' => ['placeholder' => 'Fecha hasta'],
-                'type' => DatePicker::TYPE_INPUT,
+                'type' => DatePicker::TYPE_COMPONENT_PREPEND,
                 'pluginOptions' => [
                     'autoclose'=> true,
                     'format' => 'dd/mm/yyyy',

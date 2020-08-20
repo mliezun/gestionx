@@ -48,13 +48,26 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                             <tr v-for="(l, i) in lineas">
                                 <td>{{ l.Articulo }}</td>
                                 <td>{{ l.Cantidad }}</td>
-                                <td>$ {{ l.Precio }}</td>
+                                <?php if ($model['Estado'] == 'I'): ?>
+                                    <td>
+                                        <input ref="precio" class="form-control">
+                                    </td>
+                                <?php else: ?>
+                                    <td>$ {{ l.Precio }}</td>
+                                <?php endif; ?>
                                 <td>
                                     <?php if ($model['Estado'] == 'E'): ?>
                                     <button type="button" class="btn btn-default"
                                             @click="borrarLinea(i)"
                                             data-hint="Borrar">
                                         <i class="fa fa-times"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                    <?php if ($model['Estado'] == 'I'): ?>
+                                    <button type="button" class="btn btn-default"
+                                            @click="editarLinea(i)"
+                                            data-hint="Editar Precio">
+                                        <i class="fa fa-edit"></i>
                                     </button>
                                     <?php endif; ?>
                                 </td>
@@ -89,7 +102,7 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                 </div>
             </div>
             <div class="lineas--bottom">
-                <?php if ($model['Estado'] == 'E'): ?>
+                <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I'): ?>
                     <?php if ($tipoPrecio == 'PrecioVenta'): ?>
                     <button  type="button" class="btn btn-secondary"
                         @click="completar"
@@ -98,12 +111,22 @@ $this->registerJs("AltaLineas.init('$urlBase', '$tipoPrecio', $modelJson, $linea
                         Agregar pagos
                     </button>
                     <?php else: ?>
-                    <button  type="button" class="btn btn-secondary"
-                        @click="completar"
-                        data-hint="Completar"
-                    >
-                        Completar
-                    </button>
+                    <div>
+                        <button  type="button" class="btn btn-secondary"
+                            @click="completar"
+                            data-hint="Completar"
+                        >
+                            Completar
+                        </button>
+                        <?php if ($model['Estado'] == 'E'): ?>
+                        <button  type="button" class="btn btn-primary"
+                            @click="ingresar"
+                            data-hint="Solo Ingresar Stock"
+                        >
+                            Solo Ingresar Stock
+                        </button>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
                 <?php endif; ?>
                 <div class="lineas--total">

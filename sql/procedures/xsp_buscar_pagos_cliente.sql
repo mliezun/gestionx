@@ -6,8 +6,14 @@ SALIR: BEGIN
 	* Permite buscar los pagos de un cliente, entre 2 fechas.
     * Permitiendo filtrar por medio de pago (0 para listar todos).
 	*/
-    SET pFechaInicio = COALESCE(pFechaInicio, NOW() - INTERVAL 1 MONTH);
-    SET pFechaFin = COALESCE(pFechaFin, NOW());
+    DECLARE pFechaAux date;
+    SET pFechaInicio = COALESCE(pFechaInicio, '1900-01-01');
+    SET pFechaFin = COALESCE(pFechaFin, '9999-12-31');
+    IF pFechaFin < pFechaInicio THEN
+        SET pFechaAux = pFechaFin;
+        SET pFechaFin = pFechaInicio;
+        SET pFechaInicio = pFechaAux;
+    END IF;
 
     SELECT      p.*, mp.MedioPago, ch.NroCheque
     FROM        Pagos p 
@@ -17,7 +23,7 @@ SALIR: BEGIN
     WHERE       p.Codigo = pIdCliente
                 AND (IdMedioPago = pIdMedioPago OR pIdMedioPago = 0)
                 AND p.FechaAlta BETWEEN CONCAT(pFechaInicio, ' 00:00:00') AND CONCAT(pFechaFin, ' 23:59:59')
-    ORDER BY    p.FechaAlta;
+    ORDER BY    p.FechaAlta DESC;
 END$$
 
 DELIMITER ;
