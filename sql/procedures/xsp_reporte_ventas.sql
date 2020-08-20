@@ -15,7 +15,6 @@ CREATE PROCEDURE `xsp_reporte_ventas`(
 BEGIN
     DECLARE pTotal, pPagado, pDeuda, pCantidadArticulos DECIMAL(14,2);
     DECLARE pVentas json;
-    DECLARE pCountVentas bigint;
     SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     SET pIdPuntoVenta = COALESCE(pIdPuntoVenta, 0);
 
@@ -63,7 +62,7 @@ BEGIN
         WHERE       v.IdEmpresa = pIdEmpresa AND
                     (v.FechaAlta BETWEEN pFechaInicio AND CONCAT(pFechaFin, ' 23:59:59')) AND 
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
-                    AND (pTipoVenta = 'T' OR v.Tipo = pTipoVenta)
+                    AND (pTipoVenta = 'T' OR IF(pTipoVenta = 'Z', v.Tipo IN ('P', 'V'), v.Tipo = pTipoVenta))
                     AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V' AND p.IdMedioPago = pIdMedioPago))
                     AND (pIdArticulo = 0 OR lv.IdArticulo = pIdArticulo)
                     AND (pIdProveedor = 0 OR pr.IdProveedor = pIdProveedor)
@@ -73,14 +72,17 @@ BEGIN
         ORDER BY    v.IdVenta desc;
 
 
-    SELECT  COUNT(*), SUM(`$ Monto Total`), SUM(`$ Monto Pagado`), SUM(`$ Deuda`),
+    SELECT  SUM(`$ Monto Total`), SUM(`$ Monto Pagado`), SUM(`$ Deuda`),
             JSON_ARRAYAGG(IdVenta), SUM(`Cantidad de Articulos`)
-    INTO    pCountVentas, pTotal, pPagado, pDeuda, pVentas, pCantidadArticulos
+    INTO    pTotal, pPagado, pDeuda, pVentas, pCantidadArticulos
     FROM    tmp_inf_ventas;
 
-    SELECT * FROM tmp_inf_ventas
+    SELECT  Fecha, `Tipo de Venta`, `Cantidad de Articulos`, `$ Monto Total`,
+            `$ Monto Pagado`, `$ Deuda`, PagosJsonGroupValues, PagosJsonGroupKeys,
+            Articulos, `Punto de Venta`, Vendedor, Cliente
+    FROM    tmp_inf_ventas
     UNION ALL
-    SELECT  pCountVentas, NOW(), 'TOTALES', pCantidadArticulos, pTotal, pPagado, pDeuda,
+    SELECT  NOW(), 'TOTALES', pCantidadArticulos, pTotal, pPagado, pDeuda,
             JSON_OBJECT(
                 "GroupBy", "MedioPago",
                 "ReduceBy", "Monto",
@@ -98,7 +100,7 @@ BEGIN
             ),
             (
                 SELECT JSON_ARRAYAGG(CONCAT('$ ', MedioPago)) FROM MediosPago WHERE Estado = "A"
-            ), NULL, NULL, NULL, NULL, NULL
+            ), NULL, NULL, NULL, NULL
     ORDER BY Fecha desc;
 
     

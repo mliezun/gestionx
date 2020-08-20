@@ -14,6 +14,7 @@ BEGIN
     WHEN 'V' THEN 'Venta'
     WHEN 'B' THEN 'Préstamo'
     WHEN 'G' THEN 'Garantía'
+    WHEN 'Z' THEN 'Todas las ventas'
     WHEN 'T' THEN 'Todas'
     END Nombre;
     
