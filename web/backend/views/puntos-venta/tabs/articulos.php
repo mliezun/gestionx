@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </button>
                                                 <?php endif; ?>
                                             <?php else : ?>
-                                                <?php if ($recti['Estado'] == 'P' && PermisosHelper::tienePermiso('BorrarRectificacion')) : ?>
+                                                <?php if ($recti['Estado'] == 'P' && PermisosHelper::tienePermiso('NOUSAR:BorrarRectificacion')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-mensaje="¿Desea borrar la rectificación?"
                                                             data-ajax="<?= Url::to(['rectificaciones/borrar', 'idPv' => $puntoventa['IdPuntoVenta'], 'idRec' => $recti['IdRectificacionPV']]) ?>"
