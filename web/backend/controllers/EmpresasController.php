@@ -47,8 +47,14 @@ class EmpresasController extends BaseController
             Yii::info($vhost_conf);
             Yii::info($vhost_name);
 
+            $tmp_vhost = \tmpfile();
+            $meta_data = stream_get_meta_data($tmp_vhost);
+            $tmp_vhost_path = $meta_data["uri"];
+
+            \fwrite($tmp_vhost, $vhost_conf);
+
             $cmds = [
-                "echo \"$vhost_conf\" > /etc/apache2/sites-available/{$vhost_name}.conf",
+                "mv $tmp_vhost_path /etc/apache2/sites-available/{$vhost_name}.conf",
                 "a2ensite $vhost_name",
                 "service apache2 reload",
                 "certbot --apache --non-interactive --redirect -d $empresa->URL"
@@ -57,6 +63,8 @@ class EmpresasController extends BaseController
             Yii::info($cmds);
 
             $resultado = CmdHelper::exec($cmds);
+
+            fclose($tmp_vhost);
 
             if ($resultado != 'OK') {
                 return ['error' => 'Error al generar la configuración de apache.'];
