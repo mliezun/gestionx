@@ -7,7 +7,7 @@ CREATE PROCEDURE `xsp_reporte_ventas`(
     pIdPuntoVenta int,
     pTipoVenta char(1),
     pIdMedioPago int,
-    pIdArticulo bigint,
+    pIdsArticulos json,
     pIdProveedor bigint,
     pIdUsuario bigint,
     pIdCliente bigint
@@ -22,7 +22,7 @@ BEGIN
     CREATE TEMPORARY TABLE tmp_inf_ventas
         SELECT      v.IdVenta, v.FechaAlta 'Fecha',
                     SUM(lv.Cantidad) `Cantidad de Articulos`,
-                    GROUP_CONCAT(IF(pIdArticulo = 0, CONCAT(lv.Cantidad, ' x ', a.Articulo), a.Articulo)) Articulos,
+                    GROUP_CONCAT(DISTINCT IF(pIdsArticulos IS NULL, CONCAT(lv.Cantidad, ' x ', a.Articulo), a.Articulo)) Articulos,
                     CASE v.Tipo
                         WHEN 'V' THEN 'Venta'
                         WHEN 'P' THEN 'Presupuesto'
@@ -64,7 +64,7 @@ BEGIN
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
                     AND (pTipoVenta = 'T' OR IF(pTipoVenta = 'Z', v.Tipo IN ('P', 'V'), v.Tipo = pTipoVenta))
                     AND (pIdMedioPago = 0 OR EXISTS (SELECT 1 FROM Pagos p WHERE p.Codigo = v.IdVenta AND p.Tipo = 'V' AND p.IdMedioPago = pIdMedioPago))
-                    AND (pIdArticulo = 0 OR lv.IdArticulo = pIdArticulo)
+                    AND (pIdsArticulos IS NULL OR JSON_CONTAINS(pIdsArticulos, CONCAT('', lv.IdArticulo), '$'))
                     AND (pIdProveedor = 0 OR pr.IdProveedor = pIdProveedor)
                     AND (pIdUsuario = 0 OR u.IdUsuario = pIdUsuario)
                     AND (pIdCliente = 0 OR cl.IdCliente = pIdCliente)

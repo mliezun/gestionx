@@ -68,6 +68,10 @@ class InformesController extends BaseController
                             $valor = FechaHelper::formatearDatetimeMysql($model->{$parametro['Parametro']});
                         } elseif ($parametro['Tipo'] == 'A') {
                             $valor = intval($model->{$parametro['Parametro']});
+                        } elseif ($parametro['Tipo'] == 'S') {
+                            if ($model->{$parametro['Parametro']} !== '') {
+                                $valor = json_encode($model->{$parametro['Parametro']});
+                            }
                         } else {
                             $valor = $model->{$parametro['Parametro']};
                         }
@@ -136,21 +140,18 @@ class InformesController extends BaseController
 
         $gestor = new GestorReportes();
 
+        $out = array();
+
         if ($id != 0) {
-            $nombre = $gestor->DameParametroListado($idModeloReporte, $nroParametro, $id)['Nombre'];
+            $elementos = $gestor->DameParametroListado($idModeloReporte, $nroParametro, $id);
+            foreach ($elementos as $e) {
+                $out[] = ['id' => $e['Id'], 'text' => $e['Nombre']];
+            }
+        } elseif (strlen($cadena) > 3) {
+            $elementos = $gestor->LlenarListadoParametro($idModeloReporte, $nroParametro, $cadena);
 
-            $out = ['id' => $id, 'text' => $nombre];
-        } else {
-            if (strlen($cadena) > 3) {
-                $elementos = $gestor->LlenarListadoParametro($idModeloReporte, $nroParametro, $cadena);
-
-                $out = array();
-
-                foreach ($elementos as $elemento) {
-                    $out[] = ['id' => $elemento['Id'], 'text' => $elemento['Nombre']];
-                }
-            } else {
-                $out = ['id' => '0', 'text' => "Ingresar más de 4 caracteres."];
+            foreach ($elementos as $e) {
+                $out[] = ['id' => $e['Id'], 'text' => $e['Nombre']];
             }
         }
 

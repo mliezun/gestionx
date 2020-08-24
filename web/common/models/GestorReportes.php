@@ -123,7 +123,7 @@ class GestorReportes extends Model
             ':id' => $Id
         ]);
 
-        return $query->queryOne();
+        return $query->queryAll();
     }
 
     /**

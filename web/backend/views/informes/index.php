@@ -109,6 +109,13 @@ $reportes = buscar_hojas($menu);
                                 'parametro' => $parametro
                             ]);
                             break;
+                        case 'S':
+                            echo $this->render('inputs/autocompletado-multiple', [
+                                'model' => $model,
+                                'form' => $form,
+                                'parametro' => $parametro
+                            ]);
+                            break;
                         case 'M':
                             echo $this->render('inputs/moneda', [
                                 'model' => $model,
