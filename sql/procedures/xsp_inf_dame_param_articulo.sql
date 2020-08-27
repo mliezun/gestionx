@@ -5,17 +5,11 @@ BEGIN
 	/*
     Permite llenar el parámetro TipoVenta de los modelos de reporte.
     */
-    DECLARE pIdsJson json;
-
-    SET pIdsJson = CAST(CONCAT('[', pIds, ']') as JSON);
-    
     SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     
 	SELECT  IdArticulo Id, CONCAT(a.Articulo, ' (', a.Codigo, ')') Nombre FROM Articulos a
-    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND JSON_CONTAINS(pIdsJson, CONCAT('', IdArticulo), '$');
+    WHERE IdEmpresa = pIdEmpresa AND Estado = 'A' AND FIND_IN_SET(a.IdArticulo, pIds);
     
     SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END$$
-
-
 DELIMITER ;
