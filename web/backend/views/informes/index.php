@@ -179,18 +179,9 @@ $reportes = buscar_hojas($menu);
                 <tbody>
                     <?php foreach ($tabla as $fila): ?>
                     <tr class="no-break">
-                        <?php foreach ($fila as $columna => $celda): ?>
+                        <?php foreach ($fila as $celda): ?>
                         <td>
-                            <?php
-                                
-                                if (strpos($columna, 'Fecha') !== false) {
-                                    echo isset($celda) ? FechaHelper::formatearDatetimeLocal($celda) : '';
-                                } elseif (substr($columna, 0, 1) === '$') {
-                                    echo FormatoHelper::formatearMonto($celda);
-                                } else {
-                                    echo isset($celda) ? $celda : '';
-                                }
-                            ?>
+                            <?= Html::encode($celda) ?>
                         </td>
                         <?php endforeach; ?>
                     </tr>
