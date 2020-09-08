@@ -152,7 +152,7 @@ SALIR:BEGIN
         Pagos.* FROM Pagos WHERE IdPago = pIdPago;
 
         -- Agrego ingreso al stock (SE NECESITA EL PAGO INSERTADO)
-        call xsp_activar_existencia(pIdUsuario, pIdIngreso, pIP, pUserAgent, pAplicacion, pMensaje);
+        call xsp_activar_existencia(pIdUsuario, pIdIngreso, (SELECT IdCanal FROM Ventas WHERE IdVenta = pIdVenta), pIP, pUserAgent, pAplicacion, pMensaje);
         IF pMensaje IS NULL OR pMensaje != 'OK' THEN
             SELECT COALESCE(pMensaje, 'Error en la transacción interna. Contáctese con el administrador.') Mensaje;
             ROLLBACK;
@@ -161,11 +161,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-			'C',
-			- pMontoPago,
-			'Pago de Venta',
-			NULL,
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta), 'C', - pMontoPago,
+			'Pago de Venta', (SELECT MedioPago FROM MediosPago WHERE IdMedioPago = pIdMedioPago),
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

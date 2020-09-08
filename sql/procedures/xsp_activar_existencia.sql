@@ -1,13 +1,12 @@
 DROP PROCEDURE IF EXISTS `xsp_activar_existencia`;
 DELIMITER $$
-CREATE PROCEDURE `xsp_activar_existencia`(pIdUsuario bigint, pIdIngreso bigint, pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50), out pMensaje text)
+CREATE PROCEDURE `xsp_activar_existencia`(pIdUsuario bigint, pIdIngreso bigint, pIdCanal bigint, pIP varchar(40), pUserAgent varchar(255), pAplicacion varchar(50), out pMensaje text)
 SALIR: BEGIN
     /*
 	Permite activar una existencia, controlando que tenga al menos una línea.
     Devuelve OK o el mensaje de error en Mensaje.
 	*/
     DECLARE pUsuario varchar(30);
-    DECLARE pIdCanal bigint;
 	-- Manejo de error en la transacción
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -34,20 +33,6 @@ SALIR: BEGIN
         LEAVE SALIR;
     END IF;
 
-    IF (SELECT IdRemito FROM Ingresos WHERE IdIngreso = pIdIngreso) IS NULL THEN
-        -- Es un ingreso de Cliente
-        SET pIdCanal = (
-            SELECT      v.IdCanal
-            FROM        Ventas v
-            INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
-            INNER JOIN  Ingresos i ON p.IdMedioPago = 2 AND p.Datos->>'$.IdIngreso' = i.IdIngreso
-            WHERE       i.IdIngreso = pIdIngreso
-        );
-    ELSE
-        -- Es un ingreso de Remito
-        SET pIdCanal = (SELECT r.IdCanal FROM Ingresos i INNER JOIN Remitos r USING(IdRemito) WHERE i.IdIngreso = pIdIngreso);
-    END IF;
-    
     UPDATE      ExistenciasConsolidadas ec
     INNER JOIN  Ingresos i USING(IdPuntoVenta)
     INNER JOIN  LineasIngreso li USING(IdIngreso, IdArticulo)
