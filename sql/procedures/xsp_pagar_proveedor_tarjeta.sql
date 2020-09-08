@@ -74,11 +74,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda al Proveedor
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			pIdProveedor,
-			'P',
-			pMontoPago,
-			'Pago al Proveedor',
-			NULL,
+			pIdProveedor, 'P', pMontoPago,
+			'Pago al Proveedor', (SELECT MedioPago FROM MediosPago WHERE IdMedioPago = pIdMedioPago),
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

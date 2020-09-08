@@ -11,12 +11,10 @@ SALIR:BEGIN
     * antiguo cheque vuelve a Disponible.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
+	DECLARE pIdUsuario, pIdChequeAntiguo, pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
-    DECLARE pIdChequeAntiguo bigint;
-    DECLARE pMensaje text;
-    DECLARE pMontoPago decimal(12, 2);
-    DECLARE pDiferencia decimal(12, 2);
+    DECLARE pMensaje, pDescripcion text;
+    DECLARE pDiferencia, pMontoPago decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -47,7 +45,11 @@ SALIR:BEGIN
         SELECT 'El pago indicado no es de tipo cheque.' Mensaje;
         LEAVE SALIR;
     END IF;
-    SET pIdChequeAntiguo = (SELECT IdCheque FROM Pagos WHERE IdPago = pIdPago);
+    SELECT      p.IdCheque, p.Codigo, mp.MedioPago
+    INTO        pIdChequeAntiguo, pIdCliente, pDescripcion
+    FROM        Pagos p
+    INNER JOIN  MediosPago mp USING(IdMedioPago)
+    WHERE       p.IdPago = pIdPago;
     IF(pIdChequeAntiguo != pIdCheque)THEN
         IF NOT EXISTS( SELECT IdCheque FROM Cheques WHERE IdCheque = pIdCheque AND Estado = 'D') THEN
             SELECT 'El cheque no existe, o no se encuentra disponible para el uso.' Mensaje;
@@ -109,11 +111,8 @@ SALIR:BEGIN
 
         -- Modifica la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT Codigo FROM Pagos WHERE IdPago = pIdPago),
-			'C',
-			- pDiferencia,
-			'Modifica Pago del Cliente',
-			NULL,
+			pIdCliente, 'C', - pDiferencia,
+			'Modifica Pago del Cliente', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

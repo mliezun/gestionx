@@ -13,14 +13,11 @@ SALIR:BEGIN
     * la venta a Pagado.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
-    DECLARE pIdVenta bigint;
+	DECLARE pIdUsuario, pIdVenta, pIdChequeAntiguo, pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
-    DECLARE pIdChequeAntiguo bigint;
-    DECLARE pMensaje text;
-    DECLARE pMontoPago decimal(12, 2);
-    DECLARE pDiferencia decimal(12, 2);
+    DECLARE pMensaje, pDescripcion text;
+    DECLARE pDiferencia, pMontoPago decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -59,7 +56,12 @@ SALIR:BEGIN
         SELECT 'El pago indicado no es de tipo cheque.' Mensaje;
         LEAVE SALIR;
     END IF;
-    SET pIdChequeAntiguo = (SELECT IdCheque FROM Pagos WHERE IdPago = pIdPago);
+    SELECT      p.IdCheque, p.Codigo, v.IdCliente, mp.MedioPago
+    INTO        pIdChequeAntiguo, pIdVenta, pIdCliente, pDescripcion
+    FROM        Ventas v
+    INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND Tipo = 'V'
+    INNER JOIN  MediosPago mp USING(IdMedioPago)
+    WHERE       p.IdPago = pIdPago;
     IF(pIdChequeAntiguo != pIdCheque)THEN
         IF NOT EXISTS( SELECT IdCheque FROM Cheques WHERE IdCheque = pIdCheque AND Estado = 'D') THEN
             SELECT 'El cheque no existe, o no se encuentra disponible para el uso.' Mensaje;
@@ -70,7 +72,6 @@ SALIR:BEGIN
         SET pFechaPago = NOW();
 	END IF;
 
-    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
     SET pMontoPago = (SELECT Importe FROM Cheques WHERE IdCheque = pIdCheque);
     IF ( pMontoPago
     + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
@@ -157,11 +158,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-			'C',
-			- pDiferencia,
-			'Modifica Pago de Venta',
-			NULL,
+			pIdCliente, 'C', - pDiferencia,
+			'Modifica Pago de Venta', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

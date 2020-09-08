@@ -26,8 +26,9 @@ class LineasForm extends Model
     {
         return [
             [['Cantidad', 'Precio'], 'double'],
-            [['Cantidad', 'Precio'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number'],
-            [['IdArticulo', 'Cantidad', 'Precio'], 'required'],
+            [['Cantidad'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number'],
+            [['Precio'], 'compare', 'compareValue' => 0, 'operator' => '>=', 'type' => 'number'],
+            [['IdArticulo', 'Cantidad'], 'required'],
             [['IdArticulo', 'Cantidad', 'Precio'], 'safe'],
         ];
     }

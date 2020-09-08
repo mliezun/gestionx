@@ -68,11 +68,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			pIdCliente,
-			'C',
-			- pMontoPago,
-			'Pago del Cliente',
-			NULL,
+			pIdCliente, 'C', - pMontoPago,
+			'Pago del Cliente', (SELECT MedioPago FROM MediosPago WHERE IdMedioPago = pIdMedioPago),
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

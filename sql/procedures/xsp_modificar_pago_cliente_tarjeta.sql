@@ -10,10 +10,10 @@ SALIR:BEGIN
     * Controlando que los datos de la tarjeta sean validos.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
+	DECLARE pIdUsuario, pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
-    DECLARE pMensaje text;
-    DECLARE pDiferencia decimal(12, 2);
+    DECLARE pMensaje, pDescripcion text;
+    DECLARE pDiferencia, pMontoAnterior decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -54,7 +54,13 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pDiferencia = pMontoPago - (SELECT Monto FROM Pagos WHERE IdPago = pIdPago);
+        SELECT      p.Monto, p.Codigo, mp.MedioPago
+        INTO        pMontoAnterior, pIdCliente, pDescripcion
+        FROM        Pagos p
+        INNER JOIN  MediosPago mp USING(IdMedioPago)
+        WHERE       p.IdPago = pIdPago;
+
+        SET pDiferencia = pMontoPago - pMontoAnterior;
 
         -- Audito el pago Antes
         INSERT INTO aud_Pagos
@@ -76,11 +82,8 @@ SALIR:BEGIN
 
         -- Modifica la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT Codigo FROM Pagos WHERE IdPago = pIdPago),
-			'C',
-			- pDiferencia,
-			'Modifica Pago del Cliente',
-			NULL,
+			pIdCliente, 'C', - pDiferencia,
+			'Modifica Pago del Cliente', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

@@ -15,6 +15,7 @@ SALIR:BEGIN
     DECLARE pMontoPago decimal(12, 2);
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
+    DECLARE pDescripcion text;
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -65,8 +66,12 @@ SALIR:BEGIN
         -- -- Borra Comprobante
         -- DELETE FROM Comprobantes WHERE IdPago = pIdPago;
 
-        SELECT Codigo, Monto INTO pIdVenta, pMontoPago
-        FROM Pagos WHERE IdPago=pIdPago;
+        SELECT      p.Monto, p.Codigo, mp.MedioPago
+        INTO        pMontoPago, pIdVenta, pDescripcion
+        FROM        Pagos p
+        INNER JOIN  MediosPago mp USING(IdMedioPago)
+        WHERE       p.IdPago = pIdPago;
+
         IF EXISTS( SELECT IdVenta FROM Ventas WHERE IdVenta=pIdVenta AND Estado='P')THEN
             -- Audito Antes la Venta
             INSERT INTO aud_Ventas
@@ -84,11 +89,8 @@ SALIR:BEGIN
 
         -- Aumenta la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-			'C',
-			pMontoPago,
-			'Borra Pago de Venta',
-			NULL,
+			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta), 'C', pMontoPago,
+			'Borra Pago de Venta', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

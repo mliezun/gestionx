@@ -11,10 +11,13 @@ SALIR:BEGIN
     DECLARE pIdUsuario bigint;
     DECLARE pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
-    DECLARE pMonto decimal(12, 2);
+    DECLARE pMonto, pMontoLinea decimal(12, 2);
     DECLARE pMontoAFavor decimal(12, 2);
     DECLARE pMontoPago decimal(12, 2);
     DECLARE pMensaje varchar(100);
+    DECLARE pDescripcion text;
+    DECLARE pIndiceLinea int default 0;
+    DECLARE pLineas json;
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -59,20 +62,43 @@ SALIR:BEGIN
                     Monto = 0
             WHERE   IdVenta = pIdVenta;
         ELSE
-            SET pIdCliente = (SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta);
-            SET pMonto = (SELECT COALESCE(SUM(Precio*Cantidad),0) FROM LineasVenta WHERE IdVenta = pIdVenta);
+            SELECT      COALESCE(SUM(lv.Precio * lv.Cantidad),0), v.IdCliente
+            INTO        pMonto, pIdCliente
+            FROM        Ventas v
+            INNER JOIN  LineasVenta lv ON lv.IdVenta = v.IdVenta
+            WHERE       v.IdVenta = pIdVenta;
+
             SET pMontoAFavor = (SELECT IF(Monto < 0, - Monto, 0) FROM CuentasCorrientes WHERE IdEntidad = pIdCliente AND Tipo = 'C');
 
-            -- Aumenta la deuda del Cliente
-            CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-                pIdCliente,'C', pMonto,
-                'Nueva Venta', NULL,
-                pIP, pUserAgent, pAplicacion, pMensaje);
-            IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
-                SELECT pMensaje Mensaje; 
-                ROLLBACK;
-                LEAVE SALIR;
-            END IF;
+            -- Busco las lineas venta asociados a la venta
+            SET pLineas = ( SELECT  COALESCE(JSON_ARRAYAGG(NroLinea), JSON_ARRAY())
+                            FROM    LineasVenta
+                            WHERE   IdVenta = pIdVenta
+            );
+
+            WHILE pIndiceLinea < JSON_LENGTH(pLineas) DO
+                -- Aumento la deuda del Cliente
+                SELECT      CONCAT(a.Articulo, ' x ', lv.Cantidad, ' [', pr.Proveedor, ']'), COALESCE((lv.Precio*lv.Cantidad),0)
+                INTO        pDescripcion, pMontoLinea
+                FROM        LineasVenta lv
+                INNER JOIN  Articulos a ON lv.IdArticulo = a.IdArticulo
+                INNER JOIN  Proveedores pr ON a.IdProveedor = pr.IdProveedor
+                WHERE       lv.IdVenta = pIdVenta
+                            AND lv.NroLinea = JSON_EXTRACT(pLineas, CONCAT('$[', pIndiceLinea, ']'));
+
+                -- Aumento la deuda del cliente
+                CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+                    pIdCliente,'C', pMontoLinea,
+                    'Venta', pDescripcion,
+                    pIP, pUserAgent, pAplicacion, pMensaje);
+                IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+                    SELECT pMensaje Mensaje; 
+                    ROLLBACK;
+                    LEAVE SALIR;
+                END IF;
+
+                SET pIndiceLinea = pIndiceLinea + 1;
+            END WHILE;
 
             IF pMontoAFavor > 0 THEN
                 SET pMontoPago = IF((pMontoAFavor - pMonto) < 0, pMontoAFavor, pMonto);
