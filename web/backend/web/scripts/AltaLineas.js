@@ -131,8 +131,7 @@ var AltaLineas = {
         },
         editarLinea: function (i) {
           var _this = this;
-          var uri =
-            urlBase + "/editar-linea/" + id;
+          var uri = urlBase + "/editar-linea/" + id;
           var precio = $(this.$refs.precio[i]).val();
           $.post(urlBase + "/editar-linea/" + id, {
             LineasForm: {

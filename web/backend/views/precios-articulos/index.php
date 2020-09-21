@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>Proveedor</th>
                                 <th>Codigo</th>
                                 <th>Descripcion</th>
-                                <th>Precio de compra</th>
+                                <th>Precio de lista</th>
                                 <th>Precios por Defecto</th>
                                 <th>Precios por Lista</th>
                                 <th>IVA</th>

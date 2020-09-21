@@ -35,7 +35,8 @@ class Articulos extends Model
         return [
             'IdProveedor' => 'Proveedor',
             'IdTipoIVA' => 'IVA',
-            'PreciosVenta' => 'Listas de precios'
+            'PreciosVenta' => 'Listas de precios',
+            'PrecioCosto' => 'Precio de lista'
         ];
     }
 

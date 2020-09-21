@@ -59,7 +59,7 @@ BEGIN
         INNER JOIN  Proveedores pr USING(IdProveedor)
         INNER JOIN  PuntosVenta pv ON v.IdPuntoVenta = pv.IdPuntoVenta
         INNER JOIN  Usuarios u ON v.IdUsuario = u.IdUsuario
-        WHERE       v.IdEmpresa = pIdEmpresa AND
+        WHERE       v.IdEmpresa = pIdEmpresa AND v.Estado IN ("A", "P") AND
                     (v.FechaAlta BETWEEN pFechaInicio AND CONCAT(pFechaFin, ' 23:59:59')) AND 
                     v.IdPuntoVenta = IF(pIdPuntoVenta = 0, v.IdPuntoVenta, pIdPuntoVenta)
                     AND (pTipoVenta = 'T' OR IF(pTipoVenta = 'Z', v.Tipo IN ('P', 'V'), v.Tipo = pTipoVenta))
