@@ -66,6 +66,9 @@ var AltaLineas = {
           var _this = this;
           var idArticulo = $(this.$refs.articulo).val();
           var precio = $(this.$refs.precio).val();
+          if (!String(precio).trim()) {
+            precio = 0;
+          }
           //.replace(".", "")
           //.replace(",", ".");
           $.post(urlBase + "/agregar-linea/" + id, {
