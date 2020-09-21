@@ -36,7 +36,7 @@ SALIR: BEGIN
         SET pIdCanal = (SELECT r.IdCanal FROM Ingresos i INNER JOIN Remitos r USING(IdRemito) WHERE i.IdIngreso = pIdIngreso);
     END IF;
 
-    IF EXISTS (
+    IF NOT EXISTS (
                 SELECT      ec.IdArticulo
                 FROM        LineasIngreso li 
                 INNER JOIN  Ingresos i USING(IdIngreso)
@@ -44,7 +44,7 @@ SALIR: BEGIN
                 WHERE       i.IdIngreso = pIdIngreso AND i.Estado = 'A'
                             AND ec.IdCanal = pIdCanal
                 GROUP BY    IdArticulo
-                HAVING      SUM(li.Cantidad) > SUM(ec.Cantidad) 
+                HAVING      SUM(li.Cantidad) < SUM(ec.Cantidad) 
             ) THEN
         SET pMensaje = 'No hay suficientes existencias de los artículos que intenta borrar.';
         LEAVE SALIR;

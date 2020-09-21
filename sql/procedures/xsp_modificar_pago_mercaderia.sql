@@ -12,15 +12,11 @@ SALIR:BEGIN
     * la venta a Pagado.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
-    DECLARE pIdVenta bigint;
+	DECLARE pIdUsuario, pIdVenta, pIdRemitoAntiguo, pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
-    DECLARE pIdRemitoAntiguo bigint;
-    DECLARE pMontoPago decimal(12,2);
-    DECLARE pIdCliente bigint;
-    DECLARE pMensaje text;
-    DECLARE pDiferencia decimal(12, 2);
+    DECLARE pMensaje, pDescripcion text;
+    DECLARE pDiferencia, pMontoPago decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -59,7 +55,12 @@ SALIR:BEGIN
         SELECT 'El pago indicado no es de tipo mercaderia.' Mensaje;
         LEAVE SALIR;
     END IF;
-    SET pIdRemitoAntiguo = (SELECT IdRemito FROM Pagos WHERE IdPago = pIdPago);
+    SELECT      p.IdRemito, p.Codigo, v.IdCliente, mp.MedioPago
+    INTO        pIdRemitoAntiguo, pIdVenta, pIdCliente, pDescripcion
+    FROM        Ventas v
+    INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND Tipo = 'V'
+    INNER JOIN  MediosPago mp USING(IdMedioPago)
+    WHERE       p.IdPago = pIdPago;
     IF(pIdRemitoAntiguo != pIdRemito)THEN
         IF NOT EXISTS(SELECT Estado FROM Remitos WHERE IdRemito = pIdRemito AND Estado = 'A') THEN
             SELECT 'El remito no existe, o no se encuentra activo.' Mensaje;
@@ -76,7 +77,6 @@ SALIR:BEGIN
 
     SET pMontoPago = (SELECT COALESCE(SUM(li.Cantidad*li.Precio),0) FROM Ingresos i 
         INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito);
-    SET pIdVenta = (SELECT Codigo FROM Pagos WHERE IdPago = pIdPago);
 
     IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
     > (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
@@ -95,7 +95,6 @@ SALIR:BEGIN
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
         SET pDiferencia = 0;
         IF(pIdRemito != pIdRemitoAntiguo)THEN
-            SET pIdCliente = (SELECT IdCliente FROM Remitos WHERE IdRemito = pIdRemitoAntiguo);
             -- Audito Antes el remito Antiguo
             INSERT INTO aud_Remitos
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'MODIFICA_PAGO', 'A',
@@ -114,7 +113,7 @@ SALIR:BEGIN
             SELECT 0, NOW(), CONCAT(pIdUsuario,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'PAGO', 'A',
             Remitos.* FROM Remitos WHERE IdRemito = pIdRemito;
             -- Modifica Remito
-            UPDATE Remitos
+            UPDATE  Remitos
             SET		IdCliente=pIdCliente
             WHERE	IdRemito=pIdRemito;
             -- Despues Remito
@@ -164,11 +163,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-			'C',
-			- pDiferencia,
-			'Modifica Pago de Venta',
-			NULL,
+			pIdCliente, 'C', - pDiferencia,
+			'Modifica Pago de Venta', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

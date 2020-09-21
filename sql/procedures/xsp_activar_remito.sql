@@ -7,9 +7,13 @@ SALIR:BEGIN
     Permite cambiar el estado del Remito a Activo siempre y cuando el estado actual sea Edicion o Ingresado.
 	Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
+	DECLARE pIdUsuario, pIdProveedor bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
+	DECLARE pMontoLinea decimal(12, 2);
+	DECLARE pDescripcion text;
+    DECLARE pIndiceLinea int default 0;
+    DECLARE pLineas json;
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -44,7 +48,7 @@ SALIR:BEGIN
 
 		IF NOT EXISTS(SELECT Estado FROM Remitos WHERE IdRemito = pIdRemito AND Estado = 'I') THEN
 			-- Si no fue ingresado activo el ingreso
-			CALL xsp_activar_existencia(pIdUsuario, (SELECT IdIngreso FROM Ingresos WHERE IdRemito=pIdRemito), pIP, pUserAgent, pAplicacion, pMensaje);
+			CALL xsp_activar_existencia(pIdUsuario, (SELECT IdIngreso FROM Ingresos WHERE IdRemito=pIdRemito), (SELECT IdCanal FROM Remitos WHERE IdRemito=pIdRemito), pIP, pUserAgent, pAplicacion, pMensaje);
 			IF pMensaje != 'OK' THEN
 				SELECT pMensaje Mensaje; 
 				ROLLBACK;
@@ -52,22 +56,37 @@ SALIR:BEGIN
 			END IF;
 		END IF;
 
-		-- Aumenta la deuda al Proveedor
-		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito),
-			'P',
-			(	SELECT COALESCE(- SUM(li.Cantidad * li.Precio), 0)
-				FROM Ingresos i
-				INNER JOIN  LineasIngreso li USING(IdIngreso)
-				WHERE i.IdRemito = pIdRemito),
-			'Compra al Proveedor',
-			NULL,
-			pIP, pUserAgent, pAplicacion, pMensaje);
-		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
-			SELECT pMensaje Mensaje; 
-			ROLLBACK;
-			LEAVE SALIR;
-		END IF;
+		-- Busco las lineas venta asociados a la compra
+		SET pLineas = ( SELECT  COALESCE(JSON_ARRAYAGG(li.NroLinea), JSON_ARRAY())
+						FROM Ingresos i
+						INNER JOIN  LineasIngreso li USING(IdIngreso)
+						WHERE i.IdRemito = pIdRemito
+		);
+		SET pIdProveedor = (SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito);
+
+		WHILE pIndiceLinea < JSON_LENGTH(pLineas) DO
+			-- Aumento la deuda del Cliente
+			SELECT		CONCAT(a.Articulo, ' x ', li.Cantidad), COALESCE(- (li.Cantidad * li.Precio), 0)
+			INTO		pDescripcion, pMontoLinea
+			FROM 		Ingresos i
+			INNER JOIN  LineasIngreso li USING(IdIngreso)
+			INNER JOIN  Articulos a ON li.IdArticulo = a.IdArticulo
+			WHERE 		i.IdRemito = pIdRemito
+						AND li.NroLinea = JSON_EXTRACT(pLineas, CONCAT('$[', pIndiceLinea, ']'));
+
+			-- Aumenta la deuda al Proveedor
+			CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
+				pIdProveedor, 'P', pMontoLinea,
+				'Compra', pDescripcion,
+				pIP, pUserAgent, pAplicacion, pMensaje);
+			IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
+				SELECT pMensaje Mensaje; 
+				ROLLBACK;
+				LEAVE SALIR;
+			END IF;
+
+			SET pIndiceLinea = pIndiceLinea + 1;
+		END WHILE;
 
 		-- Activa Remito
 		UPDATE Remitos SET Estado = 'A' WHERE IdRemito = pIdRemito;

@@ -542,6 +542,17 @@ INSERT INTO PermisosRolGenerico VALUES(136, 2);
 INSERT INTO PermisosRolGenerico VALUES(145, 2);
 INSERT INTO PermisosRolGenerico VALUES(150, 2);
 INSERT INTO PermisosRolGenerico VALUES(151, 2);
+INSERT INTO PermisosRolGenerico VALUES(162, 2);
+INSERT INTO PermisosRolGenerico VALUES(163, 2);
+INSERT INTO PermisosRolGenerico VALUES(164, 2);
+INSERT INTO PermisosRolGenerico VALUES(165, 2);
+INSERT INTO PermisosRolGenerico VALUES(166, 2);
+INSERT INTO PermisosRolGenerico VALUES(167, 2);
+INSERT INTO PermisosRolGenerico VALUES(168, 2);
+INSERT INTO PermisosRolGenerico VALUES(169, 2);
+INSERT INTO PermisosRolGenerico VALUES(170, 2);
+INSERT INTO PermisosRolGenerico VALUES(171, 2);
+INSERT INTO PermisosRolGenerico VALUES(172, 2);
 INSERT INTO PermisosRolGenerico VALUES(174, 2);
 INSERT INTO PermisosRolGenerico VALUES(175, 2);
 

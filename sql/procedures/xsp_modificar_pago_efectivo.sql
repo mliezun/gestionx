@@ -10,12 +10,11 @@ SALIR:BEGIN
     * la venta a Pagado.
 	* Devuelve OK o el mensaje de error en Mensaje.
     */
-	DECLARE pIdUsuario bigint;
-    DECLARE pIdVenta bigint;
+	DECLARE pIdUsuario, pIdVenta, pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMotivo varchar(100);
-    DECLARE pMensaje text;
-    DECLARE pDiferencia decimal(12, 2);
+    DECLARE pMensaje, pDescripcion text;
+    DECLARE pDiferencia, pMontoAnterior decimal(12, 2);
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -74,7 +73,14 @@ SALIR:BEGIN
 
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SET pDiferencia = pMontoPago - (SELECT Monto FROM Pagos WHERE IdPago = pIdPago);
+        SELECT      p.Monto, v.IdCliente, mp.MedioPago
+        INTO        pMontoAnterior, pIdCliente, pDescripcion
+        FROM        Ventas v
+        INNER JOIN  Pagos p ON p.Codigo = v.IdVenta AND Tipo = 'V'
+        INNER JOIN  MediosPago mp USING(IdMedioPago)
+        WHERE       p.IdPago = pIdPago;
+
+        SET pDiferencia = pMontoPago - pMontoAnterior;
         IF (pMontoPago + (SELECT COALESCE(SUM(Monto),0) FROM Pagos WHERE Codigo = pIdVenta AND Tipo = 'V' AND IdPago != pIdPago)
         < (SELECT Monto FROM Ventas WHERE IdVenta = pIdVenta)) THEN
             SET pMotivo='MODIFICA';
@@ -110,11 +116,8 @@ SALIR:BEGIN
 
         -- Disminuye la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			(SELECT IdCliente FROM Ventas WHERE IdVenta = pIdVenta),
-			'C',
-			- pDiferencia,
-			'Modifica Pago de Venta',
-			NULL,
+			pIdCliente, 'C', - pDiferencia,
+			'Modifica Pago de Venta', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 

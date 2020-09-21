@@ -13,6 +13,7 @@ SALIR:BEGIN
     DECLARE pMontoPago decimal(12, 2);
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
+    DECLARE pDescripcion text;
     -- Manejo de error en la transacción    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -28,8 +29,11 @@ SALIR:BEGIN
 	END IF;
     START TRANSACTION;
 		SET pUsuario = (SELECT Usuario FROM Usuarios WHERE IdUsuario = pIdUsuario);
-        SELECT Monto, Codigo INTO pMontoPago, pIdCliente
-        FROM Pagos WHERE IdPago = pIdPago;
+        SELECT      p.Monto, p.Codigo, mp.MedioPago
+        INTO        pMontoPago, pIdCliente, pDescripcion
+        FROM        Pagos p
+        INNER JOIN  MediosPago mp USING(IdMedioPago)
+        WHERE       p.IdPago = pIdPago;
 
         IF EXISTS(SELECT IdCheque FROM Pagos WHERE IdCheque IS NOT NULL AND IdPago = pIdPago) THEN
             SET pIdCheque = (SELECT IdCheque FROM Pagos WHERE IdPago = pIdPago);
@@ -49,11 +53,8 @@ SALIR:BEGIN
 
         -- Aumenta la deuda del Cliente
 		CALL xsp_modificar_cuenta_corriente(pIdUsuario, 
-			pIdCliente,
-			'C',
-			pMontoPago,
-			'Borra Pago al Cliente',
-			NULL,
+			pIdCliente, 'C', pMontoPago,
+			'Borra Pago al Cliente', pDescripcion,
 			pIP, pUserAgent, pAplicacion, pMensaje);
 		IF SUBSTRING(pMensaje, 1, 2) != 'OK' THEN
 			SELECT pMensaje Mensaje; 
