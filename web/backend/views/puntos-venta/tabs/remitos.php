@@ -90,7 +90,7 @@ use yii\widgets\LinkPager;
                             <?php foreach ($models as $model): ?>
                                 <tr>
                                     <td>
-                                        <?php if ($model['NroRemito'] == '' OR $model['NroRemito'] == NULL) : ?>
+                                        <?php if ($model['NroRemito'] == '' or $model['NroRemito'] == null) : ?>
                                             <?= Html::encode("-") ?>
                                         <?php else: ?>
                                             <?= Html::encode($model['NroRemito']) ?>
@@ -115,14 +115,14 @@ use yii\widgets\LinkPager;
                                                     <i class="fas fa-clipboard-list"></i>
                                                 </a>
                                             <?php endif; ?>
-                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I' ) :?>
-                                                <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
-                                                    <button type="button" class="btn btn-default"
-                                                            data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
-                                                            data-hint="Modificar">
-                                                        <i class="fa fa-edit" style="color: dodgerblue"></i>
-                                                    </button>
-                                                <?php endif; ?>
+                                            <?php if (PermisosHelper::tienePermiso('ModificarRemito')) : ?>
+                                                <button type="button" class="btn btn-default"
+                                                        data-modal="<?= Url::to(['remitos/editar', 'id' => $model['IdRemito']]) ?>"
+                                                        data-hint="Modificar">
+                                                    <i class="fa fa-edit" style="color: dodgerblue"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if ($model['Estado'] == 'E' or $model['Estado'] == 'I') :?>
                                                 <?php if ($model['Estado'] == 'E' and PermisosHelper::tienePermiso('IngresarRemito')) : ?>
                                                     <button type="button" class="btn btn-default"
                                                             data-mensaje="¿Desea cargas las líneas el remito?<br/>

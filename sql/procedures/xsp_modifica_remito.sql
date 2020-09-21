@@ -75,10 +75,12 @@ SALIR: BEGIN
 	-- 	SELECT 'El CAI ya existe.' Mensaje;
 	-- 	LEAVE SALIR;
 	-- END IF;
+	/*
 	IF NOT EXISTS(SELECT Estado FROM Remitos WHERE IdRemito = pIdRemito AND Estado IN ('E', 'I')) THEN
 		SELECT 'Solo se puede modificar un remito en estado de edicion.' Mensaje;
       LEAVE SALIR;
 	END IF;
+	*/
 	SET pIdProveedorAntiguo = (SELECT IdProveedor FROM Remitos WHERE IdRemito = pIdRemito);
 	IF pIdProveedorAntiguo != pIdProveedor THEN
 		IF EXISTS(SELECT li.NroLinea FROM Ingresos i INNER JOIN LineasIngreso li USING(IdIngreso) WHERE i.IdRemito = pIdRemito) THEN
