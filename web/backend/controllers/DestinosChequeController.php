@@ -7,7 +7,7 @@ use common\models\DestinosCheque;
 use common\models\GestorDestinosCheque;
 use common\models\forms\BuscarForm;
 use common\models\forms\AuditoriaForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;

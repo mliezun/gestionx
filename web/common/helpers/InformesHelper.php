@@ -5,6 +5,26 @@ namespace common\helpers;
 class InformesHelper
 {
     /**
+     * Devuelve el valor como string en el formato indicado a partir
+     * del nombre de la columna.
+     *
+     * @param columna String con el nombre de la columna
+     * @param valor Mixed con el valor
+     */
+    private static function formatearValor($columna, $valor)
+    {
+        if (!isset($valor)) {
+            return '';
+        }
+        if (strpos($columna, 'Fecha') !== false) {
+            return FechaHelper::formatearDatetimeLocal($valor);
+        } elseif (substr($columna, 0, 1) === '$') {
+            return FormatoHelper::formatearMonto($valor);
+        }
+        return strval($valor);
+    }
+
+    /**
      * Permite expandir valores a un array asociativo que contenga
      * los nombres de las columnas y los valores finales agrupados.
      *
@@ -65,15 +85,10 @@ class InformesHelper
         }
 
         /**
-         * Si no hay elementos para expandir devuelvo el array como estaba.
-         */
-        if (count($columnas) === 0) {
-            return NinjaArrayHelper::deepMap($informe, 'strval');
-        }
-
-        /**
          * Itero las filas del informe y voy expandiendo todas las columnas
          * que estén almacenadas en la variable $columnas.
+         *
+         * Formateo los valores según el tipo de columna.
          */
         foreach ($informe as $fila) {
             $new_fila = array();
@@ -81,20 +96,23 @@ class InformesHelper
                 if (StringsHelper::endsWith($key, 'JsonGroupValues')) {
                     $entidad = str_replace($key, 'JsonGroupValues', '');
                     $datos = json_decode($val, true);
-                    $new_fila = array_merge($new_fila, self::expandirValores(
+                    $new_columns = self::expandirValores(
                         $columnas[$entidad],
                         $datos['Values'] ?? [],
                         $datos['GroupBy'] ?? null,
                         $datos['ReduceBy'] ?? null,
                         $datos['ReduceFn'] ?? 'function () { return null; }'
-                    ));
+                    );
+                    foreach ($new_columns as $key => $val) {
+                        $new_fila[$key] = self::formatearValor($key, $val);
+                    }
                 } elseif (!StringsHelper::endsWith($key, 'JsonGroupKeys')) {
-                    $new_fila[$key] = $val;
+                    $new_fila[$key] = self::formatearValor($key, $val);
                 }
             }
             $out[] = $new_fila;
         }
 
-        return NinjaArrayHelper::deepMap($out, 'strval');
+        return $out;
     }
 }

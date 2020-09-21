@@ -50,12 +50,12 @@ SALIR: BEGIN
         LEAVE SALIR;
     END IF;
 
-    IF EXISTS (SELECT IdIngreso FROM Ingresos WHERE IdIngreso = pIdIngreso AND Estado = 'A') THEN
+    IF EXISTS (SELECT IdIngreso FROM Ingresos WHERE IdIngreso = pIdIngreso AND Estado IN ('A', 'I')) THEN
         UPDATE      ExistenciasConsolidadas ec
         INNER JOIN  Ingresos i USING(IdPuntoVenta)
         INNER JOIN  LineasIngreso li USING(IdIngreso, IdArticulo)
         SET         ec.Cantidad = ec.Cantidad - li.Cantidad
-        WHERE       i.IdIngreso = pIdIngreso AND i.Estado = 'A'
+        WHERE       i.IdIngreso = pIdIngreso AND i.Estado IN ('A', 'I')
                     AND ec.IdCanal = pIdCanal;
     END IF;
 

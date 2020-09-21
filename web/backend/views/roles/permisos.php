@@ -1,7 +1,7 @@
 <?php
 
 use backend\assets\RolesAsset;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;

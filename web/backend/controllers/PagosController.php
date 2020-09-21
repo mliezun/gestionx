@@ -17,7 +17,7 @@ use common\models\GestorTiposTributos;
 use common\models\GestorCheques;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;

@@ -7,7 +7,7 @@ use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use common\models\PuntosVenta;
 use common\models\forms\BuscarForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\models\GestorProveedores;
 use common\models\GestorRemitos;
 use common\models\GestorRoles;

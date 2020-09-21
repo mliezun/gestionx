@@ -13,7 +13,7 @@ use common\models\GestorTiposTributos;
 use common\models\GestorPuntosVenta;
 use common\models\forms\BuscarForm;
 use common\models\forms\LineasForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\components\ComprobanteHelper;
 use common\components\EmailHelper;
 use Yii;

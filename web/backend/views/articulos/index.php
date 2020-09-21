@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>Codigo</th>
                     <th>Descripcion</th>
                     <?php if (PermisosHelper::tienePermiso('VerPrecioArticulo')) : ?>
-                        <th>Precio de compra</th>
+                        <th>Precio de lista</th>
                     <?php endif; ?>
                     <?php foreach (json_decode($models[0]['PreciosVenta']) as $nombre => $valor): ?>
                         <th><?= Html::encode('Precio ' . $nombre) ?></th>

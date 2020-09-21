@@ -40,7 +40,7 @@ BEGIN
                 )
                 AND IF(pTipo = 'P', IdCliente IS NULL, 1)
                 AND IF(pTipo = 'C', IdCliente IS NOT NULL, 1)
-    ORDER BY    c.FechaVencimiento ASC;
+    ORDER BY    c.FechaAlta desc, c.FechaVencimiento ASC;
 END$$
 
 DELIMITER ;

@@ -2,7 +2,7 @@
 
 namespace backend\models;
 
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use yii\helpers\ArrayHelper;
 use Yii;
 

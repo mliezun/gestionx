@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use common\components\InformesHelper;
+use common\helpers\InformesHelper;
 use yii\base\Model;
 use Yii;
 
@@ -123,7 +123,7 @@ class GestorReportes extends Model
             ':id' => $Id
         ]);
 
-        return $query->queryOne();
+        return $query->queryAll();
     }
 
     /**

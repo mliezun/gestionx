@@ -11,8 +11,8 @@ SALIR:BEGIN
     
     SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
     
-    SET pProcLlenado = (SELECT ProcLlenado FROM ParamsReportes WHERE IdModeloReporte = pIdModeloReporte AND NroParametro = pNroParametro AND Tipo IN('L','A'));
-    SET pTipo = (SELECT Tipo FROM ParamsReportes WHERE IdModeloReporte = pIdModeloReporte AND NroParametro = pNroParametro AND Tipo IN ('L','A'));
+    SET pProcLlenado = (SELECT ProcLlenado FROM ParamsReportes WHERE IdModeloReporte = pIdModeloReporte AND NroParametro = pNroParametro AND Tipo IN('L','A', 'S'));
+    SET pTipo = (SELECT Tipo FROM ParamsReportes WHERE IdModeloReporte = pIdModeloReporte AND NroParametro = pNroParametro AND Tipo IN ('L','A', 'S'));
     IF pProcLlenado IS NULL THEN
 		SELECT 0 Id, 'ERROR' Nombre;
         LEAVE SALIR;
@@ -21,7 +21,7 @@ SALIR:BEGIN
 		CALL xsp_eval(CONCAT('call ', pProcLlenado, '("', pIdEmpresa, '");'));
 	ELSE
 		CALL xsp_eval(CONCAT('call ', pProcLlenado, '("', pIdEmpresa, '", \'',REPLACE(pCadena,"'","\\'"),'\');'));
-    END IF;
+  END IF;
     
     SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 END$$

@@ -23,7 +23,9 @@ SALIR: BEGIN
             AND (pIncluyeBajas = 'S' OR a.Estado = 'A')
             AND (pIncluyeBajasListas = 'S' OR lp.Estado = 'A')
     GROUP BY a.IdArticulo
-    LIMIT pOffset, pLimit;
+    ORDER BY p.Proveedor, a.Articulo
+    LIMIT pOffset, pLimit
+    ;
 END$$
 
 DELIMITER ;

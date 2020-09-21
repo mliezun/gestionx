@@ -8,7 +8,7 @@ use common\models\GestorRoles;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use common\models\forms\CambiarPasswordForm;
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\components\EmailHelper;
 use Yii;
 use yii\data\Pagination;

@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use common\components\PermisosHelper;
+use common\helpers\PermisosHelper;
 use common\models\Empresa;
 use common\models\forms\BuscarForm;
 use Yii;
