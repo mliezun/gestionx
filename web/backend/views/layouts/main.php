@@ -129,6 +129,13 @@ $this->registerJs('Main.init()');
                         </div>
                     </div>
                 </div>
+                <?php
+                foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
+                    echo '<div class="alert alert-' . $key . ' alert-dismissable">'
+                    . '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'
+                    . $message . '</div>';
+                }
+                ?>
                 <?= $content ?>
             </div>
         </div>

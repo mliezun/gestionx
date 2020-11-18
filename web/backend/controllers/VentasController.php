@@ -262,12 +262,17 @@ class VentasController extends BaseController
 
         $params = Yii::$app->session->get('Parametros');
 
-        $res = ComprobanteHelper::ImprimirComprobante($params, $comprobante, $venta->Tipo === 'V');
-
-        return Yii::$app->response->sendContentAsFile($res, 'Factura.pdf', [
-            'inline' => true,
-            'mimeType' => 'application/pdf'
-        ]);
+        try {
+            $res = ComprobanteHelper::ImprimirComprobante($params, $comprobante, $venta->Tipo === 'V');
+            return Yii::$app->response->sendContentAsFile($res, 'Factura.pdf', [
+                'inline' => true,
+                'mimeType' => 'application/pdf'
+            ]);
+        } catch (Exception $ex) {
+            $msgAfip = $ex->getMessage();
+            Yii::$app->session->setFlash('danger', 'No se pudo imprimir la factura. AFIP: ' . $msgAfip);
+            return $this->redirect("/puntos-venta/operaciones/{$venta->IdPuntoVenta}?tab=Ventas");
+        }
     }
 
     public function actionListarComprobantes()
