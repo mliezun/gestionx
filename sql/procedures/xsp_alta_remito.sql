@@ -10,7 +10,7 @@ SALIR:BEGIN
 	* no exista ya dentro del mismo proveedor.
 	* Devuelve OK + Id o el mensaje de error en Mensaje.
     */
-	DECLARE pIdRemito tinyint;
+	DECLARE pIdRemito bigint;
     DECLARE pIdUsuario bigint;
 	DECLARE pUsuario varchar(30);
     DECLARE pMensaje varchar(100);
