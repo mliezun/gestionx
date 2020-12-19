@@ -7,6 +7,8 @@ use yii\web\HttpException;
 use afipsdk;
 use Yii;
 use common\utils\AfipWrapper;
+use common\helpers\FechaHelper;
+use common\helpers\NinjaArrayHelper;
 
 class ComprobanteHelper
 {
@@ -71,8 +73,7 @@ class ComprobanteHelper
             // Número de comprobante o numero del último comprobante en caso de ser mas de uno
             'CbteHasta' 	=> intval($datos['NroComprobante']),
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
-            // 'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
-            'CbteFch' => date('Ymd', strtotime($datos['FechaGenerado'])),
+            'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
             // Importe total del comprobante
             'ImpTotal' 	=> $datos['Total'],
             // Importe neto no gravado
