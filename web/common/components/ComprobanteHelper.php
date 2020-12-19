@@ -72,7 +72,7 @@ class ComprobanteHelper
             'CbteHasta' 	=> intval($datos['NroComprobante']),
             // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             // 'CbteFch' 	=> FechaHelper::fechaAfip($datos['FechaGenerado']),
-            'CbteFch' => date('Ymd'),
+            'CbteFch' => date('Ymd', strtotime($datos['FechaGenerado'])),
             // Importe total del comprobante
             'ImpTotal' 	=> $datos['Total'],
             // Importe neto no gravado
