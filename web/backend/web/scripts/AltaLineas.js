@@ -12,6 +12,8 @@ var AltaLineas = {
           lineas: lineas,
           options: [],
           cantidad: "",
+          // flag de sincronizacion
+          agregando: false,
         };
       },
       computed: {
@@ -63,14 +65,16 @@ var AltaLineas = {
           this.doAgregar();
         },
         doAgregar: function (optionalCallback) {
+          if (this.agregando) {
+            return;
+          }
           var _this = this;
           var idArticulo = $(this.$refs.articulo).val();
           var precio = $(this.$refs.precio).val();
           if (!String(precio).trim()) {
             precio = 0;
           }
-          //.replace(".", "")
-          //.replace(",", ".");
+          this.agregando = true;
           $.post(urlBase + "/agregar-linea/" + id, {
             LineasForm: {
               IdArticulo: idArticulo,
@@ -79,6 +83,7 @@ var AltaLineas = {
             },
           })
             .done(function (data) {
+              this.agregando = false;
               let error = false;
               if (data.error) {
                 _this.mostrarMensaje("danger", data.error, "ban");
@@ -100,6 +105,7 @@ var AltaLineas = {
               }
             })
             .catch(function (err) {
+              this.agregando = false;
               console.log(err);
               _this.mostrarMensaje(
                 "danger",

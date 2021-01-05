@@ -268,7 +268,7 @@ class VentasController extends BaseController
                 'inline' => true,
                 'mimeType' => 'application/pdf'
             ]);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $msgAfip = $ex->getMessage();
             Yii::$app->session->setFlash('danger', 'No se pudo imprimir la factura. AFIP: ' . $msgAfip);
             return $this->redirect("/puntos-venta/operaciones/{$venta->IdPuntoVenta}?tab=Ventas");
