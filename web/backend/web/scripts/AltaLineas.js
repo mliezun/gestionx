@@ -60,6 +60,9 @@ var AltaLineas = {
           for (let i = 0; i < this.lineas.length; i++) {
             $(this.$refs.precio[i]).val(this.lineas[i].Precio);
           }
+          if (model.IdVenta) {
+            _this.acumularLineas();
+          }
         },
         agregar: function () {
           this.doAgregar();
@@ -83,7 +86,7 @@ var AltaLineas = {
             },
           })
             .done(function (data) {
-              this.agregando = false;
+              _this.agregando = false;
               let error = false;
               if (data.error) {
                 _this.mostrarMensaje("danger", data.error, "ban");
@@ -105,7 +108,7 @@ var AltaLineas = {
               }
             })
             .catch(function (err) {
-              this.agregando = false;
+              _this.agregando = false;
               console.log(err);
               _this.mostrarMensaje(
                 "danger",
@@ -210,9 +213,9 @@ var AltaLineas = {
                 } else {
                   window.open(
                     "/puntos-venta/operaciones/" +
-                      _this.ingreso.IdPuntoVenta +
-                      "?tab=" +
-                      (model.IdRemito ? "Remitos" : "Ventas"),
+                    _this.ingreso.IdPuntoVenta +
+                    "?tab=" +
+                    (model.IdRemito ? "Remitos" : "Ventas"),
                     "_self"
                   );
                 }
@@ -254,9 +257,9 @@ var AltaLineas = {
                 } else {
                   window.open(
                     "/puntos-venta/operaciones/" +
-                      _this.ingreso.IdPuntoVenta +
-                      "?tab=" +
-                      (model.IdRemito ? "Remitos" : "Ventas"),
+                    _this.ingreso.IdPuntoVenta +
+                    "?tab=" +
+                    (model.IdRemito ? "Remitos" : "Ventas"),
                     "_self"
                   );
                 }

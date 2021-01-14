@@ -43,7 +43,7 @@ SALIR: BEGIN
         SELECT 0, NOW(), CONCAT(pIdUsuarioGestion,'@',pUsuario), pIP, pUserAgent, pAplicacion, 'BORRA', 'A', LineasVenta.*
         FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo;
         -- Borro
-        SET pCantidad = (SELECT Cantidad FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo);
+        SET pCantidad = (SELECT SUM(Cantidad) FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo);
         DELETE FROM LineasVenta WHERE IdVenta = pIdVenta AND IdArticulo = pIdArticulo;
 
         IF (pConsumeStock = 'S') THEN
