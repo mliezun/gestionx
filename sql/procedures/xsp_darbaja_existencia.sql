@@ -53,7 +53,12 @@ SALIR: BEGIN
     IF EXISTS (SELECT IdIngreso FROM Ingresos WHERE IdIngreso = pIdIngreso AND Estado IN ('A', 'I')) THEN
         UPDATE      ExistenciasConsolidadas ec
         INNER JOIN  Ingresos i USING(IdPuntoVenta)
-        INNER JOIN  LineasIngreso li USING(IdIngreso, IdArticulo)
+        INNER JOIN  (
+                        select  IdIngreso, IdArticulo, sum(Cantidad) Cantidad
+                        from    LineasIngreso 
+                        where   IdIngreso = pIdIngreso 
+                        group by IdIngreso, IdArticulo
+                    ) li USING(IdIngreso, IdArticulo)
         SET         ec.Cantidad = ec.Cantidad - li.Cantidad
         WHERE       i.IdIngreso = pIdIngreso AND i.Estado IN ('A', 'I')
                     AND ec.IdCanal = pIdCanal;
