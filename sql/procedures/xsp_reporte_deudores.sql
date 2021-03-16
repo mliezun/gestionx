@@ -15,16 +15,26 @@ BEGIN
         CREATE TEMPORARY TABLE tmp_inf_deudores
             SELECT      IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente,
                         SUM(v.Monto) 'Monto Total',
-                        COALESCE(SUM(COALESCE(p.Monto, 0)), 0) 'Monto Pagado',
-                        SUM(v.Monto) - COALESCE(SUM(COALESCE(p.Monto, 0)), 0) Deuda,
+                        COALESCE(tt1.Pagado, 0) 'Monto Pagado',
+                        SUM(v.Monto) - COALESCE(tt1.Pagado, 0) Deuda,
                         GROUP_CONCAT(DISTINCT pv.PuntoVenta) `Punto de Venta`
             FROM        Ventas v
             INNER JOIN  Clientes cl USING(IdCliente)
             INNER JOIN  PuntosVenta pv ON v.IdPuntoVenta = pv.IdPuntoVenta
-            LEFT JOIN   Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
+            INNER JOIN  (
+                            SELECT      cl.IdCliente,
+                                        COALESCE(SUM(COALESCE(p.Monto, 0)), 0) 'Pagado'
+                            FROM        Ventas v
+                            INNER JOIN  Clientes cl USING(IdCliente)
+                            LEFT JOIN   Pagos p ON p.Codigo = v.IdVenta AND p.Tipo = 'V'
+                            WHERE       v.IdEmpresa = pIdEmpresa
+                                        AND (v.Tipo IN ('P', 'V'))
+                                        AND (v.Estado NOT IN ('D'))
+                            GROUP BY    cl.IdCliente
+                        ) AS tt1 ON tt1.IdCliente = cl.IdCliente
             WHERE       v.IdEmpresa = pIdEmpresa
                         AND (v.Tipo IN ('P', 'V'))
-                        AND (v.Estado IN ('A'))
+                        AND (v.Estado NOT IN ('D'))
             GROUP BY    cl.IdCliente
             ORDER BY    Cliente asc;
 
