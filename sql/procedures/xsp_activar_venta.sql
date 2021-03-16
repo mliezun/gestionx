@@ -11,6 +11,7 @@ SALIR:BEGIN
     DECLARE pIdUsuario bigint;
     DECLARE pIdCliente bigint;
 	DECLARE pUsuario varchar(30);
+    DECLARE pTipo char(1);
     DECLARE pMonto, pMontoLinea decimal(12, 2);
     DECLARE pMontoAFavor decimal(12, 2);
     DECLARE pMontoPago decimal(12, 2);
@@ -55,11 +56,18 @@ SALIR:BEGIN
         SELECT 0,NOW(),CONCAT(pIdUsuario,'@',pUsuario),pIP,pUserAgent,pAplicacion,'ACTIVAR','A',
         Ventas.* FROM Ventas WHERE IdVenta = pIdVenta;
 
-        IF ( (SELECT Tipo FROM Ventas WHERE IdVenta = pIdVenta) = 'G') THEN
+        SET pTipo = (SELECT Tipo FROM Ventas WHERE IdVenta = pIdVenta);
+        IF ( pTipo IN ('G', 'C')) THEN
+            -- Venta por Garantia o Cotizacion
+            SELECT      COALESCE(SUM(lv.Precio * lv.Cantidad),0)
+            INTO        pMonto
+            FROM        LineasVenta lv
+            WHERE       lv.IdVenta = pIdVenta;
+
             -- Paga Venta
             UPDATE  Ventas 
             SET     Estado = 'P',
-                    Monto = 0
+                    Monto = IF(pTipo = 'G', 0, pMonto)
             WHERE   IdVenta = pIdVenta;
         ELSE
             SELECT      COALESCE(SUM(lv.Precio * lv.Cantidad),0), v.IdCliente
@@ -78,7 +86,7 @@ SALIR:BEGIN
 
             WHILE pIndiceLinea < JSON_LENGTH(pLineas) DO
                 -- Aumento la deuda del Cliente
-                SELECT      CONCAT(a.Articulo, ' x ', lv.Cantidad, ' [', pr.Proveedor, ']'), COALESCE((lv.Precio*lv.Cantidad),0)
+                SELECT      CONCAT(a.Articulo, ' x ', lv.Cantidad, ' [', pr.Proveedor, ']'), COALESCE(SUM(lv.Precio*lv.Cantidad),0)
                 INTO        pDescripcion, pMontoLinea
                 FROM        LineasVenta lv
                 INNER JOIN  Articulos a ON lv.IdArticulo = a.IdArticulo
