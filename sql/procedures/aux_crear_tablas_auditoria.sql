@@ -50,7 +50,7 @@ SALIR: BEGIN
 			`IPAud` varchar(40) NOT NULL,
 			`UserAgentAud` varchar(255) DEFAULT NULL,
 			`AplicacionAud` varchar(50) NOT NULL,
-			`Motivo` varchar(100) DEFAULT NULL,
+			`MotivoAud` varchar(100) DEFAULT NULL,
 			`TipoAud` char(1) NOT NULL,', pStmtAtributosTabla, ',
 			PRIMARY KEY (`Id`),
 			KEY `IX_FechaAud` (`FechaAud`),

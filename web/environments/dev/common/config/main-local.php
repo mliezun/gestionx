@@ -4,8 +4,8 @@ return [
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=gestionx',
-            'username' => 'root',
-            'password' => '',
+            'username' => 'yiiuser',
+            'password' => 'GestionX2019',
             'charset' => 'utf8',
         ],
         'mailer' => [

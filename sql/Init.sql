@@ -91,7 +91,7 @@ INSERT INTO Parametros VALUES('NUMEROCOMPROBANTE', 1, 'Numero de Comprobante de 
 INSERT INTO Parametros VALUES('LISTAPORDEFECTO', 1, 'Id de la lista por defecto de una empresa.', 'Entero', 'SET @pValor = 0;', 'N', 'S');
 
 -- Agrego empresa propia
-INSERT INTO Empresas VALUES (1, 'GestionX', 'backend.127.0.0.1.xip.io:5000', 'A');
+INSERT INTO Empresas VALUES (1, 'GestionX', 'backend.127.0.0.1.nip.io:8050', 'A');
 
 -- Agrego módulos a empresa
 INSERT INTO ModulosEmpresas VALUES (1, 0), (1, 1), (1, 2);
@@ -584,3 +584,6 @@ INSERT INTO TiposComprobante VALUES(1,'Factura A','A');
 INSERT INTO TiposComprobante VALUES(6,'Factura B','A');
 INSERT INTO TiposComprobante VALUES(11,'Factura C','A');
 INSERT INTO TiposComprobante VALUES(995,'REMITO ELECTRÓNICO CÁRNICO ','A');
+
+-- Crear tablas de auditoria
+CALL aux_crear_tablas_auditoria('gestionx');
