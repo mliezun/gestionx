@@ -13,7 +13,7 @@ BEGIN
         -- Resumen de todos los deudores de la empresa
         DROP TEMPORARY TABLE IF EXISTS tmp_inf_deudores;
         CREATE TEMPORARY TABLE tmp_inf_deudores
-            SELECT      IF(cl.Tipo = 'F', CONCAT(cl.Nombres, ' ', cl.Apellidos), cl.RazonSocial) Cliente,
+            SELECT      IF(cl.Tipo = 'F', CONCAT(cl.Apellidos, ', ', cl.Nombres), cl.RazonSocial) Cliente,
                         SUM(v.Monto) 'Monto Total',
                         COALESCE(tt1.Pagado, 0) 'Monto Pagado',
                         SUM(v.Monto) - COALESCE(tt1.Pagado, 0) Deuda,
