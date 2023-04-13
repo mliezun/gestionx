@@ -7,26 +7,12 @@ use yii\web\HttpException;
 use afipsdk;
 use Yii;
 use common\utils\AfipWrapper;
-use common\helpers\FechaHelper;
-use common\helpers\NinjaArrayHelper;
+use yii\base\Component;
 
-class ComprobanteHelper
+class ComprobantesComponent extends Component
 {
-    private static function getCacheKey($IdComprobanteAfip)
+    public function imprimir($params, $datos, $esAfip = true)
     {
-        return serialize(['comprobante-afip', $IdComprobanteAfip]);
-    }
-
-    private static function getFromCache($IdComprobanteAfip)
-    {
-        $cacheKey = self::getCacheKey($IdComprobanteAfip);
-        return Yii::$app->cache->get($cacheKey);
-    }
-
-    public static function ImprimirComprobante($params, $datos, $esAfip = true)
-    {
-        ini_set('soap.wsdl_cache_enabled',0);
-        ini_set('soap.wsdl_cache_ttl',0);
         // Normalizo los datos de la venta para enviar a AFIP
         $datosAfip = self::datosAfip($datos);
 
@@ -35,7 +21,7 @@ class ComprobanteHelper
         // Envío los datos de la venta a AFIP
         if ($esAfip) {
             Yii::info($datosAfip, 'Datos Afip');
-            $cacheKey = self::getCacheKey($datos['IdComprobanteAfip']);
+            $cacheKey = serialize(['comprobante-afip', $datos['IdComprobanteAfip']]);
             $funcionObtener = function () use ($params, $esProd, $datosAfip) {
                 $resultado = self::altaComprobante([
                     'CUIT' => $params['CUIT'],
@@ -57,7 +43,6 @@ class ComprobanteHelper
 
         // Normalizo los datos para generar pdf
         $datosPdf = self::datosPdf($datosAfip);
-        Yii::info($datosPdf, 'DatosPDF');
         $datosCliente = self::datosCliente($datos);
 
         // Genero archivo pdf
@@ -67,7 +52,7 @@ class ComprobanteHelper
     /**
      * Retorna los datos necesarios para mandar al WS de la AFIP.
      */
-    private static function datosAfip($datos)
+    private function datosAfip($datos)
     {
         $datosAfip = [
             // Cantidad de comprobantes a registrar
@@ -108,7 +93,7 @@ class ComprobanteHelper
 
         $datosCliente = json_decode($datos['Datos'], true);
 
-        if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT']) && $datosCliente['CUIT'] != '' && $datosCliente['CUIT'] != 0) {
+        if (array_key_exists('CUIT', $datosCliente) && isset($datosCliente['CUIT'])) {
             $datosAfip['DocTipo'] = 80;
             $datosAfip['DocNro'] = $datosCliente['CUIT'];
         }
@@ -116,19 +101,11 @@ class ComprobanteHelper
         // Devuelta
         if ($datos['Estado'] === 'D') {
             $comprobanteOrig = json_decode($datos['ComprobanteAfipOriginal'], true);
-            $Nro = $comprobanteOrig['NroComprobante'];
-            try {
-                $cbteOrgAfip = self::getFromCache($comprobanteOrig['IdTipoComprobanteAfip']);
-                if (is_array($cbteOrgAfip) && array_key_exists('cbte_nro', $cbteOrgAfip)) {
-                    $Nro = $cbteOrgAfip['cbte_nro'];
-                }
-            } catch (\Exception $e) {
-            }
             $datosAfip['CbtesAsoc'] = [
                 [
                     'Tipo' => $comprobanteOrig['IdTipoComprobanteAfip'],
                     'PtoVta' => $datos['NroPuntoVenta'],
-                    'Nro' => $Nro,
+                    'Nro' => $comprobanteOrig['NroComprobante'],
                     'CbteFch' => FechaHelper::fechaAfip($comprobanteOrig['FechaGenerado']),
                 ]
             ];
@@ -171,7 +148,7 @@ class ComprobanteHelper
         return $datosAfip;
     }
 
-    private static function datosPdf($datos)
+    private function datosPdf($datos)
     {
         return NinjaArrayHelper::normalizar($datos, [
             'CbteTipo' => 'tipo_cbte',
@@ -221,7 +198,7 @@ class ComprobanteHelper
         ]);
     }
 
-    private static function datosCliente($datos)
+    private function datosCliente($datos)
     {
         $datos = array_merge($datos, json_decode($datos['Datos'], true));
         return NinjaArrayHelper::normalizar($datos, [
@@ -232,7 +209,7 @@ class ComprobanteHelper
         ]);
     }
 
-    private static function datosResultado($resultado)
+    private function datosResultado($resultado)
     {
         $resultado = json_decode(json_encode($resultado), true);
         if (array_key_exists('CAEFchVto', $resultado)) {
@@ -251,7 +228,7 @@ class ComprobanteHelper
     /**
      * Generación de comprobante de AFIP.
      */
-    private static function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
+    private function generarPDF($params, $datosPdf, $datosCliente, $resultado, $esAfip = true)
     {
         if (array_key_exists('fch_venc_cae', $resultado)) {
             Yii::info($resultado);
@@ -279,10 +256,6 @@ class ComprobanteHelper
             $json['tipo_cbte'] = 11;
         }
 
-        if (array_key_exists('comprobantes_asociados', $json)) {
-            $json['comprobantes_asociados'] = [];
-        }
-
         /*
         LOGO=logo.png
         EMPRESA=Mariano Reingart
@@ -306,11 +279,8 @@ class ComprobanteHelper
     /**
      * Alta idempotente de comprobante de AFIP.
      */
-    private static function altaComprobante($datos, $esProd = false)
+    private function altaComprobante($datos, $esProd = false)
     {
-        ini_set('soap.wsdl_cache_enabled',0);
-        ini_set('soap.wsdl_cache_ttl',0);
-
         $tmp_cert = tmpfile();
         $meta_data = stream_get_meta_data($tmp_cert);
         $tmp_cert_path = $meta_data["uri"];
@@ -373,7 +343,7 @@ class ComprobanteHelper
      * Permite listar todos los comprobante del tipo indicado
      * emitidos por un punto de venta.
      */
-    public static function ListarComprobantes($cuit, $cert, $key, $production, $pv, $tipo)
+    public function ListarComprobantes($cuit, $cert, $key, $production, $pv, $tipo)
     {
         $MAX_ITER = 1000;
         $wrapper = new AfipWrapper($cuit, $cert, $key, $production);

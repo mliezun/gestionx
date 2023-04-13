@@ -56,4 +56,5 @@ class SiteController extends BaseController
     {
         return $this->render('index');
     }
+
 }

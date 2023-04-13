@@ -10,7 +10,7 @@ class GestorArticulos
      * Permite dar de alta un articulo. Controlando que el nombre y el código del articulo
      * no existan ya dentro del mismo proveedor. Devuelve OK+Id o el mensaje de error en Mensaje.
      * xsp_alta_articulo
-     *
+     * 
      */
     public function Alta(Articulos $Articulo)
     {
@@ -58,9 +58,9 @@ class GestorArticulos
      * cadena de búsqueda y si se incluyen bajas. Si pIdProveedor = 0 lista para todos
      * los proveedores activos de una empresa.
      * xsp_buscar_articulos
-     *
+     * 
      */
-    public function Buscar($Offset = 0, $Limit = 25, $Cadena = '', $IdProveedor = 0, $IdListaPrecio = 0, $IncluyeBajas = 'N', $IncluyeBajasLista = 'N')
+    public function Buscar($Offset = 0, $Limit = 25, $Cadena = '', $IdProveedor = 0,  $IdListaPrecio = 0, $IncluyeBajas = 'N', $IncluyeBajasLista = 'N')
     {
         $sql = "call xsp_buscar_articulos( :idempresa, :offset, :limit, :idprov, :idlistaprecio, :cadena, :iBajas , :iBajasListas)";
 
@@ -82,10 +82,10 @@ class GestorArticulos
 
     /**
      * Permite buscar articulos y su precios para un cliente de una empresa, indicando una cadena de búsqueda.
-     *
+     * 
      * xsp_buscar_articulos_por_cliente
      */
-    public function BuscarPorCliente($IdCliente = 0, $Cadena = '')
+    public function BuscarPorCliente($IdCliente = 0,  $Cadena = '')
     {
         $sql = "call xsp_buscar_articulos_por_cliente( :idempresa, :idcliente, :cadena)";
 
@@ -104,7 +104,7 @@ class GestorArticulos
      * Permite buscar articulos dentro de una empresa, indicando una
      * cadena de búsqueda.
      * xsp_buscar_articulos_autocompletado
-     *
+     * 
      */
     public function BuscarAutocompletado($Cadena)
     {
@@ -153,7 +153,7 @@ class GestorArticulos
      * Permite borrar un articulo controlando que no tenga lineas asociadas.
      * Devuelve OK o el mensaje de error en Mensaje.
      * xsp_borra_articulo
-     *
+     * 
      */
     public function Borrar(Articulos $Articulo)
     {

@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
 use yii\data\Pagination;
 use yii\web\UploadedFile;
 use Yii;
+use common\helpers\InformesHelper;
 
 class ProveedoresController extends BaseController
 {
@@ -138,6 +139,7 @@ class ProveedoresController extends BaseController
 
     public function actionHistorial($id)
     {
+        self::agas();
         PermisosHelper::verificarPermiso('ListarHistorialDescuentosProveedor');
 
         $proveedor = new Proveedores();
@@ -188,5 +190,25 @@ class ProveedoresController extends BaseController
             'proveedor' => $proveedor,
             'paginado' => $paginado,
         ]);
+    }
+
+    private static function agas()
+    {
+        $sql = "CALL xsp_inf_ejecutar_reporte ( :idEmpresa, :id, :cadena )";
+
+        $query = Yii::$app->db->createCommand($sql);
+        
+        $query->bindValues([
+            ':idEmpresa' => 2,
+            ':id' => 8,
+            ':cadena' => 'null,null'
+        ]);
+
+        $preresult = $query->queryAll();
+        Yii::info(json_encode($preresult));
+        $resultado = InformesHelper::expand($preresult);
+        Yii::info(json_encode($resultado));
+
+        // return $resultado;
     }
 }

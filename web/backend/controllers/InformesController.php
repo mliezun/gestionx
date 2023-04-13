@@ -57,6 +57,9 @@ class InformesController extends BaseController
                     }
                 }
 
+                Yii::info($parametros, 'PAREMETROS');
+                Yii::info(count($parametros), 'COUNT PAREMETROS');
+                Yii::info(count($parametros) == 0 || $model->load(Yii::$app->request->post()) && $model->validate(), 'CONDICION');
                 if (count($parametros) == 0 || $model->load(Yii::$app->request->post()) && $model->validate()) {
                     $valores = [];
 
@@ -76,6 +79,8 @@ class InformesController extends BaseController
                             $valor = $model->{$parametro['Parametro']};
                         }
 
+                        Yii::info($parametro, 'PARAMETRO');
+                        Yii::info($valor, 'VALOR');
                         if (!isset($valor)) {
                             $valores[] = "null";
                         } else {
@@ -95,10 +100,12 @@ class InformesController extends BaseController
                     $IdEmpresa = Yii::$app->user->identity->IdEmpresa;
                     $comando = "informes/generar '{$IdEmpresa}' '$key' '$idReporte' \"$cadena\"";
 
+                    Yii::info($comando, 'COMANDO');
+
                     CmdHelper::exec([
                         "php " . Yii::getAlias("@webroot/../../yii") . " " . $comando
                     ]);
-                    
+
 
                     AppHelper::setJsonResponseFormat();
                     return [
@@ -110,11 +117,11 @@ class InformesController extends BaseController
         }
 
         return $this->render('index', [
-                    'menu' => $menu,
-                    'model' => $model,
-                    'reporte' => $reporte,
-                    'parametros' => $parametros,
-                    'tabla' => $tabla,
+            'menu' => $menu,
+            'model' => $model,
+            'reporte' => $reporte,
+            'parametros' => $parametros,
+            'tabla' => $tabla,
         ]);
     }
 
@@ -144,6 +151,7 @@ class InformesController extends BaseController
 
         if ($id != 0) {
             $elementos = $gestor->DameParametroListado($idModeloReporte, $nroParametro, $id);
+
             foreach ($elementos as $e) {
                 $out[] = ['id' => $e['Id'], 'text' => $e['Nombre']];
             }

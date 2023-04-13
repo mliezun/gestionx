@@ -25,4 +25,13 @@ class GestorTiposTributos
 
         return $query->queryAll();
     }
+
+    public function ListarRetenciones()
+    {
+        $sql = "call xsp_listar_tipos_tributos_retencion()";
+
+        $query = Yii::$app->db->createCommand($sql);
+
+        return $query->queryAll();
+    }
 }

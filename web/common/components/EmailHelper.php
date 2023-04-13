@@ -39,7 +39,7 @@ class EmailHelper
             'html' => Yii::$app->controller->renderPartial('@common/mail/' . $view, $params)
         ];
         if ($attachment != null) {
-            $result = $mailgun->messages()->send($domain, $msg, ['attachment' => [$attachment]]);
+            $result = $mailgun->sendMessage($domain, $msg, [ 'attachment' => [$attachment] ]);
         } else {
             $result = $mailgun->sendMessage($domain, $msg);
         }

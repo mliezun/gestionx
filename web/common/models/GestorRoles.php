@@ -59,7 +59,7 @@ class GestorRoles
      * Permite buscar los roles dada una cadena de búsqueda y estado (T: todos los estados)
      * Para listar todos, cadena vacía.
      * xsp_buscar_roles
-     *
+     * 
      */
     public function Buscar($Cadena = '', $Estado = 'A')
     {

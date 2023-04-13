@@ -10,8 +10,8 @@ use common\models\GestorListasPrecio;
 use common\models\GestorTiposDocAfip;
 use common\models\GestorTiposTributos;
 use common\models\forms\BuscarForm;
-use common\helpers\PermisosHelper;
-use common\helpers\FechaHelper;
+use common\components\PermisosHelper;
+use common\components\FechaHelper;
 use Yii;
 use yii\web\Controller;
 use yii\data\Pagination;
@@ -322,10 +322,10 @@ class ClientesController extends Controller
             $historicos = $cliente->ListarHistorialCuenta($fechaInicio, $fechaFin);
             $pagos = $cliente->BuscarPagos($fechaInicio, $fechaFin);
         } else {
-            $busqueda->FechaInicio = FechaHelper::formatearDateLocal(date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . "-1 month")));
-            $busqueda->FechaFin = FechaHelper::dateActualLocal();
-            $historicos = $cliente->ListarHistorialCuenta($busqueda->FechaInicio, $busqueda->FechaFin);
-            $pagos = $cliente->BuscarPagos($busqueda->FechaInicio, $busqueda->FechaFin);
+            // $busqueda->FechaInicio = FechaHelper::formatearDateLocal(date("Y-m-d", strtotime(date("Y-m-d", strtotime(date("Y-m-d"))) . "-1 month")));
+            // $busqueda->FechaFin = FechaHelper::dateActualLocal();
+            $historicos = $cliente->ListarHistorialCuenta();
+            $pagos = $cliente->BuscarPagos();
         }
 
         $tributos = ArrayHelper::map((new GestorTiposTributos)->Buscar(), 'IdTipoTributo', 'TipoTributo');

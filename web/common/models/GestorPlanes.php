@@ -32,11 +32,11 @@ class GestorPlanes
     /**
      * Devuelve listado de los planes, filtrando por estado.
      * xsp_listar_planes
-     *
+     * 
      * @param Estado Filtro de Estado del Plan
      */
     public function ListarPlanes($Estado = 'A')
-    {
+    { 
         $sql = "CALL xsp_listar_planes(:Estado)";
 
         $query = Yii::$app->db->createCommand($sql);

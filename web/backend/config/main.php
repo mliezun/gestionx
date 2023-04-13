@@ -120,8 +120,18 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        'allowedIPs' => ['*'],
-        'historySize' => 50000
+        'allowedIPs' => [
+            '127.0.0.1',
+//            '*',
+/*            '191.103.110.95', // Casa Fox
+            '181.117.11.235', // Casa Malena
+            '186.13.196.205', // Oficina
+            '186.108.147.174', // Depto Miguel
+            '186.158.134.7', // Casa Miguel
+            '190.131.255.137',
+*/
+        ],
+        'historySize' => 5000
     ];
 }
 

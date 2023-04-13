@@ -77,8 +77,8 @@ class ListasPrecio extends Model
     }
 
     /*
-    * Permite listar el historial de porcentajes de una lista de precio.
-    */
+	* Permite listar el historial de porcentajes de una lista de precio.
+	*/
     public function ListarHistorialPorcentajes()
     {
         $sql = 'CALL xsp_listar_historial_lista_precio( :id)';

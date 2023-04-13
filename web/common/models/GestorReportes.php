@@ -149,7 +149,10 @@ class GestorReportes extends Model
             ':cadena' => $CadenaParam
         ]);
 
-        $resultado = InformesHelper::expand($query->queryAll());
+        $preresult = $query->queryAll();
+        Yii::info($preresult);
+        $resultado = InformesHelper::expand($preresult);
+        Yii::info($resultado);
 
         return $resultado;
     }

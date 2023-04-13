@@ -123,6 +123,10 @@ class PagosController extends BaseController
                         Yii::$app->response->format = 'json';
                         return ['error' => 'Medio de Pago no soportado.'];
                     }
+                case 9:
+                    // Nota de Credito
+                case 10:
+                    // Nota de Debito
                 case 6:
                     // Deposito
                 case 1:
@@ -310,6 +314,10 @@ class PagosController extends BaseController
                     Yii::$app->response->format = 'json';
                     return ['error' => 'Medio de Pago no soportado.'];
                 }
+            case 9:
+                // Nota de Credito
+            case 10:
+                // Nota de Debito
             case 6:
                 // Deposito
             case 1:
@@ -360,6 +368,8 @@ class PagosController extends BaseController
                 case 3:
                     $resultado = $entidad->ModificarPagoTarjeta($pago);
                     break;
+                case 9:
+                case 10:
                 case 8:
                 case 6:
                 case 1:

@@ -83,7 +83,7 @@ class GestorListasPrecio
      * y si se incluyen bajas.
      * xsp_buscar_listas_precio
      */
-    public function Buscar($IncluyeDefecto = 'N', $Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar( $IncluyeDefecto = 'N', $Cadena = '', $IncluyeBajas = 'N')
     {
         $sql = "call xsp_buscar_listas_precio( :idempresa, :cadena, :iBajas, :iDefecto)";
 

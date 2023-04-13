@@ -12,7 +12,7 @@ class GestorTiposDocAfip
      * Para listar todos, cadena vacía.
      * xsp_buscar_tipos_doc_afip
      */
-    public function Buscar($Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar( $Cadena = '', $IncluyeBajas = 'N')
     {
         $sql = "call xsp_buscar_tipos_doc_afip(:cadena, :iBajas)";
 

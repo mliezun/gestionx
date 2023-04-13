@@ -27,6 +27,7 @@ return [
             'hostname' => 'localhost',
             'port' => 6379,
             'database' => 0,
+            'password' => 'c-cUwuLBcsLJH*sJrFg_gW5Zsn!j9PR&C79QWm#%z5u=s@5_x$f@yC3JE7L_qxte',
         ],
         'formatter' => [
             'defaultTimeZone' => 'America/Argentina/Tucuman',

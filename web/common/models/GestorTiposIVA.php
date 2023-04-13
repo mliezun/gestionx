@@ -12,7 +12,7 @@ class GestorTiposIVA
      * Para listar todos, cadena vacía.
      * xsp_buscar_tipos_iva
      */
-    public function Buscar($Cadena = '', $IncluyeBajas = 'N')
+    public function Buscar( $Cadena = '', $IncluyeBajas = 'N')
     {
         $sql = "call xsp_buscar_tipos_iva(:cadena, :iBajas)";
 

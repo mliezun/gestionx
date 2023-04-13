@@ -57,7 +57,7 @@ class GestorBancos
      * y la opción si incluye o no los dados de baja [S|N] respectivamente.
      * Para listar todos, cadena vacía.
      * xsp_buscar_bancos
-     *
+     * 
      */
     public function Buscar($Cadena = '', $Estado = 'A')
     {
