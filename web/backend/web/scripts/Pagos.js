@@ -3,7 +3,9 @@ var Pagos = {
     (function () {
       function controlarTipoPago() {
         switch (parseInt($("#pagos-idmediopago").val())) {
-          // Efectivo - Deposito
+          // Efectivo - Deposito - Nota de Credito - Nota de Debito
+          case 9:
+          case 10:
           case 1:
           case 6:
             $(".field-pagos-monto").show();

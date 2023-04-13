@@ -8,7 +8,7 @@ use backend\models\Menu;
     <li class="nav-divider">
         Menu
     </li>
-    <?php foreach (Menu::elements as $ix => $el): ?>
+    <?php foreach(Menu::elements as $ix => $el): ?>
         <?php if (Menu::renderiza($el)): ?>
             <?php if (array_key_exists('submenu', $el)): ?>
             <li class="nav-item ">
@@ -16,7 +16,7 @@ use backend\models\Menu;
                     <i class="fas fa-cogs"></i><?= $el['name'] ?>
                 </a>
                 <div id="submenu-<?= $ix ?>" class="collapse submenu" style="">
-                <?php foreach ($el['submenu'] as $subel): ?>
+                <?php foreach($el['submenu'] as $subel): ?>
                     <?php if (Menu::renderiza($subel)): ?>
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -46,14 +46,14 @@ use backend\models\Menu;
             <i class="fas fa-home"></i>Inicio
         </a>
     </li>
-    <?php // if (PermisosHelper::tienePermiso('BuscarUsuarios')):?>
+    <?php // if (PermisosHelper::tienePermiso('BuscarUsuarios')): ?>
     <li class="nav-item ">
         <a class="nav-link" href="/usuarios">
             <i class="fas fa-users"></i>Usuarios
         </a>
     </li>
-    <?php // endif;?>
-    <?php // if (PermisosHelper::tienePermiso('BuscarParametro')):?>
+    <?php // endif; ?>
+    <?php // if (PermisosHelper::tienePermiso('BuscarParametro')): ?>
     <li class="nav-item ">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
             <i class="fas fa-cogs"></i>Sistema
@@ -104,7 +104,7 @@ use backend\models\Menu;
             </ul>
         </div>
     </li>
-    <?php // endif;?>
+    <?php // endif; ?>
     <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2"><i class="fa fa-fw fa-rocket"></i>UI Elements</a>
         <div id="submenu-2" class="collapse submenu" style="">
