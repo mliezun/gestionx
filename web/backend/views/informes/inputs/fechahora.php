@@ -11,7 +11,7 @@ use kartik\datetime\DateTimePicker;
 
 
 $form->field($model, $parametro['Parametro'])->widget(
-    DateTimePicker::className(),
+        DateTimePicker::className(),
     [
     'language' => Yii::$app->language,
     'removeButton' => false,

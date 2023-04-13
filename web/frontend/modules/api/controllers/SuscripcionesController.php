@@ -30,7 +30,7 @@ class SuscripcionesController extends BaseController
      * @apiName AltaSuscripcion
      * @apiGroup Suscripciones
      * @apiPermission logueado
-     *
+     * 
      * @apiParam {Number} IdPlan Identificador del Plan a Suscribirse
      * @apiParam {String} Codigo Código de bonificación
      * @apiParam {String} Tipo Proveedor del pago [Paypal]
@@ -95,7 +95,7 @@ class SuscripcionesController extends BaseController
      * @apiName CancelarSuscripcion
      * @apiGroup Suscripciones
      * @apiPermission logueado
-     *
+     * 
      * @apiParam {Number} IdSuscripcion Identificador de la suscripción
      *
      * @apiError {String} Error Mensaje de error.
