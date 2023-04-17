@@ -1,0 +1,23 @@
+name: release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install rsync
+        run: sudo apt-get update -yyqq && sudo apt-get install -yyqq rsync
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Upload web changes
+        run: |
+          echo "${{ secrets.DEPLOYER_SSH_KEY }}" > /tmp/sshkey
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > /tmp/known_hosts
+          rsync -e "ssh -i /tmp/sshkey -o UserKnownHostsFile=/tmp/known_hosts" --rsync-path="sudo rsync" -uavrcz --exclude='vendor' --exclude='*/runtime' --exclude='*/assets' web/* ${{ secrets.DEPLOYER_USER }}@${{ secrets.DEPLOY_SERVER }}:${{ secrets.DEPLOY_PATH }}
