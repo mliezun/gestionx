@@ -65,7 +65,7 @@ class PermisosHelper
      */
     public static function tienePermiso(string $permiso): bool
     {
-        return in_array($permiso, Yii::$app->session->get('Permisos'));
+        return in_array($permiso, Yii::$app->session->get('Permisos')) === true;
     }
 
     /**
