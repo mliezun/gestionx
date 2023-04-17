@@ -6,8 +6,10 @@ use Yii;
 
 class StatusController extends BaseController
 {
-    public function actionIndex()
+    public function actionHealth()
     {
+        Yii::$app->response->format = 'json';
+
         $sql = "SELECT 'OK'";
 
         $query = Yii::$app->db->createCommand($sql);
